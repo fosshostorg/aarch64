@@ -3,7 +3,7 @@
 </script>
 
 <main>
-    <Sidebar />
+    
 </main>
 
 
