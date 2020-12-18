@@ -1,5 +1,5 @@
 <script>
-
+    let projects = [{name: "vela's Project"}, {name: "nqdrt1's Long Project Name"}]
 </script>
 
 <main>
@@ -8,24 +8,67 @@
         <divider></divider>
         <ul class="sidebar-categories">
             <li class="sidebar-category">
-                <span class="sidebar-category-header">PROJECTS</span>
+                <span class="sidebar-category-header">
+                    PROJECTS
+                    <span class="material-icons dropdown">
+                        expand_more
+                    </span>
+                </span>
                 <ul class="sidebar-category-items">
-                    <li class="sidebar-category-item">vela's Project</li>
-                    <li class="sidebar-category-item">nqdrt1's Long Project Name</li>
+                    {#each projects as project}
+                    <li class="sidebar-category-item">
+                        <a href="#">
+                            {project.name}
+                        </a>
+                    </li>
+                    {/each}
                 </ul>
             </li>
             <divider></divider>
             <li class="sidebar-category">
-                <span class="sidebar-category-header">PROJECTS</span>
+                <span class="sidebar-category-header">
+                    MANAGE
+                    <span class="material-icons dropdown">
+                        expand_more
+                    </span>
+                </span>
                 <ul class="sidebar-category-items">
-                    <li class="sidebar-category-item"></li>
+                    <li class="sidebar-category-item">
+                        <a href="#">
+                            Virtual Machines
+                        </a>
+                    </li>
+                    <li class="sidebar-category-item">
+                        <a href="#">
+                            Create New VM
+                        </a>
+                    </li>
                 </ul>
             </li>
             <divider></divider>
             <li class="sidebar-category">
-                <span class="sidebar-category-header">PROJECTS</span>
+                <span class="sidebar-category-header">
+                    ACCOUNT
+                    <span class="material-icons dropdown">
+                        expand_more
+                    </span>
+                </span>
                 <ul class="sidebar-category-items">
-                    <li class="sidebar-category-item"></li>
+                    <li class="sidebar-category-item">
+                        <a href="#">
+                            Settings
+                        </a>
+                    </li>
+                    <li class="sidebar-category-item">
+                        <a href="#">
+                            API
+                        </a>
+                    </li>
+                    <li class="sidebar-category-item">
+                        <a href="#">
+                            Support
+                        </a>
+                    </li>
                 </ul>
             </li>
         </ul>
@@ -59,6 +102,7 @@
     }
 
     divider {
+        display: block;
         width: calc(var(--sidebar-width) - 50px);
         height: 1px;
         background-color: white;
@@ -84,13 +128,14 @@
     }
 
     .sidebar-category-header {
-        width: 100%;
+        width: auto;
         font-size: 20px;
         font-weight: bold;
         padding: 0px;
         margin: 0px;
         margin-left: 7px;
         margin-top: 15px;
+        padding-bottom: 5px;
     }
 
     .sidebar-category-items {
@@ -102,13 +147,17 @@
     }
 
     .sidebar-category-item {
-        max-width: calc(100% - 25px);
-        min-width: 0;
+        width: calc(100% - 25px);
         height: 40px;
         margin: 0px;
         padding: 0px;
         display: flex;
         align-items: center; 
+    }
+
+    .sidebar-category-item a {
+        color: white;
+        text-decoration: none;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
@@ -123,6 +172,14 @@
         display: block;
         position: absolute;
         left: 0;
+    }
+
+    .dropdown {
+        float: right;
+    }
+
+    .rotate {
+        transform: rotate(-90deg);
     }
 
 </style>
