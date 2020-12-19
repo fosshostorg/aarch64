@@ -3,6 +3,7 @@
     import Navbar from '../components/Navbar.svelte';
     import PageHeader from '../components/PageHeader.svelte';
     import { v4 as uuidv4 } from 'uuid';
+    import Select from 'svelte-select';
 
     let images = [
         {title: 'Debian', img: './img/debian.svg', version: 'latest'},
@@ -18,9 +19,18 @@
         {title: 'Tier 5', vCPU: '32', RAM: '64GB', SSD: '128GB'},
     ]
 
-    let batch = 1;
+    let projects = [
+        {label: "vela's Project", route: '/projects/1', id: '1'}, 
+        {label: "nqdrt1's Long Project Name", route: '/projects/2', id: '2'}
+    ]
 
+    let batch = 1;
     let hostnames = [uuidv4()];
+    let image = images[0].title;
+    let tier = tiers[0].title;
+    let project = projects[0];
+
+    $: console.log(project)
 
     const addHost = (e) => {
         e.preventDefault();
@@ -33,6 +43,21 @@
         hostnames = hostnames;
     }
 
+    const createFormSubmit = (e) => {
+        hostnames.forEach(async (hostname) => {
+
+            const data = {
+                hostname: hostname == '' || hostname == null ? uuidv4() : hostname,
+                os: image.toLowerCase(),
+                tier: 't' + tier[tier.length-1]
+            }
+
+            const res = await fetch(__apiRoute__ + '/projects')
+
+            console.log(data);
+        })
+    }
+
 </script>
 
 <main>
@@ -40,18 +65,18 @@
     <div class="content">
         <PageHeader>Create VM</PageHeader>
         <div class="create-form">
-            <form>
+            <form on:submit|preventDefault={createFormSubmit}>
                 <span class="form-header">
                     Choose an image:
                 </span>
                 <div class="create-form-select">
-                    <VMSelect data={images}  />
+                    <VMSelect data={images} bind:current={image} />
                 </div>
                 <span class="form-header">
                     Choose a tier:
                 </span>
                 <div class="create-form-select">
-                    <VMSelect isOS={false} data={tiers} />
+                    <VMSelect isOS={false} data={tiers} bind:current={tier} />
                 </div>
                 <span class="form-header">
                     Finalize and create:
@@ -65,17 +90,23 @@
                             Deploy multiple machines at the same time.
                         </span>
                         <div class="batch-create-button">
-                            <button class="batch-create-add" on:click={(e) => {e.preventDefault(); batch++; addHost(e)}}>
+                            <button class="batch-create-add" on:click={(e) => {e.preventDefault(); if (batch < 5) {batch++; addHost(e)}}}>
                                 <span class="material-icons">
                                     add
                                 </span>
                             </button>
-                            <div class="batch-label"><b>{batch}</b>VM</div>
+                            <div class="batch-label"><b>{batch}</b>VM{batch > 1 ? 's' : ''}</div>
                             <button class="batch-create-remove" on:click={(e) => {e.preventDefault(); if (batch > 1) { batch--, removeHost(e)}}}>
                                 <span class="material-icons">
                                     remove
                                 </span>
                             </button>
+                        </div>
+                        <div class="create-form-subheader">
+                            Project:
+                        </div>
+                        <div class="select-wrapper">
+                            <Select items={projects} selectedValue={project} optionIdentifier="id" isSearchable={false} isClearable={false}></Select>
                         </div>
                         <button class="submit" type="submit">
                             CREATE
@@ -107,6 +138,26 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+    }
+
+    .select-wrapper {
+        --border: 1px solid #0e0d0d;
+        --borderHoverColor: 1px solid #0e0d0d;
+        --borderFocusColor: 1px solid #0e0d0d;
+        --borderRadius: 0px;
+        --height: 40px;
+        width: 250px;
+        --padding: 0px;
+        --inputPadding: 0px;
+        --listBorderRadius: 0px;
+        --itemFirstBorderRadius: 0px;
+        --itemIsActiveBG:  #0e0d0d;
+        --itemHoverBG: #0e0d0d15;
+    }
+
+    div.create-form-subheader {
+        margin-top: 15px;
+        padding-bottom: 5px;
     }
 
     .hostname-input {
