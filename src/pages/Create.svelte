@@ -52,7 +52,7 @@
                 tier: 't' + tier[tier.length-1]
             }
 
-            const res = await fetch(__apiRoute__ + '/projects')
+            const res = await fetch('__apiRoute__/projects')
 
             console.log(data);
         })

@@ -39,7 +39,7 @@ export default {
 	},
 	plugins: [
 		replace({
-			__apiRoute__: ''
+			__apiRoute__: 'https://hv1.pdx2.natesales.net/api'
 		}),
 
 		svelte({
