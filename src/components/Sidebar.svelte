@@ -9,7 +9,6 @@
             ...projects
         ], open: true},
         {header: 'Manage', items: [
-            {name: 'Virtual Machines', route: '/vm'},
             {name: 'Create New VM', route: '/create'}
         ], open: true},
         {header: 'Account', items: [

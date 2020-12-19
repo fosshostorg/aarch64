@@ -15,6 +15,9 @@
         {title: 'Tier 5', vCPU: '32', RAM: '64GB', SSD: '128GB'},
     ]
 
+    let batch = 1;
+
+
 
 </script>
 
@@ -58,18 +61,43 @@
         <div class="create-form">
             <form>
                 <span class="form-header">
-                    Choose an Image:
+                    Choose an image:
                 </span>
                 <div class="create-form-select">
                     <VMSelect data={images}  />
                 </div>
                 <span class="form-header">
-                    Choose a Tier:
+                    Choose a tier:
                 </span>
                 <div class="create-form-select">
                     <VMSelect isOS={false} data={tiers} />
                 </div>
-                
+                <span class="form-header">
+                    Finalize and create:
+                </span>
+                <div class="create-form-final">
+                    <div class="create-form-final-section">
+                        <span class="create-form-subheader">
+                            Batch creation:
+                        </span>
+                        <span class="create-form-subtitle">
+                            Deploy multiple machines at the same time.
+                        </span>
+                        <div class="batch-create-button">
+                            <button class="batch-create-add" on:click={() => {batch++}}>
+                                <span class="material-icons">
+                                    add
+                                </span>
+                            </button>
+                            <div class="batch-label"><b>{batch}</b> VM</div>
+                            <button class="batch-create-remove" on:click={() => {batch > 1 ? batch-- : null}}>
+                                <span class="material-icons">
+                                    remove
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
 
 
@@ -97,6 +125,66 @@
         width: 100%;
         justify-content: space-between;
         color: #0e0d0d;
+    }
+
+    .batch-create-button {
+        display: flex;
+        width: 250px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .batch-create-button div {
+        background-color: #0e0d0d;
+        flex-grow: 1;
+        height: 40px;
+        border-left: 1px solid white;
+        border-right: 1px solid white;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 300;
+    }
+
+    .batch-create-button div b {
+        font-weight: bold;
+    }
+
+    .batch-create-button button {
+        background-color: #0e0d0d;
+        border: none;
+        height: 40px;
+        cursor: pointer;
+    }
+
+    .batch-create-button button:active {
+        padding: 0px 8px;
+        opacity: .9;
+    }
+
+    .batch-create-button button span {
+        color: white;
+    }
+
+    .create-form-subheader {
+        font-size: 22px;
+        font-weight: 500;
+    }
+
+    .create-form-subtitle {
+        font-size: 16px;
+        opacity: 0.5;
+    }
+
+    .create-form-final-section {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .create-form-final {
+        padding-left: 30px;
     }
 
     .create-form-select {
