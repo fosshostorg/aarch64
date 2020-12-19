@@ -59,7 +59,7 @@
         align-items: center;
         justify-content: space-around;
         margin-left: 15px;
-        
+        cursor: pointer;
     }
 
     .selection-card.selected {

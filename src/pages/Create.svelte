@@ -1,5 +1,7 @@
 <script>
-    import VMSelect from '../components/VMSelect.svelte'
+    import VMSelect from '../components/VMSelect.svelte';
+    import Navbar from '../components/Navbar.svelte';
+    import PageHeader from '../components/PageHeader.svelte';
     import { v4 as uuidv4 } from 'uuid';
 
     let images = [
@@ -34,42 +36,9 @@
 </script>
 
 <main>
-    <nav>
-        <div class="breadcrumb">
-            <span class="breadcrumb-text">
-                Dashboard
-            </span>
-            <span class="material-icons icon">
-                chevron_right
-            </span>
-            <span class="breadcrumb-text">
-                Manage
-            </span>
-            <span class="material-icons icon">
-                chevron_right
-            </span>
-            <span class="breadcrumb-text breadcrumb-main">
-                Create New VM
-            </span>
-        </div>
-        <div class="navbar-right">
-            <span class="material-icons">
-                account_circle
-            </span>
-            <span class="navbar-user-name">
-                nqdrt1
-            </span>
-            <span class="material-icons">
-                expand_more
-            </span>
-        </div>
-    </nav>
-
+    <Navbar breadcrumbs={['Dashboard', 'Manage', 'Create New VM']} />
     <div class="content">
-        <span class="page-header">
-            Create VM
-            <divider></divider>
-        </span>
+        <PageHeader>Create VM</PageHeader>
         <div class="create-form">
             <form>
                 <span class="form-header">
@@ -149,16 +118,6 @@
         padding-left: 10px;
         font-size: 18px;
         width: 350px;
-    }
-
-    nav {
-        margin-top: 25px;
-        height: 50px;
-        margin-bottom: 30px;
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        color: #0e0d0d;
     }
 
     button.submit {
@@ -263,53 +222,10 @@
         margin-left: 25px;
     }
 
-    .page-header {
-        font-weight: bold;
-        font-size: 30px;
-        margin-left: 25px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    divider {
-        height: 1px;
-        background-color:#0e0d0d;
-        width: calc(100% - 25px);
-        margin: 4px 0px;
-    }
-
     .content {
         width: 100%;
         display: flex;
         flex-direction: column;
-    }
-
-    .breadcrumb {
-        display: flex;
-        flex-direction: row;
-        font-size: 20px;
-        align-items: center;
-        margin-left: 25px;
-    }
-
-    .breadcrumb-text {
-        padding-bottom: 4px;
-    }
-
-    .breadcrumb-main {
-        font-weight: 500;
-    }
-
-    .navbar-right {
-        display: flex;
-        height: 100%;
-        align-items: center;
-        margin-right: 25px;
-        cursor: pointer;
-    }
-
-    .navbar-user-name {
-        padding: 0px 4px 4px;
     }
 
 </style>
