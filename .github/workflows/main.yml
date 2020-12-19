@@ -1,0 +1,25 @@
+name: Build and Deploy Demo
+
+on: push
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Build svelte project
+        run: |
+          npm install
+          npm run build
+        
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: public
+          fqdn: arm-64-demo.seth.cx 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
