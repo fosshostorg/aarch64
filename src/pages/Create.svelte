@@ -1,5 +1,21 @@
 <script>
-    import BoxSelection from '../components/BoxSelection.svelte'
+    import VMSelect from '../components/VMSelect.svelte'
+
+    let images = [
+        {title: 'Debian', img: './img/debian.svg', version: 'latest'},
+        {title: 'Ubuntu', img: './img/ubuntu.svg', version: 'latest'},
+        {title: 'CentOS', img: './img/centos.svg', version: 'latest'}
+    ]
+
+    let tiers = [
+        {title: 'Tier 1', vCPU: '1', RAM: '1GB', SSD: '32GB'},
+        {title: 'Tier 2', vCPU: '4', RAM: '8GB', SSD: '64GB'},
+        {title: 'Tier 3', vCPU: '8', RAM: '16GB', SSD: '10GB'},
+        {title: 'Tier 4', vCPU: '16', RAM: '32GB', SSD: '128GB'},
+        {title: 'Tier 5', vCPU: '32', RAM: '64GB', SSD: '128GB'},
+    ]
+
+
 </script>
 
 <main>
@@ -45,7 +61,13 @@
                     Choose an Image:
                 </span>
                 <div class="create-form-select">
-                    <BoxSelection />
+                    <VMSelect data={images}  />
+                </div>
+                <span class="form-header">
+                    Choose a Tier:
+                </span>
+                <div class="create-form-select">
+                    <VMSelect isOS={false} data={tiers} />
                 </div>
                 
 
@@ -131,7 +153,7 @@
     }
 
     .breadcrumb-main {
-        font-weight: bold;
+        font-weight: 500;
     }
 
     .navbar-right {

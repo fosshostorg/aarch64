@@ -1,11 +1,8 @@
 <script>
     import RadioButton from './RadioButton.svelte';
+    export let isOS = true;
 
-    let data = [
-        {title: 'Debian', img: './img/debian.svg', version: 'latest'},
-        {title: 'Ubuntu', img: './img/ubuntu.svg', version: 'latest'},
-        {title: 'CentOS', img: './img/centos.svg', version: 'latest'}
-    ]
+    export let data = [];
 
     let current = '1';
 </script>
@@ -14,14 +11,33 @@
     {#each data as option}
     <RadioButton id={option.title} bind:group={current}>
         <div class="selection-card" class:selected={current == option.title}>
+            {#if isOS}
             <img src={option.img} alt={option.title + ' Logo'} />
+            {/if}
             <span class="selection-card-header">
                 {option.title}
             </span>
             <divider></divider>
+            {#if isOS}
             <span class="selection-card-text">
                 {option.version}
             </span>
+            {:else}
+            <span class="selection-card-details">
+                <span class="vCPU">
+                    <b>{option.vCPU}</b> vCPU
+                </span>
+                <span class="RAM">
+                    <b>{option.RAM}</b> RAM
+                </span>
+                <span class="SSD">
+                    <b>{option.SSD}</b> SSD
+                </span>
+            </span>
+
+            {/if}
+
+
         </div>
     </RadioButton>
     {/each}
@@ -75,9 +91,26 @@
         color: white;
         opacity: .6;
     }
-
+    
     .selected .selection-card-text {
         color: #0e0d0d;
+    }
+
+    .selection-card-details {
+        font-size: 18px;
+        font-weight: 300;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 8px 0px;
+    }
+
+    .selected .selection-card-details {
+        color: #0e0d0d;
+    }
+
+    .selection-card-details b {
+        font-weight: bold;
     }
 
     divider {
