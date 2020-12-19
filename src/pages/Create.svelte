@@ -1,5 +1,6 @@
 <script>
     import VMSelect from '../components/VMSelect.svelte'
+    import { v4 as uuidv4 } from 'uuid';
 
     let images = [
         {title: 'Debian', img: './img/debian.svg', version: 'latest'},
@@ -17,7 +18,18 @@
 
     let batch = 1;
 
+    let hostnames = [uuidv4()];
 
+    const addHost = (e) => {
+        e.preventDefault();
+        hostnames = [...hostnames, uuidv4()]
+    }
+
+    const removeHost = (e) => {
+        e.preventDefault();
+        hostnames.splice(-1, 1);
+        hostnames = hostnames;
+    }
 
 </script>
 
@@ -25,19 +37,19 @@
     <nav>
         <div class="breadcrumb">
             <span class="breadcrumb-text">
-                Account
-            </span>
-            <span class="material-icons icon">
-                chevron_right
-            </span>
-            <span class="breadcrumb-text">
                 Dashboard
             </span>
             <span class="material-icons icon">
                 chevron_right
             </span>
+            <span class="breadcrumb-text">
+                Manage
+            </span>
+            <span class="material-icons icon">
+                chevron_right
+            </span>
             <span class="breadcrumb-text breadcrumb-main">
-                Create VM
+                Create New VM
             </span>
         </div>
         <div class="navbar-right">
@@ -84,23 +96,34 @@
                             Deploy multiple machines at the same time.
                         </span>
                         <div class="batch-create-button">
-                            <button class="batch-create-add" on:click={() => {batch++}}>
+                            <button class="batch-create-add" on:click={(e) => {e.preventDefault(); batch++; addHost(e)}}>
                                 <span class="material-icons">
                                     add
                                 </span>
                             </button>
-                            <div class="batch-label"><b>{batch}</b> VM</div>
-                            <button class="batch-create-remove" on:click={() => {batch > 1 ? batch-- : null}}>
+                            <div class="batch-label"><b>{batch}</b>VM</div>
+                            <button class="batch-create-remove" on:click={(e) => {e.preventDefault(); if (batch > 1) { batch--, removeHost(e)}}}>
                                 <span class="material-icons">
                                     remove
                                 </span>
                             </button>
                         </div>
+                        <button class="submit" type="submit">
+                            CREATE
+                        </button>
+                    </div>
+                    <div class="create-form-final-section">
+                        <span class="create-form-subheader">
+                            Choose a hostname:
+                        </span>
+                        <span class="create-form-subtitle">
+                            Give your machines a name.
+                        </span>
+                        {#each hostnames as hostname, index}
+                        <input autocomplete="off" type="text" class="hostname-input" name={'hostname-' + index} bind:value={hostname} />
+                        {/each}
                     </div>
                 </div>
-
-
-
             </form>
         </div>
         
@@ -117,6 +140,17 @@
         flex-direction: column;
     }
 
+    .hostname-input {
+        height: 38px;
+        padding: 0px;
+        margin: 0px 0px 10px 0px;
+        border: 1px solid #0e0d0d;
+        color: #0e0d0d;
+        padding-left: 10px;
+        font-size: 18px;
+        width: 350px;
+    }
+
     nav {
         margin-top: 25px;
         height: 50px;
@@ -125,6 +159,24 @@
         width: 100%;
         justify-content: space-between;
         color: #0e0d0d;
+    }
+
+    button.submit {
+        width: 250px;
+        margin-top: 40px;
+        height: 40px;
+        border: none;
+        font-size: 22px;
+        font-weight: bold;
+        font-family: inherit;
+        color: white;
+        background-color: #46B0A6;
+        transition: ease background-color 0.2s;
+    }
+
+    button.submit:active {
+        padding: 0px 8px;
+        background-color: #46b05d;
     }
 
     .batch-create-button {
@@ -150,6 +202,7 @@
 
     .batch-create-button div b {
         font-weight: bold;
+        padding-right: 5px;
     }
 
     .batch-create-button button {
@@ -176,15 +229,18 @@
     .create-form-subtitle {
         font-size: 16px;
         opacity: 0.5;
+        padding-bottom: 10px;
     }
 
     .create-form-final-section {
         display: flex;
         flex-direction: column;
+        margin-right: 15px;
     }
 
     .create-form-final {
         padding-left: 30px;
+        display: flex;
     }
 
     .create-form-select {

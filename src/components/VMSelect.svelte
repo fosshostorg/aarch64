@@ -4,7 +4,7 @@
 
     export let data = [];
 
-    let current = '1';
+    let current = data[0].title;
 </script>
 
 <main>

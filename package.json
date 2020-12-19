@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "sirv-cli": "^1.0.0",
-    "svelte-spa-router": "^3.1.0"
+    "svelte-spa-router": "^3.1.0",
+    "uuid": "^8.3.2"
   }
 }
