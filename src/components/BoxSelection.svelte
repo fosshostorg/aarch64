@@ -1,34 +1,30 @@
 <script>
     import RadioButton from './RadioButton.svelte';
 
+    let data = [
+        {title: 'Debian', img: './img/debian.svg', version: 'latest'},
+        {title: 'Ubuntu', img: './img/ubuntu.svg', version: 'latest'},
+        {title: 'CentOS', img: './img/centos.svg', version: 'latest'}
+    ]
+
     let current = '1';
 </script>
 
 <main>
-    <RadioButton id="1" bind:group={current}>
-        <div class="selection-card" class:selected={current == '1'}>
-            <img src="./img/debian.svg" alt="Logo" />
+    {#each data as option}
+    <RadioButton id={option.title} bind:group={current}>
+        <div class="selection-card" class:selected={current == option.title}>
+            <img src={option.img} alt={option.title + ' Logo'} />
             <span class="selection-card-header">
-                Debian
+                {option.title}
             </span>
             <divider></divider>
             <span class="selection-card-text">
-                latest
+                {option.version}
             </span>
         </div>
     </RadioButton>
-    <RadioButton id="2" bind:group={current}>
-        <div class="selection-card" class:selected={current == '2'}>
-            <img src="./img/ubuntu.svg" alt="Logo" />
-            <span class="selection-card-header">
-                Ubuntu
-            </span>
-            <divider></divider>
-            <span class="selection-card-text">
-                latest
-            </span>
-        </div>
-    </RadioButton>
+    {/each}
 </main>
 
 <style>
@@ -47,7 +43,7 @@
         align-items: center;
         justify-content: space-around;
         margin-left: 15px;
-        transition: ease background-color .1s;
+        
     }
 
     .selection-card.selected {
