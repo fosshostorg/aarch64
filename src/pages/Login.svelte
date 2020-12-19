@@ -6,18 +6,22 @@
     let password = '';
 
     const handleSubmit = async (e) => {
-        console.log('test');
-        await fetch('__apiRoute__/user/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                email: 'seth@test.org',
-                password: 'password'
+        if (__production__) {
+            await fetch('__apiRoute__/user/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    email: 'seth@test.org',
+                    password: 'password'
+                })
             })
-        })
-        .then(res => res.json())
-        .then(data => {console.log(data); window.location.href = '/#/create'})
-        .catch(err => console.log(err))
+            .then(res => res.json())
+            .then(data => {console.log(data); window.location.href = '/#/create'})
+            .catch(err => console.log(err))
+        } else {
+            console.log('%cWould have been posted with email: ' + email, 'color: lightgreen')
+        }
+
     }
 
 </script>
