@@ -1,9 +1,22 @@
 <script>
 
+    export let options = false;
+    export let current = '';
+    export let labels = [];
+
 </script>
 
 <span>
-    <slot />
+    <div class="header">
+        <slot />
+        {#if options}
+        <div class="button-wrapper">
+            {#each labels as label}
+            <button class:current={current == label} on:click={() => {current = label}}>{label}</button>
+            {/each}
+        </div>
+        {/if}
+    </div>
     <divider></divider>
 </span>
 
@@ -20,6 +33,34 @@
         height: 1px;
         background-color:#0e0d0d;
         width: calc(100% - 25px);
-        margin: 4px 0px;
+        margin: 0px 0px 4px;
     }
+
+    button {
+        border: none;
+        background-color: transparent;
+        font-family: inherit;
+        font-weight: 500;
+        font-size: 16px;
+        height: 30px;
+        margin: 0px;
+        margin-bottom: -5px;
+        cursor: pointer;
+    }
+
+    button.current {
+        border-bottom: 5px solid #0e0d0d;
+    }
+
+    button:active {
+        padding: 0px 8px;
+    }
+
+    div.header {
+        display: flex;
+        width: calc(100% - 25px);
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
 </style>

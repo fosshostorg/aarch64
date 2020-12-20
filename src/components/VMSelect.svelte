@@ -2,36 +2,36 @@
     import RadioButton from './RadioButton.svelte';
     export let isOS = true;
 
-    export let data = [];
+    export let data = {};
 
     export let current = '';
 </script>
 
 <main>
-    {#each data as option}
-    <RadioButton id={option.title} bind:group={current}>
-        <div class="selection-card" class:selected={current == option.title}>
+    {#each Object.keys(data) as option}
+    <RadioButton id={option} bind:group={current}>
+        <div class="selection-card" class:selected={current == option}>
             {#if isOS}
-            <img src={option.img} alt={option.title + ' Logo'} />
+            <img src={'./img/' + option.toLowerCase() + '.svg'} alt={option + ' Logo'} />
             {/if}
             <span class="selection-card-header">
-                {option.title}
+                {option}
             </span>
             <divider></divider>
             {#if isOS}
             <span class="selection-card-text">
-                {option.version}
+                {data[option].version}
             </span>
             {:else}
             <span class="selection-card-details">
                 <span class="vCPU">
-                    <b>{option.vCPU}</b> vCPU
+                    <b>{data[option].vcpus}</b> vCPU
                 </span>
                 <span class="RAM">
-                    <b>{option.RAM}</b> RAM
+                    <b>{data[option].memory}GB</b> RAM
                 </span>
                 <span class="SSD">
-                    <b>{option.SSD}</b> SSD
+                    <b>{data[option].disk}GB</b> SSD
                 </span>
             </span>
 

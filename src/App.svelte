@@ -3,12 +3,17 @@
 	import Index from './pages/Index.svelte';
 	import Create from './pages/Create.svelte';
 	import Login from './pages/Login.svelte';
-	import Sidebar from './components/Sidebar.svelte'
-	import {location} from 'svelte-spa-router'
+	import Project from './pages/Project.svelte';
+	import Sidebar from './components/Sidebar.svelte';
+	import {location} from 'svelte-spa-router';
 
-	const routes = new Map();
-	routes.set('/create', Create);
-	routes.set('*', Index);
+	const routes = {
+		'/create': Create,
+		'/projects/*': Project,
+		'*': Index,
+	}
+
+	$: console.log($location);
 
 </script>
 

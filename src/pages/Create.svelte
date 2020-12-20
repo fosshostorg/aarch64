@@ -4,20 +4,12 @@
     import PageHeader from '../components/PageHeader.svelte';
     import { v4 as uuidv4 } from 'uuid';
     import Select from 'svelte-select';
+    import { onMount } from 'svelte';
 
-    let images = [
-        {title: 'Debian', img: './img/debian.svg', version: 'latest'},
-        {title: 'Ubuntu', img: './img/ubuntu.svg', version: 'latest'},
-        {title: 'CentOS', img: './img/centos.svg', version: 'latest'}
-    ]
-
-    let tiers = [
-        {title: 'Tier 1', vCPU: '1', RAM: '1GB', SSD: '32GB'},
-        {title: 'Tier 2', vCPU: '4', RAM: '8GB', SSD: '64GB'},
-        {title: 'Tier 3', vCPU: '8', RAM: '16GB', SSD: '10GB'},
-        {title: 'Tier 4', vCPU: '16', RAM: '32GB', SSD: '128GB'},
-        {title: 'Tier 5', vCPU: '32', RAM: '64GB', SSD: '128GB'},
-    ]
+    let images = {};
+    let tiers = {};
+    let image = '';
+    let tier = '';
 
     let projects = [
         {label: "vela's Project", route: '/projects/1', id: '1'}, 
@@ -26,8 +18,6 @@
 
     let batch = 1;
     let hostnames = [uuidv4()];
-    let image = images[0].title;
-    let tier = tiers[0].title;
     let project = projects[0];
 
     $: console.log(project)
@@ -48,8 +38,8 @@
 
             const data = {
                 hostname: hostname == '' || hostname == null ? uuidv4() : hostname,
-                os: image.toLowerCase(),
-                tier: 't' + tier[tier.length-1]
+                os: image,
+                tier,
             }
 
             if (__production__) {
@@ -67,6 +57,37 @@
             }
         })
     }
+
+    const loadData = async () => {
+
+        if (__production__) {
+            await fetch('__apiRoute__/system')
+            .then(res => res.json())
+            .then(body => {tiers = body.data.tiers; images = body.data.images})
+        } else {
+            tiers = {
+                't1': {vcpus: '1', memory: '1', disk: '32'},
+                't2': {vcpus: '4', memory: '8', disk: '64'},
+                't3': {vcpus: '8', memory: '16', disk: '10'},
+                't4': {vcpus: '16', memory: '32', disk: '128'},
+                't5': {vcpus: '32', memory: '64', disk: '128'},
+            }
+
+            images = {
+                'Debian': {version: 'latest'},
+                'Ubuntu': {version: 'latest'},
+                'CentOS': {version: 'latest'}
+            }
+
+            image = Object.keys(images)[0];
+            tier = Object.keys(tiers)[0];
+
+        }
+    }
+
+    onMount(() => {
+        loadData();
+    })
 
 </script>
 
