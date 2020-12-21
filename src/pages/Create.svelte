@@ -63,7 +63,12 @@
         if (__production__) {
             await fetch('__apiRoute__/system')
             .then(res => res.json())
-            .then(body => {tiers = body.data.tiers; images = body.data.images})
+            .then(body => {
+                tiers = body.data.tiers;
+                images = body.data.images;
+                image = Object.keys(images)[0];
+                tier = Object.keys(tiers)[0];
+            })
         } else {
             tiers = {
                 't1': {vcpus: '1', memory: '1', disk: '32'},
