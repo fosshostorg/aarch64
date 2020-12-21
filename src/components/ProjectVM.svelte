@@ -29,11 +29,11 @@
 <style>
     main {
         border: 1px solid #0e0d0d;
-        height: 40px;
+        min-height: 40px;
         width: calc(100% - 30px);
         margin: 10px 15px;
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         align-items: center;
         cursor: pointer;
     }
@@ -43,6 +43,7 @@
         padding-left: 15px;
         font-weight: 500;
         font-size: 20px;
+        flex-shrink: 0;
     }
 
     button.icon {
@@ -57,6 +58,7 @@
         padding: 0px;
         margin: 0px;
         background-color: white;
+        flex-shrink: 0;
     }
 
     button.icon:active {
@@ -86,7 +88,8 @@
 
     span.ip {
         display: flex;
-        flex-grow: 1;
+        width: calc(50% - 100px);
+        padding-left: 60px;
         align-items: center;
         justify-content: flex-start;
     }
