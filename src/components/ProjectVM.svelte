@@ -1,13 +1,16 @@
 <script>
+    import {push} from 'svelte-spa-router';
+
 
     export let os = '';
     export let name = '';
     export let ip = '';
     export let online = false;
+    export let link = '';
 
 </script>
 
-<main on:click={() => {}}>
+<main on:click={() => {push(link)}}>
     <span class="img">
         <img src={'./img/' + os.toLowerCase() + '.svg'} alt={os + ' Logo'} />
         <span class="status" class:online></span>

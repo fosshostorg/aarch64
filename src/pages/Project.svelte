@@ -11,7 +11,7 @@
             '52abafc8-e4d8-47f6-a884-d0b9a6c961d3': {os: 'Ubuntu', ip: '54.134.44.6', online: true},
             '7b519a16-d321-45c5-a9f4-7627d521c391': {os: 'CentOS', ip: '54.134.44.7', online: false},
         }},
-        {label: "nqdrt1's Long Project Name", route: '/projects/2', id: '2'}
+        {label: "nqdrt1's Long Project Name", route: '/projects/2', id: '2', vms: {}}
     ]
 
     const getProjectById = (id) => {
@@ -42,7 +42,7 @@
         </span>
         <div class="vm-list">
             {#each Object.keys(project.vms) as vm}
-            <ProjectVM os={project.vms[vm].os} name={vm} ip={project.vms[vm].ip} online={project.vms[vm].online}/>
+            <ProjectVM os={project.vms[vm].os} link={'/projects/' + project.id + '/resources/' + vm} name={vm} ip={project.vms[vm].ip} online={project.vms[vm].online}/>
             {/each}
         </div>
     </div>
