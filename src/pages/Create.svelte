@@ -2,9 +2,9 @@
     import VMSelect from '../components/VMSelect.svelte';
     import Navbar from '../components/Navbar.svelte';
     import PageHeader from '../components/PageHeader.svelte';
-    import { v4 as uuidv4 } from 'uuid';
+    import {v4 as uuidv4} from 'uuid';
     import Select from 'svelte-select';
-    import { onMount } from 'svelte';
+    import {onMount} from 'svelte';
 
     let images = {};
     let tiers = {};
@@ -12,7 +12,7 @@
     let tier = '';
 
     let projects = [
-        {label: "vela's Project", route: '/projects/1', id: '1'}, 
+        {label: "vela's Project", route: '/projects/1', id: '1'},
         {label: "nqdrt1's Long Project Name", route: '/projects/2', id: '2'}
     ]
 
@@ -48,9 +48,9 @@
                     headers: {'Content-Type': 'application/json'},
                     body: data
                 })
-                .then(res => res.json())
-                .then(data => console.log(data))
-                .catch(err => console.log(err))
+                    .then(res => res.json())
+                    .then(data => console.log(data))
+                    .catch(err => console.log(err))
             } else {
                 console.log('%cFetch would have been posted with: ', "color: lightgreen")
                 console.log(data);
@@ -62,13 +62,17 @@
 
         if (__production__) {
             await fetch('__apiRoute__/system')
-            .then(res => res.json())
-            .then(body => {
-                tiers = body.data.tiers;
-                images = body.data.images;
-                image = Object.keys(images)[0];
-                tier = Object.keys(tiers)[0];
-            })
+                .then(res => res.json())
+                .then(body => {
+                    if (!body.meta.success) {
+                        window.location.href = '/#/login'
+                    }
+
+                    tiers = body.data.tiers;
+                    images = body.data.images;
+                    image = Object.keys(images)[0];
+                    tier = Object.keys(tiers)[0];
+                })
         } else {
             tiers = {
                 't1': {vcpus: '1', memory: '1', disk: '32'},
@@ -86,7 +90,6 @@
 
             image = Object.keys(images)[0];
             tier = Object.keys(tiers)[0];
-
         }
     }
 
@@ -97,7 +100,7 @@
 </script>
 
 <main>
-    <Navbar breadcrumbs={['Dashboard', 'Manage', 'Create New VM']} />
+    <Navbar breadcrumbs={['Dashboard', 'Manage', 'Create New VM']}/>
     <div class="content">
         <PageHeader>Create VM</PageHeader>
         <div class="create-form">
@@ -106,13 +109,13 @@
                     Choose an image:
                 </span>
                 <div class="create-form-select">
-                    <VMSelect data={images} bind:current={image} />
+                    <VMSelect bind:current={image} data={images}/>
                 </div>
                 <span class="form-header">
                     Choose a tier:
                 </span>
                 <div class="create-form-select">
-                    <VMSelect isOS={false} data={tiers} bind:current={tier} />
+                    <VMSelect bind:current={tier} data={tiers} isOS={false}/>
                 </div>
                 <span class="form-header">
                     Finalize and create:
@@ -142,7 +145,7 @@
                             Project:
                         </div>
                         <div class="select-wrapper">
-                            <Select items={projects} selectedValue={project} optionIdentifier="id" isSearchable={false} isClearable={false}></Select>
+                            <Select isClearable={false} isSearchable={false} items={projects} optionIdentifier="id" selectedValue={project}></Select>
                         </div>
                         <button class="submit" type="submit">
                             CREATE
@@ -156,13 +159,13 @@
                             Give your machines a name.
                         </span>
                         {#each hostnames as hostname, index}
-                        <input autocomplete="off" type="text" class="hostname-input" name={'hostname-' + index} bind:value={hostname} />
+                            <input autocomplete="off" type="text" class="hostname-input" name={'hostname-' + index} bind:value={hostname}/>
                         {/each}
                     </div>
                 </div>
             </form>
         </div>
-        
+
     </div>
 
 
@@ -187,7 +190,7 @@
         --inputPadding: 0px;
         --listBorderRadius: 0px;
         --itemFirstBorderRadius: 0px;
-        --itemIsActiveBG:  #0e0d0d;
+        --itemIsActiveBG: #0e0d0d;
         --itemHoverBG: #0e0d0d15;
     }
 
