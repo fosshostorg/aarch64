@@ -35,7 +35,7 @@ export const addNewProject = async (data) => {
 }
 
 export const login = async (data) => {
-    await fetch('__apiRoute__/user/login', {
+    const res = await fetch('__apiRoute__/user/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
