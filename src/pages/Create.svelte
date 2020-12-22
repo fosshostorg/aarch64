@@ -6,20 +6,16 @@
     import Select from 'svelte-select';
     import {onMount} from 'svelte';
     import {Projects} from "../stores";
+    import {getUserProjects} from '../utils'
 
     let images = {};
     let tiers = {};
     let image = '';
     let tier = '';
 
-    let projects = [
-        {label: "vela's Project", route: '/projects/1', id: '1'},
-        {label: "nqdrt1's Long Project Name", route: '/projects/2', id: '2'}
-    ]
-
     let batch = 1;
     let hostnames = [uuidv4()];
-    let project = projects[0];
+    let project = $Projects[0];
 
     $: console.log(project)
 
@@ -92,29 +88,6 @@
             tier = Object.keys(tiers)[0];
         }
     }
-
-    function loadProjects() {
-        const res = fetch('__apiRoute__/projects', {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'}
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.meta.success) {
-                    $Projects = data.meta;
-                    console.log("loaded projects")
-                } else {
-                    alert(data.meta.message)
-                }
-            })
-            .catch(err => console.log(err))
-    }
-
-    onMount(() => {
-        loadData();
-        loadProjects();
-    })
-
 </script>
 
 <main>
@@ -163,7 +136,7 @@
                             Project:
                         </div>
                         <div class="select-wrapper">
-                            <Select isClearable={false} isSearchable={false} items={projects} optionIdentifier="id" selectedValue={project}></Select>
+                            <Select isClearable={false} isSearchable={false} items={$Projects} optionIdentifier="id" selectedValue={project}></Select>
                         </div>
                         <button class="submit" type="submit">
                             CREATE
