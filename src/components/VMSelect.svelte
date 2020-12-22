@@ -91,7 +91,7 @@
         color: white;
         opacity: .6;
     }
-    
+
     .selected .selection-card-text {
         color: #0e0d0d;
     }

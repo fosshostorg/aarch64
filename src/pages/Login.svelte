@@ -8,10 +8,10 @@
         if (__production__) {
             await login({email, password})
                 .then(data => {
-                    if (data["meta"]["success"]) {
+                    if (data.meta.success) {
                         window.location.href = '/#/create'
                     } else {
-                        alert(data["meta"]["message"])
+                        alert(data.meta.message)
                     }
                 })
                 .catch(err => console.log(err))
