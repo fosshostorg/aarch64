@@ -4,6 +4,8 @@
 
     export let breadcrumbs = [];
 
+    $: console.log($User)
+
     function logOut() {
         const res = fetch('__apiRoute__/user/logout', {
             method: 'GET',
@@ -34,7 +36,7 @@
     </div>
     <div class="navbar-right">
         <span class="material-icons">account_circle</span>
-        <span class="navbar-user-name">{$User.email}</span>
+        <span class="navbar-user-name">{$User['email']}</span>
         <span class="material-icons">expand_more</span>
         <!-- TODO: Dropdown here with a logout button that calls userLogout() -->
     </div>
