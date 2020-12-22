@@ -33,7 +33,7 @@
     <Navbar breadcrumbs={['Dashboard', 'Projects', 'Add New Project']}/>
     <PageHeader>Add New Project</PageHeader>
     <div class="content">
-        <form on:submit={handleSubmit}>
+        <form on:submit|preventDefault={handleSubmit}>
             <label for="name">Name your project:</label>
             <input type="text" name="name" placeholder="Name..." autocomplete="off" bind:value={name}>
             <button type="submit">CREATE</button>
