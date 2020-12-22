@@ -22,6 +22,20 @@
             })
             .catch(err => console.log(err))
     }
+
+    function logOut() {
+        const res = fetch('__apiRoute__/user/logout', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.meta.success) {
+                    window.location.href = "/#/"
+                }
+            })
+            .catch(err => console.log(err))
+    }
 </script>
 
 <nav>
@@ -41,6 +55,7 @@
         <span class="material-icons">account_circle</span>
         <span class="navbar-user-name">{email}</span>
         <span class="material-icons">expand_more</span>
+        <!-- TODO: Dropdown here with a logout button that calls userLogout() -->
     </div>
 </nav>
 
