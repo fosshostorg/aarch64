@@ -14,7 +14,7 @@
                         .then(data => {$Projects = data.data})
                         .then(async () => {
                             await getUserInfo()
-                            .then(data => {$User = data; push('/create')})
+                            .then(data => {$User = data.data; push('/create')})
                         })
                     } else {
                         alert(data.meta.message)
