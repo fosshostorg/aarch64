@@ -4,11 +4,13 @@
 	import Create from './pages/Create.svelte';
 	import Login from './pages/Login.svelte';
 	import Project from './pages/Project.svelte';
+	import NewProject from './pages/NewProject.svelte';
 	import Sidebar from './components/Sidebar.svelte';
 	import {location} from 'svelte-spa-router';
 
 	const routes = {
 		'/create': Create,
+		'/projects/create': NewProject, 
 		'/projects/*': Project,
 		'*': Index,
 	}

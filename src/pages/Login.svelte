@@ -1,19 +1,12 @@
 <script>
     import {link} from "svelte-spa-router";
+    import {login} from '../utils'
 
     let email, password;
 
     const handleSubmit = async (e) => {
         if (__production__) {
-            await fetch('__apiRoute__/user/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
-            })
-                .then(res => res.json())
+            await login({email, password})
                 .then(data => {
                     if (data["meta"]["success"]) {
                         window.location.href = '/#/create'

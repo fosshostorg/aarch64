@@ -1,27 +1,8 @@
 <script>
     import {onMount} from "svelte";
+    import {User} from '../stores'
 
     export let breadcrumbs = [];
-
-    let email = '';
-
-    onMount(() => getUserInfo())
-    $: getUserInfo(document.location)
-
-    // TODO replace phony argument with svelte bind
-    function getUserInfo(phony) {
-        const res = fetch('__apiRoute__/user/info', {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'}
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.meta.success) {
-                    email = data.data.email;
-                }
-            })
-            .catch(err => console.log(err))
-    }
 
     function logOut() {
         const res = fetch('__apiRoute__/user/logout', {
@@ -53,7 +34,7 @@
     </div>
     <div class="navbar-right">
         <span class="material-icons">account_circle</span>
-        <span class="navbar-user-name">{email}</span>
+        <span class="navbar-user-name">{$User.email}</span>
         <span class="material-icons">expand_more</span>
         <!-- TODO: Dropdown here with a logout button that calls userLogout() -->
     </div>
