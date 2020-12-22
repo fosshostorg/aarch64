@@ -16,7 +16,8 @@
             await addNewProject(data)
             .then(data => {
                 if (data.meta.success) {
-                    $Projects = getUserProjects().data;
+                    $Projects = getUserProjects().data.data;
+                    push('/projects/' + data.data);
                 } else {
                     console.log(data.meta.message)
                 }
