@@ -30,7 +30,7 @@
     const removeHost = (e) => {
         e.preventDefault();
         hostnames.splice(-1, 1);
-        hostnames = hostnames;
+        hostnames = hostnames; // TODO: @knightss27 what is this?
     }
 
     const createFormSubmit = (e) => {
