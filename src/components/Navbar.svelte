@@ -4,7 +4,7 @@
 
     export let breadcrumbs = [];
 
-    $: console.log($User)
+    // $: console.log($User)
 
     function logOut() {
         const res = fetch('__apiRoute__/user/logout', {

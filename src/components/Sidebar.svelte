@@ -1,12 +1,13 @@
 <script>
     import {link} from 'svelte-spa-router';
     import active from 'svelte-spa-router/active';
+    import {Projects} from '../stores'
 
-    let projects = [{name: "vela's Project", route: '/projects/1'}, {name: "nqdrt1's Long Project Name", route: '/projects/2'}]
+    // let projects = [{name: "vela's Project", route: '/projects/1'}, {name: "nqdrt1's Long Project Name", route: '/projects/2'}]
 
     let sidebar = [
         {header: 'Projects', items: [
-            ...projects
+            ...$Projects
         ], open: true},
         {header: 'Manage', items: [
             {name: 'Create New VM', route: '/create'}
@@ -33,6 +34,21 @@
                     </span>
                 </span>
                 <ul class="sidebar-category-items" class:closed={!category.open}>
+                    {#if category.header == 'Projects'}
+                    {#each category.items as item}
+                    <a class="sidebar-category-item" href={'/projects/' + item.id} use:link use:active={{path: '/projects/' + item.id + '*', className: 'sidebar-item-active'}}>
+                        <span>
+                            {item.name}
+                        </span>
+                    </a>
+                    {/each}
+                    <a class="sidebar-category-item" href={'/projects/create'} use:link use:active={{path: '/projects/create', className: 'sidebar-item-active'}}>
+                        <span class="material-icons project-add-button">add</span>
+                        <span class="project-add-button">
+                            New Project
+                        </span>
+                    </a>
+                    {:else}
                     {#each category.items as item}
                     <a class="sidebar-category-item" href={item.route} use:link use:active={{path: item.route + '*', className: 'sidebar-item-active'}}>
                         <span>
@@ -40,14 +56,6 @@
                         </span>
                     </a>
                     {/each}
-                    {#if category.header == 'Projects'}
-                    <a class="sidebar-category-item" href={'/projects/create'} use:link use:active={{path: '/projects/create', className: 'sidebar-item-active'}}>
-                        <span class="material-icons project-add-button">add</span>
-                        <span class="project-add-button">
-                            New Project
-                        </span>
-                    </a>
-                    
                     {/if}
                 </ul>
             </li>
