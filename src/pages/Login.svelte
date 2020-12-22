@@ -13,15 +13,17 @@
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
-                    window.location.href = '/#/create'
+                    if (data["meta"]["success"]) {
+                        window.location.href = '/#/create'
+                    } else {
+                        alert(data["meta"]["message"])
+                    }
                 })
                 .catch(err => console.log(err))
         } else {
             console.log('%cWould have been posted with email: ' + email, 'color: lightgreen')
         }
     }
-
 </script>
 
 <main>
