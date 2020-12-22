@@ -7,8 +7,8 @@
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    email: 'seth@test.org',
-                    password: 'password'
+                    email: email,
+                    password: password
                 })
             })
                 .then(res => res.json())
