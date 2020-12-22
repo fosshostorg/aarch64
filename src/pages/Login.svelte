@@ -1,4 +1,6 @@
 <script>
+    import {link} from "svelte-spa-router";
+
     let email, password;
 
     const handleSubmit = async (e) => {
