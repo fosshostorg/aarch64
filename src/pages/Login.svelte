@@ -11,7 +11,7 @@
                 .then(async data => {
                     if (data.meta.success) {
                         await getUserProjects()
-                        .then(data => {$Projects = data})
+                        .then(data => {$Projects = data.data})
                         .then(async () => {
                             await getUserInfo()
                             .then(data => {$User = data; push('/create')})
