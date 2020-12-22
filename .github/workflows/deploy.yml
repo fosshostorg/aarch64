@@ -28,5 +28,5 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           source: "public"
-          target: "/root"
+          target: "/root/public"
           strip_components: 1
