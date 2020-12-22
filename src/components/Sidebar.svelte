@@ -6,9 +6,7 @@
     // let projects = [{name: "vela's Project", route: '/projects/1'}, {name: "nqdrt1's Long Project Name", route: '/projects/2'}]
 
     let sidebar = [
-        {header: 'Projects', items: [
-            ...$Projects
-        ], open: true},
+        {header: 'Projects', items: [], open: true},
         {header: 'Manage', items: [
             {name: 'Create New VM', route: '/create'}
         ], open: true},
@@ -35,10 +33,10 @@
                 </span>
                 <ul class="sidebar-category-items" class:closed={!category.open}>
                     {#if category.header == 'Projects'}
-                    {#each category.items as item}
-                    <a class="sidebar-category-item" href={'/projects/' + item._id} use:link use:active={{path: '/projects/' + item._id + '*', className: 'sidebar-item-active'}}>
+                    {#each $Projects as project}
+                    <a class="sidebar-category-item" href={'/projects/' + project._id} use:link use:active={{path: '/projects/' + project._id + '*', className: 'sidebar-item-active'}}>
                         <span>
-                            {item.name}
+                            {project.name}
                         </span>
                     </a>
                     {/each}
