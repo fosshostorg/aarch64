@@ -36,7 +36,7 @@
                 <ul class="sidebar-category-items" class:closed={!category.open}>
                     {#if category.header == 'Projects'}
                     {#each category.items as item}
-                    <a class="sidebar-category-item" href={'/projects/' + item.id} use:link use:active={{path: '/projects/' + item.id + '*', className: 'sidebar-item-active'}}>
+                    <a class="sidebar-category-item" href={'/projects/' + item._id} use:link use:active={{path: '/projects/' + item._id + '*', className: 'sidebar-item-active'}}>
                         <span>
                             {item.name}
                         </span>
