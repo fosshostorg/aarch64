@@ -6,6 +6,8 @@
     import {v4 as uuidv4} from 'uuid';
     import { Projects } from '../stores';
 
+    $: console.log($Projects);
+
     const getProjectById = (id, _projects) => {
         let returnProject = null;
         let projects = [ ..._projects ];
