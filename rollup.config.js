@@ -39,7 +39,7 @@ export default {
 	},
 	plugins: [
 		replace({
-			__apiRoute__: 'https://arm-64-dashboard-dev.fossho.st/',
+			__apiRoute__: 'https://arm-64-dashboard-dev.fossho.st/api',
 			__production__: true,
 		}),
 
