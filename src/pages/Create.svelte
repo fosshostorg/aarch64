@@ -13,25 +13,9 @@
     let image = '';
     let tier = '';
 
-    let projects = [
-    {
-      "_id": "5fe198993a6d9af1f6585cf3",
-      "name": "test",
-      "vms": [
-        {
-          "hostname": "my-test-vm.example.com",
-          "tier": "t5",
-          "os": "Debian",
-          "location": "pdx",
-          "enabled": false
-        }
-      ]
-    }
-  ]
-
     let batch = 1;
     let hostnames = [uuidv4()];
-    let project = projects[0];
+    let project = $Projects[0];
 
     $: console.log(project)
 
@@ -152,7 +136,7 @@
                             Project:
                         </div>
                         <div class="select-wrapper">
-                            <Select isClearable={false} isSearchable={false} items={projects} optionIdentifier="_id" selectedValue={project}
+                            <Select isClearable={false} isSearchable={false} items={$Projects} optionIdentifier="_id" selectedValue={project}
                                 getOptionLabel={ (option, filterText) => {
                                 return option.isCreator ? `Create \"${filterText}\"` : option.name;
                               }}
