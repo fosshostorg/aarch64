@@ -1,9 +1,5 @@
 <script>
-    import { link } from "svelte-spa-router";
-
-
-    let email = '';
-    let password = '';
+    let email, password;
 
     const handleSubmit = async (e) => {
         if (__production__) {
@@ -15,23 +11,25 @@
                     password: 'password'
                 })
             })
-            .then(res => res.json())
-            .then(data => {console.log(data); window.location.href = '/#/create'})
-            .catch(err => console.log(err))
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    window.location.href = '/#/create'
+                })
+                .catch(err => console.log(err))
         } else {
             console.log('%cWould have been posted with email: ' + email, 'color: lightgreen')
         }
-
     }
 
 </script>
 
 <main>
     <div>
-        <img src="./img/ARM-64B.png" alt="ARM-64 Logo">
+        <img alt="ARM-64 Logo" src="./img/ARM-64B.png">
         <form on:submit|preventDefault={handleSubmit}>
-            <input type="email" autocomplete="email" bind:value={email} placeholder="Email" />
-            <input type="password" autocomplete="password" bind:value={password} placeholder="Password" />
+            <input autocomplete="email" bind:value={email} placeholder="Email" type="email"/>
+            <input autocomplete="password" bind:value={password} placeholder="Password" type="password"/>
             <button type="submit">LOGIN</button>
         </form>
         <a href="/signup" use:link>Don't have an account? <b>Sign Up</b></a>
@@ -48,7 +46,7 @@
         align-items: center;
         justify-content: center;
     }
-    
+
     button {
         width: 100%;
         height: 40px;
@@ -68,7 +66,7 @@
     }
 
     a {
-        color:#0e0d0d;
+        color: #0e0d0d;
         font-size: 12px;
         margin-top: 10px;
     }
@@ -95,13 +93,11 @@
     input {
         width: calc(100% - 12px);
         border: 1px solid #0e0d0d;
-        padding: 0px;
-        margin: 0px;
         height: 38px;
         color: #0e0d0d;
-        padding-left: 10px;
+        padding: 0 0 0 10px;
         font-size: 18px;
-        margin: 0px 0px 18px 0px;
+        margin: 0 0 18px 0;
     }
 
     img {
@@ -109,4 +105,3 @@
         margin-top: 25px;
     }
 </style>
-
