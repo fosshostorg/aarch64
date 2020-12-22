@@ -1,15 +1,21 @@
 <script>
-    import {link} from "svelte-spa-router";
-    import {login} from '../utils'
+    import {link, push} from "svelte-spa-router";
+    import {getUserInfo, getUserProjects, login} from '../utils';
+    import {User, Projects} from '../stores';
 
     let email, password;
 
     const handleSubmit = async (e) => {
         if (__production__) {
             await login({email, password})
-                .then(data => {
+                .then(async data => {
                     if (data.meta.success) {
-                        window.location.href = '/#/create'
+                        await getUserProjects()
+                        .then(data => {$Projects = data})
+                        .then(async () => {
+                            await getUserInfo()
+                            .then(data => {$User = data; push('/create')})
+                        })
                     } else {
                         alert(data.meta.message)
                     }
