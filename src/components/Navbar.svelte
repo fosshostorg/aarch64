@@ -1,5 +1,27 @@
 <script>
+    import {onMount} from "svelte";
+
     export let breadcrumbs = [];
+
+    let email = '';
+
+    onMount(() => getUserInfo())
+    $: getUserInfo(document.location)
+
+    // TODO replace phony argument with svelte bind
+    function getUserInfo(phony) {
+        const res = fetch('__apiRoute__/user/info', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.meta.success) {
+                    email = data.data.email;
+                }
+            })
+            .catch(err => console.log(err))
+    }
 </script>
 
 <nav>
@@ -8,23 +30,17 @@
         <span class="breadcrumb-text" class:breadcrumb-main={index == breadcrumbs.length - 1}>
             {breadcrumb}
         </span>
-        {#if index !== breadcrumbs.length - 1}
+            {#if index !== breadcrumbs.length - 1}
             <span class="material-icons icon">
                 chevron_right
             </span>
-        {/if}
+            {/if}
         {/each}
     </div>
     <div class="navbar-right">
-        <span class="material-icons">
-            account_circle
-        </span>
-        <span class="navbar-user-name">
-            nqdrt1
-        </span>
-        <span class="material-icons">
-            expand_more
-        </span>
+        <span class="material-icons">account_circle</span>
+        <span class="navbar-user-name">{email}</span>
+        <span class="material-icons">expand_more</span>
     </div>
 </nav>
 
