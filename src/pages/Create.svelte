@@ -5,6 +5,7 @@
     import {v4 as uuidv4} from 'uuid';
     import Select from 'svelte-select';
     import {onMount} from 'svelte';
+    import {Projects} from "../stores";
 
     let images = {};
     let tiers = {};
@@ -59,7 +60,6 @@
     }
 
     const loadData = async () => {
-
         if (__production__) {
             await fetch('__apiRoute__/system')
                 .then(res => res.json())
@@ -93,8 +93,26 @@
         }
     }
 
+    function loadProjects() {
+        const res = fetch('__apiRoute__/projects', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.meta.success) {
+                    $Projects = data.meta;
+                    console.log("loaded projects")
+                } else {
+                    alert(data.meta.message)
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
     onMount(() => {
         loadData();
+        loadProjects();
     })
 
 </script>
