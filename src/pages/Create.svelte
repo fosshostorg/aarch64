@@ -13,9 +13,25 @@
     let image = '';
     let tier = '';
 
+    let projects = [
+    {
+      "_id": "5fe198993a6d9af1f6585cf3",
+      "name": "test",
+      "vms": [
+        {
+          "hostname": "my-test-vm.example.com",
+          "tier": "t5",
+          "os": "Debian",
+          "location": "pdx",
+          "enabled": false
+        }
+      ]
+    }
+  ]
+
     let batch = 1;
     let hostnames = [uuidv4()];
-    let project = $Projects[0];
+    let project = projects[0];
 
     $: console.log(project)
 
@@ -136,7 +152,15 @@
                             Project:
                         </div>
                         <div class="select-wrapper">
-                            <Select isClearable={false} isSearchable={false} items={$Projects} optionIdentifier="id" selectedValue={project}></Select>
+                            <Select isClearable={false} isSearchable={false} items={projects} optionIdentifier="_id" selectedValue={project}
+                                getOptionLabel={ (option, filterText) => {
+                                return option.isCreator ? `Create \"${filterText}\"` : option.name;
+                              }}
+                              getSelectionLabel={ option => {
+                                if (option) return option.name;
+                              }}
+                            ></Select>
+                            <!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
                         </div>
                         <button class="submit" type="submit">
                             CREATE
