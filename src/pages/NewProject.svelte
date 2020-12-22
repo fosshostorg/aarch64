@@ -14,10 +14,13 @@
             }
 
             await addNewProject(data)
-            .then(data => {
+            .then(async data => {
                 if (data.meta.success) {
-                    $Projects = getUserProjects().data.data;
-                    push('/projects/' + data.data);
+                    await getUserProjects()
+                    .then(body => {
+                        $Projects = body.data;
+                        push('/projects/' + data.data);
+                    })
                 } else {
                     console.log(data.meta.message)
                 }
