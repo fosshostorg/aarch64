@@ -1,5 +1,6 @@
 <script>
     import {push} from 'svelte-spa-router';
+    import Dropdown from './Dropdown.svelte';
 
 
     export let os = '';
@@ -8,22 +9,43 @@
     export let online = false;
     export let link = '';
 
+    let dropdown = [
+        "SETTINGS",
+        "REBOOT",
+        "RESCUE OS",
+        "REINSTALL",
+        "DELETE"
+    ]
+
+    let selected = dropdown[0];
+    let listOpen = false;
+
+    const handleSettings = (e) => {
+        listOpen = !listOpen;
+    }
+
 </script>
 
-<main on:click={() => {push(link)}}>
-    <span class="img">
-        <img src={'./img/' + os.toLowerCase() + '.svg'} alt={os + ' Logo'} />
-        <span class="status" class:online></span>
+<main>
+    <span class="wrapper" on:click={() => {push(link)}}>
+        <span class="img">
+            <img src={'./img/' + os.toLowerCase() + '.svg'} alt={os + ' Logo'} />
+            <span class="status" class:online></span>
+        </span>
+        <div>
+            {name}
+        </div>
+        <span class="ip">
+            {ip}
+        </span>
     </span>
-    <div>
-        {name}
-    </div>
-    <span class="ip">
-        {ip}
-    </span>
-    <button class="material-icons icon">
+    <button class="material-icons icon" on:click={handleSettings}>
+        <span class="dropdown">
+            <Dropdown bind:open={listOpen}/>
+        </span>
         more_horiz
     </button>
+    
 </main>
 
 <style>
@@ -36,6 +58,18 @@
         flex-wrap: wrap;
         align-items: center;
         cursor: pointer;
+    }
+
+    span.dropdown {
+        font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    span.wrapper {
+        width: calc(100% - 40px);
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        min-height: 40px;
     }
 
     div {

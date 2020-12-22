@@ -40,6 +40,15 @@
                         </span>
                     </a>
                     {/each}
+                    {#if category.header == 'Projects'}
+                    <a class="sidebar-category-item" href={'/projects/create'} use:link use:active={{path: '/projects/create', className: 'sidebar-item-active'}}>
+                        <span class="material-icons project-add-button">add</span>
+                        <span class="project-add-button">
+                            New Project
+                        </span>
+                    </a>
+                    
+                    {/if}
                 </ul>
             </li>
         {/each}
@@ -75,6 +84,10 @@
 
     li, ul {
         list-style-type: none;
+    }
+
+    .project-add-button {
+        opacity: .75;
     }
 
     .sidebar-categories {

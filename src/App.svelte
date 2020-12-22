@@ -35,6 +35,7 @@
 	main {
 		width: 100%;
 		display: flex;
+		min-width: 1300px;
 	}
 
 	div {
