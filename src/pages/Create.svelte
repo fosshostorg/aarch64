@@ -59,6 +59,11 @@
         })
     }
 
+    const countryCodeToFlag = (cc) => {
+        const chars = [...cc.toUpperCase()].map(c => c.charCodeAt() + 127397);
+        return String.fromCodePoint(...chars);
+    }
+
     const loadData = async () => {
         if (__production__) {
             await fetch('__apiRoute__/system')
@@ -73,9 +78,10 @@
                     tiers = body.data.tiers;
                     images = body.data.images;
                     locations = Object.keys(body.data.locations).map((key) => {
+                        let name = body.data.locations[key].name;
                         return {
                             id: key,
-                            name: body.data.locations[key].name
+                            name: countryCodeToFlag(name.split(' ')[name.split(' ').length - 1]) + ' ' + name
                         }
                     });
                     console.log(locations);
@@ -213,7 +219,7 @@
         --borderRadius: 0px;
         --height: 40px;
         width: 250px;
-        --padding: 0px;
+        --padding: 5px 0px;
         --inputPadding: 0px;
         --listBorderRadius: 0px;
         --itemFirstBorderRadius: 0px;
