@@ -45,7 +45,7 @@
 		authenticated = authenticate();
 	})
 
-	afterUpdate(() => {authenticated = authenticate()})
+	// afterUpdate(() => {authenticated = authenticate()})
 
 	function routeLoading(event) {
 		console.log('test')
