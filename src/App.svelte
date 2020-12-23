@@ -30,7 +30,7 @@
 				.then(res => {
 					console.log(res, 'RES')
 					if (!(res.user == null)) {
-						if (res.user.meta.success && res.user.projects.success) {
+						if (res.user.meta.success && res.projects.meta.success) {
 							$User = res.user.data.data;
 							$Projects = res.projects.data.data;
 						} else i
