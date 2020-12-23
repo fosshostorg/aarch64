@@ -6,16 +6,19 @@
     import Select from 'svelte-select';
     import {onMount} from 'svelte';
     import {Projects} from "../stores";
-    import {getUserProjects} from '../utils'
+    import {requestNewResources, getUserProjects} from '../utils'
+    import { push } from 'svelte-spa-router';
 
     let images = {};
     let tiers = {};
+    let locations = {};
     let image = '';
     let tier = '';
 
     let batch = 1;
     let hostnames = [uuidv4()];
     let project = $Projects[0];
+    let location = 'Loading...'
 
     $: console.log(project)
 
@@ -40,13 +43,14 @@
             }
 
             if (__production__) {
-                const res = await fetch('__apiRoute__/projects', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: data
-                })
-                    .then(res => res.json())
-                    .then(data => console.log(data))
+                await requestNewResources(project._id, data)
+                    .then(data => {
+                        if (data !== null) {
+                            if (data.meta.success) {
+                                push('/dashboard/projects/' + project._id);
+                            }
+                        }
+                    })
                     .catch(err => console.log(err))
             } else {
                 console.log('%cFetch would have been posted with: ', "color: lightgreen")
@@ -66,8 +70,15 @@
 
                     tiers = body.data.tiers;
                     images = body.data.images;
+                    locations = Object.keys(body.data.locations).map((key) => {
+                        return {
+                            id: key,
+                            name: body.data.locations[key].name
+                        }
+                    });
                     image = Object.keys(images)[0];
                     tier = Object.keys(tiers)[0];
+                    location = locations[0];
                 })
         } else {
             tiers = {
@@ -148,6 +159,14 @@
                                 if (option) return option.name;
                               }}
                             ></Select>
+                            <Select isClearable={false} isSearchable={false} items={locations} optionIdentifier="id" selectedValue={location}
+                                getOptionLabel={ (option, filterText) => {
+                                return option.isCreator ? `Create \"${filterText}\"` : option.name;
+                              }}
+                              getSelectionLabel={ option => {
+                                if (option) return option.name;
+                              }}
+                            ></Select>
                             <!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
                         </div>
                         <button class="submit" type="submit">
@@ -195,6 +214,8 @@
         --itemFirstBorderRadius: 0px;
         --itemIsActiveBG: #0e0d0d;
         --itemHoverBG: #0e0d0d15;
+        display: flex;
+        flex-direction: column;
     }
 
     div.create-form-subheader {
