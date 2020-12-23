@@ -11,7 +11,7 @@
 
     let images = {};
     let tiers = {};
-    let locations = {};
+    let locations = [];
     let image = '';
     let tier = '';
 
@@ -68,6 +68,8 @@
                         window.location.href = '/#/login'
                     }
 
+                    console.log(body.data.locations)
+
                     tiers = body.data.tiers;
                     images = body.data.images;
                     locations = Object.keys(body.data.locations).map((key) => {
@@ -76,6 +78,7 @@
                             name: body.data.locations[key].name
                         }
                     });
+                    console.log(locations);
                     image = Object.keys(images)[0];
                     tier = Object.keys(tiers)[0];
                     location = locations[0];
