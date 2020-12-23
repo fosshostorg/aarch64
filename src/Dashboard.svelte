@@ -26,9 +26,13 @@
 
 {#if $User !== {}}
 <Sidebar />
-<Router {routes} {prefix} />
+<div>
+    <Router {routes} {prefix} />
+</div>
 {/if}
 
 <style>
-
+    div {
+        width: calc(100% - var(--sidebar-width));
+    }
 </style>

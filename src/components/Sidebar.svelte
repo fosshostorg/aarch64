@@ -8,7 +8,7 @@
     let sidebar = [
         {header: 'Projects', items: [], open: true},
         {header: 'Manage', items: [
-            {name: 'Create New VM', route: '/dashboard/projects/create'}
+            {name: 'Create New VM', route: '/dashboard/create'}
         ], open: true},
         {header: 'Account', items: [
             {name: 'Settings', route: '/account/settings'},
@@ -34,13 +34,13 @@
                 <ul class="sidebar-category-items" class:closed={!category.open}>
                     {#if category.header == 'Projects'}
                     {#each $Projects as project}
-                    <a class="sidebar-category-item" href={'/dashboard/projects/' + project._id} use:link use:active={{path: '/projects/' + project._id + '*', className: 'sidebar-item-active'}}>
+                    <a class="sidebar-category-item" href={'/dashboard/projects/' + project._id} use:link use:active={{path: '/dashboard/projects/' + project._id + '*', className: 'sidebar-item-active'}}>
                         <span>
                             {project.name}
                         </span>
                     </a>
                     {/each}
-                    <a class="sidebar-category-item" href={'/dashboard/projects/create'} use:link use:active={{path: '/projects/create', className: 'sidebar-item-active'}}>
+                    <a class="sidebar-category-item" href={'/dashboard/projects/create'} use:link use:active={{path: '/dashboard/projects/create', className: 'sidebar-item-active'}}>
                         <span class="material-icons project-add-button">add</span>
                         <span class="project-add-button">
                             New Project

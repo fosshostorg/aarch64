@@ -35,9 +35,10 @@
 							$Projects = res.projects.data.data;
 						}
 					} else {
-						if (res.user.meta.message = "Not authenticated") {
-							push('/login');
-						}
+						// if (res.user.meta.message = "Not authenticated") {
+						// 	push('/login');
+						// }
+						push('/login')
 					}
 				})
 			}
@@ -59,9 +60,7 @@
 </script>
 
 <main>
-	<div>
-		<Router {routes} />
-	</div>
+	<Router {routes} />
 </main>
 
 
@@ -71,10 +70,5 @@
 		width: 100%;
 		display: flex;
 		min-width: 1300px;
-	}
-
-	div {
-		/* margin-left: var(--sidebar-width); */
-		width: calc(100% - var(--sidebar-width));
 	}
 </style>

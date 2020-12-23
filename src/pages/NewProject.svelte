@@ -4,8 +4,11 @@
     import { push } from 'svelte-spa-router';
     import { addNewProject, getUserProjects} from '../utils';
     import { Projects } from '../stores';
+import { onMount } from 'svelte';
 
     let name = '';
+
+    onMount(() => {console.log('New Project mounted')})
 
     const handleSubmit = async (e) => {
         if (__production__ && name !== '') {
