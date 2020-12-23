@@ -103,6 +103,8 @@
     onMount(() => {
         loadData();
     })
+
+    $: console.log(locations);
 </script>
 
 <main>
