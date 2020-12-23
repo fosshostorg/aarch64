@@ -175,7 +175,7 @@
                         <div class="create-form-subheader">
                             Location:
                         </div>
-                        <div class="select-wrapper" style="margin-top: 10px;">
+                        <div class="select-wrapper">
                             <Select isClearable={false} isSearchable={false} items={locations} optionIdentifier="id" selectedValue={location}
                                 getOptionLabel={ (option, filterText) => {
                                 return option.isCreator ? `Create \"${filterText}\"` : option.name;
