@@ -21,7 +21,7 @@
         return returnProject;
     }
 
-    $: project = getProjectById(params, $Projects)
+    $: project = getProjectById(params.id, $Projects)
     $: console.log(project);
 
     let views = ['RESOURCES', 'SETTINGS']
