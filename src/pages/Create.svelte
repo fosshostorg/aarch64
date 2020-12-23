@@ -170,6 +170,12 @@
                                 if (option) return option.name;
                               }}
                             ></Select>
+                            <!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
+                        </div>
+                        <div class="create-form-subheader">
+                            Location:
+                        </div>
+                        <div class="select-wrapper" style="margin-top: 10px;">
                             <Select isClearable={false} isSearchable={false} items={locations} optionIdentifier="id" selectedValue={location}
                                 getOptionLabel={ (option, filterText) => {
                                 return option.isCreator ? `Create \"${filterText}\"` : option.name;
@@ -178,8 +184,7 @@
                                 if (option) return option.name;
                               }}
                             ></Select>
-                            <!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
-                        </div>
+                        </div>                        
                         <button class="submit" type="submit">
                             CREATE
                         </button>
