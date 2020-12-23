@@ -81,7 +81,7 @@
                         let name = body.data.locations[key].name;
                         return {
                             id: key,
-                            name: countryCodeToFlag(name.split(' ')[name.split(' ').length - 1]) + ' ' + name
+                            name: countryCodeToFlag(name.split(' ')[name.split(' ').length - 1]) + '   ' + name
                         }
                     });
                     console.log(locations);
