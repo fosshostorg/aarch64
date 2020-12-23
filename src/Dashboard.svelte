@@ -7,12 +7,12 @@
     import Sidebar from './components/Sidebar.svelte';
     import { User } from './stores';
     import { onMount } from 'svelte';
-    
+
     const prefix = '/dashboard'
     const routes = {
         '/create': Create,
 		'/projects/create': NewProject, 
-		'/projects/*': Project,
+		'/projects/:id': Project,
 		'*': Index,
     }
 

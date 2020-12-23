@@ -6,6 +6,8 @@
     import {v4 as uuidv4} from 'uuid';
     import { Projects } from '../stores';
 
+    export let params = {};
+
     $: console.log($Projects);
 
     const getProjectById = (id, _projects) => {
@@ -19,7 +21,7 @@
         return returnProject;
     }
 
-    $: project = getProjectById($location.split('/')[2], $Projects);
+    $: project = getProjectById(params, $Projects)
 
 
     let views = ['RESOURCES', 'SETTINGS']
