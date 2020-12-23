@@ -11,12 +11,13 @@
 	import { getUserInfo, getUserInfoAndProjects, getUserProjects } from './utils';
 	import { Projects, User } from './stores';
 	import Dashboard from './Dashboard.svelte';
+	import NotFound from './pages/NotFound.svelte';
 
 	const routes = {
 		'/login': Login,
 		'/dashboard': Dashboard,
 		'/dashboard/*': Dashboard,
-		'*': Login,
+		'*': NotFound,
 	}
 
 	let authenticated = null;
@@ -36,7 +37,7 @@
 					push('/login');
 				}
 			} else {
-				push('/login')
+				// push('/login')
 			}
 		}
 	}
