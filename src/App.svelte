@@ -33,7 +33,7 @@
 						if (res.user.meta.success && res.projects.meta.success) {
 							$User = res.user.data.data;
 							$Projects = res.projects.data.data;
-						} else i
+						}
 					} else {
 						if (res.user.meta.message = "Not authenticated") {
 							push('/login');
