@@ -88,6 +88,10 @@
             tier = Object.keys(tiers)[0];
         }
     }
+
+    onMount(() => {
+        loadData();
+    })
 </script>
 
 <main>

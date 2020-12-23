@@ -22,7 +22,7 @@
     }
 
     $: project = getProjectById(params, $Projects)
-
+    $: console.log(project);
 
     let views = ['RESOURCES', 'SETTINGS']
     let currentView = 'RESOURCES';
