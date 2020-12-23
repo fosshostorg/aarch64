@@ -42,7 +42,7 @@
 
 <style>
     main {
-        width: 100%;
+        width: 100vw;
         min-height: 100vh;
         background-color: #0e0d0d;
         display: flex;

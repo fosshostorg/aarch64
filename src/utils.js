@@ -1,20 +1,22 @@
 export const getUserInfo = async () => {
+    let body = null;
     const res = await fetch('__apiRoute__/user/info', {
         method: 'GET',
     })
+    .then(res => body = res.json())
     .catch(err => console.log(err))
 
-    let body = res.json();
     return body;
 }
 
 export const getUserProjects = async () => {
+    let body = null;
     const res = await fetch('__apiRoute__/projects', {
         method: 'GET',
     })
+    .then(res => body = res.json())
     .catch(err => console.log(err))
 
-    let body = res.json();
     return body;
 }
 
@@ -35,13 +37,21 @@ export const addNewProject = async (data) => {
 }
 
 export const login = async (data) => {
+    let body = null;
     const res = await fetch('__apiRoute__/user/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
     })
+    .then(res => body = res.json())
     .catch(err => console.log(err))
     
-    let body = res.json();
+    // let body = res.json();
     return body;
+}
+
+export const getUserInfoAndProjects = async () => {
+    const user = await getUserInfo();
+    const projects = await getUserProjects();
+    return {user, projects}
 }
