@@ -7,7 +7,7 @@
 	import NewProject from './pages/NewProject.svelte';
 	import Sidebar from './components/Sidebar.svelte';
 	import {location} from 'svelte-spa-router';
-	import { onMount } from 'svelte';
+	import { afterUpdate, onMount } from 'svelte';
 	import { getUserInfo, getUserInfoAndProjects, getUserProjects } from './utils';
 	import { Projects, User } from './stores';
 	import Dashboard from './Dashboard.svelte';
@@ -19,31 +19,33 @@
 		'*': Login,
 	}
 
-	let authenticated = false;
+	let authenticated = null;
 
-	onMount(async () => {
-		if (!$location.includes('login')) {
-			if ($User == {} || $Projects == []) {
-				push('/login');
+	async function authenticate() {
+		if ($location == '/login' || $location == '/login/') {
+			return true;
+		} else {
+			let res = await getUserInfoAndProjects()
+			console.log(res, 'RES')
+			if (!(res.user == null)) {
+				if (res.user.meta.success && res.projects.meta.success) {
+					$User = res.user.data.data;
+					$Projects = res.projects.data.data;
+					return true;
+				} else if (res.user.meta.message == "Not authenticated") {
+					push('/login');
+				}
 			} else {
-				await getUserInfoAndProjects()
-				.then(res => {
-					console.log(res, 'RES')
-					if (!(res.user == null)) {
-						if (res.user.meta.success && res.projects.meta.success) {
-							$User = res.user.data.data;
-							$Projects = res.projects.data.data;
-						}
-					} else {
-						// if (res.user.meta.message = "Not authenticated") {
-						// 	push('/login');
-						// }
-						push('/login')
-					}
-				})
+				push('/login')
 			}
 		}
+	}
+
+	onMount(async () => {
+		authenticated = authenticate();
 	})
+
+	afterUpdate(() => {authenticated = authenticate()})
 
 	function routeLoading(event) {
 		console.log('test')
@@ -60,7 +62,14 @@
 </script>
 
 <main>
-	<Router {routes} />
+	{#if authenticated !== null}
+		{#await authenticated}
+		{:then value}
+			{#if value}
+			<Router {routes} />
+			{/if}
+		{/await}
+	{/if}
 </main>
 
 
