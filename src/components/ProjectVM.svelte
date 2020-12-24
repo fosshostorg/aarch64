@@ -131,6 +131,7 @@
 
     .ip b {
         font-weight: bold;
+        padding: 0px 5px;
     }
 
     img {
