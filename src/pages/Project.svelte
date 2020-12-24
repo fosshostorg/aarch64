@@ -5,6 +5,7 @@
     import ProjectVM from '../components/ProjectVM.svelte';
     import {v4 as uuidv4} from 'uuid';
     import { Projects } from '../stores';
+    import PageTitle from "../components/PageTitle.svelte";
 
     export let params = {};
 
@@ -28,6 +29,8 @@
     let currentView = 'RESOURCES';
 
 </script>
+
+<PageTitle title={project ? project.name : 'Project page'} />
 
 <main>
     {#if project}

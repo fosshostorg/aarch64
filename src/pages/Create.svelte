@@ -8,6 +8,7 @@
     import {Projects} from "../stores";
     import {requestNewResources, getUserProjects} from '../utils'
     import { push } from 'svelte-spa-router';
+    import PageTitle from "../components/PageTitle.svelte";
 
     let images = {};
     let tiers = {};
@@ -115,6 +116,8 @@
 
     $: console.log(locations);
 </script>
+
+<PageTitle title="Create New Resources" />
 
 <main>
     <Navbar breadcrumbs={['Dashboard', 'Manage', 'Create New VM']}/>

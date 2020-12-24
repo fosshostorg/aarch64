@@ -4,7 +4,8 @@
     import { push } from 'svelte-spa-router';
     import { addNewProject, getUserProjects} from '../utils';
     import { Projects } from '../stores';
-import { onMount } from 'svelte';
+    import { onMount } from 'svelte';
+    import PageTitle from '../components/PageTitle.svelte';
 
     let name = '';
 
@@ -35,6 +36,8 @@ import { onMount } from 'svelte';
     }
 
 </script>
+
+<PageTitle title="New Project" />
 
 <main>
     <Navbar breadcrumbs={['Dashboard', 'Projects', 'Add New Project']}/>

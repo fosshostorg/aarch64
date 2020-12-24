@@ -2,6 +2,7 @@
     import {link, push} from "svelte-spa-router";
     import {getUserInfo, getUserProjects, login} from '../utils';
     import {User, Projects} from '../stores';
+    import PageTitle from "../components/PageTitle.svelte";
 
     let email, password;
 
@@ -39,6 +40,7 @@
     </div>
 </main>
 
+<PageTitle title="ARM-64 Dashboard Login" />
 
 <style>
     main {
