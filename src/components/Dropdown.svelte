@@ -1,17 +1,12 @@
-<script>
-    let items = {
-        "POWER OFF": {icon: 'power_settings_new'},
-        "REBOOT": {icon: 'refresh'},
-        "DELETE": {icon: 'delete'}
-    }
+<script lang="ts">
 
-    // let selected = dropdown[0];
-    export let open = false;
+    export let items: DropdownItem[];
+    export let open: boolean = false;
 
-    const handleFocusout = (e) => {
+    const handleFocusout = (e: FocusEvent) => {
         if (open) {
-            if (e.relatedTarget !== null && e.relatedTarget.id !== '') {
-                if (e.relatedTarget.id !== "dropdown") {
+            if (e.relatedTarget !== null && (e.relatedTarget as HTMLElement).id !== '') {
+                if ((e.relatedTarget as HTMLElement).id !== "dropdown") {
                     open = false;
                 }
             } else {
@@ -24,13 +19,13 @@
 
 </script>
 
-<main on:>
+<main>
     {#if open}
     <div tabindex="-1">
-    {#each Object.keys(items) as item}
-        <button id="dropdown">
+    {#each items as item}
+        <button id="dropdown" on:click="">
             <span class="material-icons">
-                {items[item].icon}
+                {item.icon}
             </span>
             {item}
         </button>

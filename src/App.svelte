@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Router, { push } from 'svelte-spa-router';
 	import {wrap} from 'svelte-spa-router/wrap';
 	import Index from './pages/Index.svelte';

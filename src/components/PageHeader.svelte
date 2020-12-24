@@ -1,9 +1,7 @@
-<script>
-
-    export let options = false;
-    export let current = '';
-    export let labels = [];
-
+<script lang="ts">
+    export let options: boolean = false;
+    export let current: string = '';
+    export let labels: string[] = [];
 </script>
 
 <span>

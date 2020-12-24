@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Navbar from '../components/Navbar.svelte';
     import PageHeader from '../components/PageHeader.svelte';
     import {location} from 'svelte-spa-router';
@@ -7,11 +7,11 @@
     import { Projects } from '../stores';
     import PageTitle from "../components/PageTitle.svelte";
 
-    export let params = {};
+    export let params: any = {};
 
     $: console.log($Projects);
 
-    const getProjectById = (id, _projects) => {
+    const getProjectById = (id: string, _projects: any[]) => {
         let returnProject = null;
         let projects = [ ..._projects ];
         projects.forEach((project) => {
@@ -28,6 +28,10 @@
     let views = ['RESOURCES', 'SETTINGS']
     let currentView = 'RESOURCES';
 
+    function toVM(vm: any): VM {
+        return (vm as VM)
+    }
+
 </script>
 
 <PageTitle title={project ? project.name : 'Project page'} />
@@ -42,7 +46,7 @@
         </span>
         <div class="vm-list">
             {#each project.vms as vm}
-            <ProjectVM os={vm.os} link={'/projects/' + project._id + '/resources/' + vm.hostname} name={vm.hostname} ip={'TBD'} online={true}/>
+            <ProjectVM VM={toVM(vm)} link={'/dashboard/projects/' + project._id + '/resources/' + vm['hostname']}/>
             {/each}
         </div>
     </div>

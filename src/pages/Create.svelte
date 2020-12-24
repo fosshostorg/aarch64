@@ -48,7 +48,7 @@
                     .then(data => {
                         if (data !== null) {
                             if (data.meta.success) {
-                                push('/dashboard/projects/' + project._id);
+                                push('/dashboard/project/' + project._id);
                             }
                         }
                     })

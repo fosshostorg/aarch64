@@ -1,6 +1,6 @@
 export const getUserInfo = async () => {
-    let body = null;
-    const res = await fetch('__apiRoute__/user/info', {
+    let body: any = null;
+    await fetch('__apiRoute__/user/info', {
         method: 'GET',
     })
     .then(res => body = res.json())
@@ -10,7 +10,7 @@ export const getUserInfo = async () => {
 }
 
 export const getUserProjects = async () => {
-    let body = null;
+    let body: any = null;
     const res = await fetch('__apiRoute__/projects', {
         method: 'GET',
     })
@@ -20,13 +20,13 @@ export const getUserProjects = async () => {
     return body;
 }
 
-export const updateUserInfo = async (user) => {
+export const updateUserInfo = async (user: {email: string}) => {
     console.log('Would have updated user info, but there is no route to do so >:(')
 }
 
-export const addNewProject = async (data) => {
-    let body = null;
-    const res = await fetch('__apiRoute__/projects', {
+export const addNewProject = async (data: {name: string}) => {
+    let body: any = null;
+    await fetch('__apiRoute__/projects', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
@@ -37,9 +37,9 @@ export const addNewProject = async (data) => {
     return body;
 }
 
-export const requestNewResources = async (project_id, data) => {
-    let body = null;
-    const res = await fetch('__apiRoute__/projects/' + project_id + '/request', {
+export const requestNewResources = async (project_id: string, data: {hostname: string, plan: string, os: string, location: string}) => {
+    let body: any = null;
+    await fetch('__apiRoute__/projects/' + project_id + '/request', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
@@ -50,9 +50,9 @@ export const requestNewResources = async (project_id, data) => {
     return body;
 }
 
-export const login = async (data) => {
-    let body = null;
-    const res = await fetch('__apiRoute__/user/login', {
+export const login = async (data: {email: string, password: string}) => {
+    let body: any = null;
+    await fetch('__apiRoute__/user/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
@@ -60,13 +60,12 @@ export const login = async (data) => {
     .then(res => body = res.json())
     .catch(err => console.log(err))
     
-    // let body = res.json();
     return body;
 }
 
-export const getUserInfoAndProjects = async () => {
-    const user = await getUserInfo();
-    const projects = await getUserProjects();
+export const getUserInfoAndProjects = async (): Promise<{user: any, projects: any}> => {
+    const user: any = await getUserInfo();
+    const projects: any = await getUserProjects();
     return {user, projects}
 }
 

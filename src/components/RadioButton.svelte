@@ -1,6 +1,6 @@
-<script>
-    export let id = '';
-    export let group = '';
+<script lang="ts">
+    export let id: string = '';
+    export let group: string = '';
 
 </script>
 

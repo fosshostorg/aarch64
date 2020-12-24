@@ -1,23 +1,24 @@
-<script>
+<script lang="ts">
     import {push} from 'svelte-spa-router';
     import Dropdown from './Dropdown.svelte';
 
+    export let VM: VM = {
+        hostname: '',
+        os: '',
+        ipv4: '',
+        ipv6: '',
+        online: false,
+    }
 
-    export let os = '';
-    export let name = '';
-    export let ip = '';
-    export let online = false;
-    export let link = '';
+    export let link: string = '';
 
-    let dropdown = [
-        "SETTINGS",
-        "REBOOT",
-        "RESCUE OS",
-        "REINSTALL",
-        "DELETE"
+    let dropdownItems: DropdownItem[] = [
+        {label: 'SHUTDOWN', icon: 'power_settings_new', action: (e) => {}},
+        {label: 'REBOOT', icon: 'refresh', action: (e) => {}},
+        {label: 'STOP', icon: 'stop', action: (e) => {}},
+        {label: 'RESET', icon: 'sync_problem', action: (e) => {}}
     ]
 
-    let selected = dropdown[0];
     let listOpen = false;
 
     const handleSettings = (e) => {
@@ -29,19 +30,19 @@
 <main>
     <span class="wrapper" on:click={() => {push(link)}}>
         <span class="img">
-            <img src={'./img/' + os.toLowerCase() + '.svg'} alt={os + ' Logo'} />
-            <span class="status" class:online></span>
+            <img src={'./img/' + VM.os.toLowerCase() + '.svg'} alt={VM.os + ' Logo'} />
+            <span class="status" class:online={VM.online}></span>
         </span>
         <div>
-            {name}
+            {VM.hostname}
         </div>
         <span class="ip">
-            {ip}
+            {VM.ipv4}
         </span>
     </span>
     <button class="material-icons icon" on:click={handleSettings}>
         <span class="dropdown">
-            <Dropdown bind:open={listOpen}/>
+            <Dropdown bind:open={listOpen} items={dropdownItems}/>
         </span>
         more_horiz
     </button>

@@ -1,17 +1,15 @@
-<script>
+<script lang="ts">
     import {onMount} from "svelte";
     import {User} from '../stores'
 
-    export let breadcrumbs = [];
+    export let breadcrumbs: string[] = [];
 
-    // $: console.log($User)
-
-    function logOut() {
-        const res = fetch('__apiRoute__/user/logout', {
+    async function logout() {
+        await fetch('__apiRoute__/user/logout', {
             method: 'GET',
             headers: {'Content-Type': 'application/json'}
         })
-            .then(res => res.json())
+            .then((res: Response) => res.json())
             .then(data => {
                 if (data.meta.success) {
                     window.location.href = "/#/"
