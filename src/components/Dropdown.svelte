@@ -23,11 +23,11 @@
     {#if open}
     <div tabindex="-1">
     {#each items as item}
-        <button id="dropdown" on:click="">
+        <button id="dropdown" on:click={item.action}>
             <span class="material-icons">
                 {item.icon}
             </span>
-            {item}
+            {item.label}
         </button>
     {/each}
     </div>

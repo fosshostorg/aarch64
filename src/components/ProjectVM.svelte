@@ -37,7 +37,7 @@
             {VM.hostname}
         </div>
         <span class="ip">
-            {VM.ipv4}
+            v4:{VM.ipv4}/v6:{VM.ipv6}
         </span>
     </span>
     <button class="material-icons icon" on:click={handleSettings}>
@@ -123,8 +123,8 @@
 
     span.ip {
         display: flex;
-        width: calc(50% - 100px);
-        padding-left: 60px;
+        width: calc(50% - 40px);
+        padding-left: 0px;
         align-items: center;
         justify-content: flex-start;
     }
