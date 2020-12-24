@@ -22,7 +22,7 @@ import { onMount } from 'svelte';
                     await getUserProjects()
                     .then(body => {
                         $Projects = body.data;
-                        push('/projects/' + data.data);
+                        push('/dashboard/projects/' + data.data);
                     })
                 } else {
                     console.log(data.meta.message)
