@@ -118,7 +118,7 @@
     $: console.log(locations);
 </script>
 
-<PageTitle title="Create New Resources" />
+<PageTitle title="Request New Resources" />
 
 <main>
     <Navbar breadcrumbs={['Dashboard', 'Manage', 'Create New VM']}/>
