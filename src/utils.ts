@@ -47,6 +47,7 @@ export const requestNewResources = async (project_id: string, data: {hostname: s
     .then(res => body = res.json())
     .catch(err => console.log(err))
 
+    console.log(body)
     return body;
 }
 
