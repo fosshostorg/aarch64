@@ -40,7 +40,7 @@
             const data = {
                 hostname: hostname == '' || hostname == null ? uuidv4() : hostname,
                 os: image,
-                tier,
+                tier: parseInt(tier),
                 location
             }
 
