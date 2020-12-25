@@ -42,7 +42,7 @@
             {VM.host.toUpperCase().slice(0, -1)}
         </div>
         <span class="ip">
-            <b>v4: </b> {VM.ipv4} | <b> v6: </b> {VM.ipv6}
+            <b>v4: </b> {VM.ipv4.split("/")[0]} | <b> v6: </b> {VM.ipv6.split("/")[0]}
         </span>
     </span>
     <button class="material-icons icon" on:click={handleSettings}>
