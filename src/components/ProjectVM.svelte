@@ -8,6 +8,7 @@
         ipv4: '',
         ipv6: '',
         online: false,
+        host: ''
     }
 
     export let link: string = '';
@@ -35,6 +36,9 @@
         </span>
         <div>
             {VM.hostname}
+        </div>
+        <div>
+            {VM.host}
         </div>
         <span class="ip">
             <b>v4: </b> {VM.ipv4} | <b> v6: </b> {VM.ipv6}

@@ -46,7 +46,7 @@
         </span>
         <span class="labels">
             <div class="hostname-label">HOSTNAME</div>
-            <div class="location-label">LOCATION</div>
+            <div class="location-label">HOST</div>
             <div class="ip-label">IP</div>
         </span>
         <div class="vm-list">
