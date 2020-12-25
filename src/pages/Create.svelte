@@ -41,6 +41,7 @@
                 hostname: hostname == '' || hostname == null ? uuidv4() : hostname,
                 os: image,
                 tier,
+                location
             }
 
             if (__production__) {
