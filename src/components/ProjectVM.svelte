@@ -17,7 +17,8 @@
         {label: 'SHUTDOWN', icon: 'power_settings_new', action: (e) => {}},
         {label: 'REBOOT', icon: 'refresh', action: (e) => {}},
         {label: 'STOP', icon: 'stop', action: (e) => {}},
-        {label: 'RESET', icon: 'sync_problem', action: (e) => {}}
+        {label: 'RESET', icon: 'sync_problem', action: (e) => {}},
+        {label: 'DELETE', icon: 'delete', action: (e) => {}}
     ]
 
     let listOpen = false;
