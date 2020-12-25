@@ -46,7 +46,7 @@
 
     div {
         width: 324px;
-        height: 368px;
+        height: 275px;
         background-color: white;
         display: flex;
         flex-direction: column;

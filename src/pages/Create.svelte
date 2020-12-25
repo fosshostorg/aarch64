@@ -187,7 +187,7 @@
                                 if (option) return option.name;
                               }}
                             ></Select>
-                        </div>                        
+                        </div>
                         <button class="submit" type="submit">
                             CREATE
                         </button>
