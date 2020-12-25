@@ -39,7 +39,7 @@ export const addNewProject = async (data: {name: string}) => {
 
 export const requestNewResources = async (project_id: string, data: {hostname: string, tier: string, os: string, location: string}) => {
     let body: any = null;
-    await fetch('__apiRoute__/projects/' + project_id + '/request', {
+    await fetch('__apiRoute__/project/' + project_id + '/request', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
