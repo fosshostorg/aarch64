@@ -37,8 +37,8 @@
         <div>
             {VM.hostname}
         </div>
-        <div>
-            {VM.host}
+        <div> <!-- TODO: Make this align correctly -->
+            {VM.host.toUpperCase().slice(0, -1)}
         </div>
         <span class="ip">
             <b>v4: </b> {VM.ipv4} | <b> v6: </b> {VM.ipv6}
