@@ -172,7 +172,7 @@
                               getSelectionLabel={ option => {
                                 if (option) return option.name;
                               }}
-                            ></Select>
+                            />
                             <!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
                         </div>
                         <div class="create-form-subheader">
@@ -186,7 +186,7 @@
                               getSelectionLabel={ option => {
                                 if (option) return option.name;
                               }}
-                            ></Select>
+                            />
                         </div>
                         <button class="submit" type="submit">
                             CREATE
