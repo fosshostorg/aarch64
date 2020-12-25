@@ -44,6 +44,11 @@
         <span class="title">
             Virtual Machines
         </span>
+        <span class="labels">
+            <div class="hostname-label">HOSTNAME</div>
+            <div class="location-label">LOCATION</div>
+            <div class="ip-label">IP</div>
+        </span>
         <div class="vm-list">
             {#each project.vms as vm}
             <ProjectVM VM={toVM(vm)} link={'/dashboard/projects/' + project._id + '/resources/' + vm['hostname']}/>
@@ -77,5 +82,28 @@
         font-weight: 500;
     }
     
+    span.labels {
+        width: calc(100% - 65px);
+        height: 20px;
+        display: flex;
+        align-items: flex-end;
+        margin-left: 15px;
+        font-weight: bold;
+        font-size: 15px;
+        margin-top: 5px;
+    }
+
+    .hostname-label {
+        flex-grow: 1;
+        margin-left: 55px;
+    }
+
+    .location-label {
+        flex-grow: 1;
+    }
+
+    .ip-label {
+        flex-grow: 2;
+    }
 
 </style>
