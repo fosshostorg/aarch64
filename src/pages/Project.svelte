@@ -94,16 +94,24 @@
     }
 
     .hostname-label {
-        flex-grow: 1;
-        margin-left: 55px;
+        flex-grow: 0;
+        margin-left: 40px;
+        padding-left: 15px;
+        flex-basis: 385px;
     }
 
     .location-label {
         flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        flex-basis: 0px;
     }
 
     .ip-label {
-        flex-grow: 2;
+        flex-grow: 1;
+        flex-basis: 270px;
+        display: flex;
+        justify-content: center;
     }
 
 </style>

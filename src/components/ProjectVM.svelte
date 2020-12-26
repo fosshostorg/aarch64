@@ -35,11 +35,11 @@
             <img src={'./img/' + VM.os.toLowerCase() + '.svg'} alt={VM.os + ' Logo'} />
             <span class="status" class:online={VM.online}></span>
         </span>
-        <div>
+        <div class="hostname">
             {VM.hostname}
         </div>
-        <div> <!-- TODO: Make this align correctly -->
-            {VM.host.toUpperCase().slice(0, -1)}
+        <div class="location"> <!-- TODO: Make this align correctly -->
+            {VM.host.slice(0, -1)}
         </div>
         <span class="ip">
             <b>v4: </b> {VM.ipv4.split("/")[0]} | <b> v6: </b> {VM.ipv6.split("/")[0]}
@@ -78,12 +78,20 @@
         min-height: 40px;
     }
 
-    div {
-        flex-grow: 1;
+    div.hostname {
+        /* flex-grow: 1; */
         padding-left: 15px;
-        font-weight: 500;
-        font-size: 20px;
-        flex-shrink: 0;
+        flex-basis: 385px;
+        /* flex-shrink: 0; */
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    div.location {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        flex-basis: 0px;
     }
 
     button.icon {
@@ -128,10 +136,12 @@
 
     span.ip {
         display: flex;
-        width: calc(50% - 40px);
+        /* width: calc(50% - 40px); */
         padding-left: 0px;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: center;
+        flex-grow: 1;
+        flex-basis: 270px;
     }
 
     .ip b {
