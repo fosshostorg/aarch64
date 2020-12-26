@@ -30,6 +30,7 @@
 		})
 
 	const routes = {
+		'/': Index,
 		'/login': Login,
 		'/dashboard': dashboardWrap,
 		'/dashboard/*': dashboardWrap,

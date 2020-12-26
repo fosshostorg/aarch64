@@ -8,6 +8,7 @@
         ipv4: '',
         ipv6: '',
         online: false,
+        host: ''
     }
 
     export let link: string = '';
@@ -16,7 +17,8 @@
         {label: 'SHUTDOWN', icon: 'power_settings_new', action: (e) => {}},
         {label: 'REBOOT', icon: 'refresh', action: (e) => {}},
         {label: 'STOP', icon: 'stop', action: (e) => {}},
-        {label: 'RESET', icon: 'sync_problem', action: (e) => {}}
+        {label: 'RESET', icon: 'sync_problem', action: (e) => {}},
+        {label: 'DELETE', icon: 'delete', action: (e) => {}}
     ]
 
     let listOpen = false;
@@ -36,8 +38,11 @@
         <div>
             {VM.hostname}
         </div>
+        <div> <!-- TODO: Make this align correctly -->
+            {VM.host.toUpperCase().slice(0, -1)}
+        </div>
         <span class="ip">
-            <b>v4: </b> {VM.ipv4} | <b> v6: </b> {VM.ipv6}
+            <b>v4: </b> {VM.ipv4.split("/")[0]} | <b> v6: </b> {VM.ipv6.split("/")[0]}
         </span>
     </span>
     <button class="material-icons icon" on:click={handleSettings}>

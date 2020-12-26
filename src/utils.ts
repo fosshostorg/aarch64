@@ -37,9 +37,9 @@ export const addNewProject = async (data: {name: string}) => {
     return body;
 }
 
-export const requestNewResources = async (project_id: string, data: {hostname: string, plan: string, os: string, location: string}) => {
+export const requestNewResources = async (project_id: string, data: {hostname: string, tier: string, os: string, location: string}) => {
     let body: any = null;
-    await fetch('__apiRoute__/projects/' + project_id + '/request', {
+    await fetch('__apiRoute__/project/' + project_id + '/request', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
@@ -47,6 +47,7 @@ export const requestNewResources = async (project_id: string, data: {hostname: s
     .then(res => body = res.json())
     .catch(err => console.log(err))
 
+    console.log(body)
     return body;
 }
 

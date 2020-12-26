@@ -31,7 +31,7 @@
     const removeHost = (e) => {
         e.preventDefault();
         hostnames.splice(-1, 1);
-        hostnames = hostnames; // TODO: @knightss27 what is this?
+        hostnames = hostnames;
     }
 
     const createFormSubmit = (e) => {
@@ -40,7 +40,8 @@
             const data = {
                 hostname: hostname == '' || hostname == null ? uuidv4() : hostname,
                 os: image,
-                tier,
+                tier: parseInt(tier),
+                location: location.id
             }
 
             if (__production__) {
@@ -48,7 +49,7 @@
                     .then(data => {
                         if (data !== null) {
                             if (data.meta.success) {
-                                push('/dashboard/project/' + project._id);
+                                push('/dashboard/projects/' + project._id);
                             }
                         }
                     })
@@ -117,7 +118,7 @@
     $: console.log(locations);
 </script>
 
-<PageTitle title="Create New Resources" />
+<PageTitle title="Request New Resources" />
 
 <main>
     <Navbar breadcrumbs={['Dashboard', 'Manage', 'Create New VM']}/>
@@ -172,7 +173,7 @@
                               getSelectionLabel={ option => {
                                 if (option) return option.name;
                               }}
-                            ></Select>
+                            />
                             <!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
                         </div>
                         <div class="create-form-subheader">
@@ -186,8 +187,8 @@
                               getSelectionLabel={ option => {
                                 if (option) return option.name;
                               }}
-                            ></Select>
-                        </div>                        
+                            />
+                        </div>
                         <button class="submit" type="submit">
                             CREATE
                         </button>
