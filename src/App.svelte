@@ -51,7 +51,6 @@
 				return false;
 			}
 		} else {
-			push('/login')
 			return false;
 		}
 	}

@@ -64,8 +64,49 @@ export const login = async (data: {email: string, password: string}) => {
 }
 
 export const getUserInfoAndProjects = async (): Promise<{user: any, projects: any}> => {
+    // @ts-ignore
+    if (!__production__) {
+        return {
+            user: {
+                meta: {
+                    success: true,
+                    message: 'development variable is set to true'
+                },
+                data: {
+                    email: 'dev@dev.dev'
+                }
+            },
+            projects: {
+                meta: {
+                    success: true,
+                    message: 'development variable is set to true'
+                },
+                data: [
+                    {
+                        "_id": "5fe427dd7354646035cd74cf",
+                        "name": "Dev Project",
+                        "vms": [
+                          {
+                            "uuid": "11111111-66ba-1111-1111-9a3db3111a21",
+                            "hostname": "11111111-1111-4ecc-b989-0022d2415136",
+                            "tier": 1,
+                            "os": "Debian",
+                            "host": "pdx0",
+                            "ipv4": "11.111.11.1/24",
+                            "ipv6": "1a0e:1f00:fe01::1/24",
+                            "enabled": true
+                          }
+                        ],
+                        "keys": []
+                    }
+                  ]
+            }
+        }
+    }
+    
     const user: any = await getUserInfo();
     const projects: any = await getUserProjects();
+
     return {user, projects}
 }
 
