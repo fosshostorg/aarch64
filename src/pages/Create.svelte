@@ -19,9 +19,11 @@
     let batch = 1;
     let hostnames = [uuidv4()];
     let project = $Projects[0];
-    let location = 'Loading...'
+    let location = null;
 
-    $: console.log(project)
+    // // Debugging
+    // $: console.log(project)
+    // $: console.log(location)
 
     const addHost = (e) => {
         e.preventDefault();
@@ -82,7 +84,7 @@
                         let name = body.data.locations[key].name;
                         return {
                             id: key,
-                            name: countryCodeToFlag(name.split(' ')[name.split(' ').length - 1]) + '   ' + name
+                            label: countryCodeToFlag(name.split(' ')[name.split(' ').length - 1]) + '   ' + name
                         }
                     });
                     console.log(locations);
@@ -92,11 +94,11 @@
                 })
         } else {
             tiers = {
-                't1': {vcpus: '1', memory: '1', disk: '32'},
-                't2': {vcpus: '4', memory: '8', disk: '64'},
-                't3': {vcpus: '8', memory: '16', disk: '10'},
-                't4': {vcpus: '16', memory: '32', disk: '128'},
-                't5': {vcpus: '32', memory: '64', disk: '128'},
+                '1': {vcpus: '1', memory: '1', disk: '32'},
+                '2': {vcpus: '4', memory: '8', disk: '64'},
+                '3': {vcpus: '8', memory: '16', disk: '10'},
+                '4': {vcpus: '16', memory: '32', disk: '128'},
+                '5': {vcpus: '32', memory: '64', disk: '128'},
             }
 
             images = {
@@ -107,6 +109,19 @@
 
             image = Object.keys(images)[0];
             tier = Object.keys(tiers)[0];
+
+            locations = {
+                'fmt': {name: 'Fremont, US'},
+                'pdx': {name: 'Portland, US'}
+            }
+            locations = Object.keys(locations).map((key) => {
+                        let name = locations[key].name;
+                        return {
+                            id: key,
+                            label: countryCodeToFlag(name.split(' ')[name.split(' ').length - 1]) + '   ' + name
+                        }
+                    });
+            location = locations[0];
         }
     }
 
@@ -179,14 +194,9 @@
                             Location:
                         </div>
                         <div class="select-wrapper">
-                            <Select isClearable={false} isSearchable={false} items={locations} optionIdentifier="id" selectedValue={location}
-                                getOptionLabel={ (option, filterText) => {
-                                return option.isCreator ? `Create \"${filterText}\"` : option.name;
-                              }}
-                              getSelectionLabel={ option => {
-                                if (option) return option.name;
-                              }}
-                            />
+                            {#if location !== null}
+                            <Select isClearable={false} isSearchable={false} items={locations} optionIdentifier="id" bind:selectedValue={location}/>
+                            {/if}
                         </div>
                         <button class="submit" type="submit">
                             CREATE
