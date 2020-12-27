@@ -34,31 +34,30 @@
         hostnames = hostnames;
     }
 
-    const createFormSubmit = (e) => {
-        hostnames.forEach(async (hostname) => {
+    const createFormSubmit = async (e) => {
+        const data = {
+            hostnames: hostnames.map((hostname) => {
+                return hostname == '' || hostname == null ? uuidv4() : hostname
+            }),
+            os: image,
+            tier: parseInt(tier),
+            location: location.id
+        }
 
-            const data = {
-                hostname: hostname == '' || hostname == null ? uuidv4() : hostname,
-                os: image,
-                tier: parseInt(tier),
-                location: location.id
-            }
-
-            if (__production__) {
-                await requestNewResources(project._id, data)
-                    .then(data => {
-                        if (data !== null) {
-                            if (data.meta.success) {
-                                push('/dashboard/projects/' + project._id);
-                            }
+        if (__production__) {
+            await requestNewResources(project._id, data)
+                .then(data => {
+                    if (data !== null) {
+                        if (data.meta.success) {
+                            push('/dashboard/projects/' + project._id);
                         }
-                    })
-                    .catch(err => console.log(err))
-            } else {
-                console.log('%cFetch would have been posted with: ', "color: lightgreen")
-                console.log(data);
-            }
-        })
+                    }
+                })
+                .catch(err => console.log(err))
+        } else {
+            console.log('%cFetch would have been posted with: ', "color: lightgreen")
+            console.log(data);
+        }
     }
 
     const countryCodeToFlag = (cc) => {

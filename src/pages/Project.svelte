@@ -6,6 +6,7 @@
     import {v4 as uuidv4} from 'uuid';
     import { Projects } from '../stores';
     import PageTitle from "../components/PageTitle.svelte";
+import ProjectVm from '../components/ProjectVM.svelte';
 
     export let params: any = {};
 
@@ -44,6 +45,14 @@
         <span class="title">
             Virtual Machines
         </span>
+        {#if project.vms.length == 0}
+            <div class="empty-list">
+                Nothing to see here...
+            </div>
+            <button class="add-new-button">
+                ADD RESOURCES
+            </button>
+        {:else}
         <span class="labels">
             <div class="hostname-label">HOSTNAME</div>
             <div class="location-label">LOCATION</div>
@@ -54,6 +63,7 @@
             <ProjectVM VM={toVM(vm)} link={'/dashboard/projects/' + project._id + '/resources/' + vm['hostname']}/>
             {/each}
         </div>
+        {/if}
     </div>
     
     {/if}
@@ -66,6 +76,32 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+    }
+
+    button.add-new-button {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        color: white;
+        background-color: #0E0D0D;
+        border: none;
+        font-family: inherit;
+        margin: 0 auto;
+        font-size: 16px;
+        padding: 0px 30px;
+    }
+
+    button:active {
+        opacity: .8;
+    }
+
+    div.empty-list {
+        font-weight: 500;
+        text-align: center;
+        padding-bottom: 10px;
+        opacity: .8;
     }
 
     .content {
