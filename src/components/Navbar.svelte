@@ -1,6 +1,7 @@
 <script lang="ts">
     import {onMount} from "svelte";
     import {User} from '../stores'
+    import Dropdown from "./Dropdown.svelte";
 
     export let breadcrumbs: string[] = [];
 
@@ -17,6 +18,12 @@
             })
             .catch(err => console.log(err))
     }
+    
+    const handleLogout = (e) => {
+        open = !open;
+    }
+
+    let open: boolean = false;
 </script>
 
 <nav>
@@ -35,7 +42,12 @@
     <div class="navbar-right">
         <span class="material-icons">account_circle</span>
         <span class="navbar-user-name">{$User['email']}</span>
-        <span class="material-icons">expand_more</span>
+        <span class="material-icons" on:click={handleLogout}>
+            expand_more
+            <span class="dropdown">
+                <Dropdown bind:open={open} items={[{label: 'LOGOUT', icon: 'logout', action: (e) => {logout()}}]}/>
+            </span>
+        </span>
         <!-- TODO: Dropdown here with a logout button that calls userLogout() -->
     </div>
 </nav>
@@ -49,6 +61,10 @@
         width: 100%;
         justify-content: space-between;
         color: #0e0d0d;
+    }
+
+    span.dropdown {
+        font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
 
     .breadcrumb {

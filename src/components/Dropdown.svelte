@@ -1,9 +1,9 @@
 <script lang="ts">
 
-    export let items: DropdownItem[];
+    export let items: DropdownItem[] = [];
     export let open: boolean = false;
 
-    const handleFocusout = (e: FocusEvent) => {
+    const handleBlur = (e: FocusEvent) => {
         if (open) {
             if (e.relatedTarget !== null && (e.relatedTarget as HTMLElement).id !== '') {
                 if ((e.relatedTarget as HTMLElement).id !== "dropdown") {
@@ -15,13 +15,15 @@
         }
     }
 
-    addEventListener('focusout', handleFocusout);
+    const init = (el: HTMLElement) => {
+        el.focus();
+    }
 
 </script>
 
 <main>
     {#if open}
-    <div tabindex="-1">
+    <div use:init tabindex="-1" on:blur={handleBlur}>
     {#each items as item}
         <button id="dropdown" on:click={item.action}>
             <span class="material-icons">
@@ -54,6 +56,7 @@
         flex-direction: column;
         font-family: inherit;
         border: 1px solid #0e0d0d;
+        font-weight: 500;
     }
 
     div :not(:last-child) {
@@ -64,7 +67,6 @@
     button {
         width: auto;
         font-size: 14px;
-        font-weight: 500;
         font-family: inherit;
         display: flex;
         align-items: center;
@@ -74,6 +76,7 @@
         border: none;
         color: black;
         cursor: pointer;
+        font-weight: 500;
     }
 
     button:hover {

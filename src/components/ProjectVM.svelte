@@ -84,7 +84,7 @@
         flex-basis: 385px;
         /* flex-shrink: 0; */
         font-size: 18px;
-        font-weight: bold;
+        font-weight: 500;
     }
 
     div.location {
