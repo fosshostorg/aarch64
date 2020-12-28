@@ -4,6 +4,7 @@ type VM = {
     ipv4: string,
     ipv6: string,
     host: string,
+    uuid: string,
     online: boolean;
 }
 
