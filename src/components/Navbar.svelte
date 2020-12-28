@@ -7,7 +7,7 @@
 
     async function logout() {
         await fetch('__apiRoute__/user/logout', {
-            method: 'GET',
+            method: 'POST',
             headers: {'Content-Type': 'application/json'}
         })
             .then((res: Response) => res.json())
