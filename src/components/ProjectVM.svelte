@@ -8,12 +8,14 @@
         ipv4: '',
         ipv6: '',
         online: false,
-        host: ''
+        host: '',
+        uuid: '' // TODO: This might not work
     }
 
     export let link: string = '';
 
     let dropdownItems: DropdownItem[] = [
+        {label: "CONSOLE", icon: "airplay", action: e => {alert(`ssh ${VM.uuid}@${VM.host}.rescue.arm-64.com`)}},
         {label: 'SHUTDOWN', icon: 'power_settings_new', action: (e) => {}},
         {label: 'REBOOT', icon: 'refresh', action: (e) => {}},
         {label: 'STOP', icon: 'stop', action: (e) => {}},

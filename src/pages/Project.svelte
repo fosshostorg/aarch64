@@ -6,7 +6,7 @@
     import {v4 as uuidv4} from 'uuid';
     import { Projects } from '../stores';
     import PageTitle from "../components/PageTitle.svelte";
-import ProjectVm from '../components/ProjectVM.svelte';
+    import ProjectVm from '../components/ProjectVM.svelte';
 
     export let params: any = {};
 
