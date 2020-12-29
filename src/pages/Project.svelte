@@ -1,16 +1,17 @@
 <script lang="ts">
     import Navbar from '../components/Navbar.svelte';
     import PageHeader from '../components/PageHeader.svelte';
-    import {location} from 'svelte-spa-router';
+    import Router, {location} from 'svelte-spa-router';
     import ProjectVM from '../components/ProjectVM.svelte';
     import {v4 as uuidv4} from 'uuid';
     import { Projects } from '../stores';
     import PageTitle from "../components/PageTitle.svelte";
     import ProjectVm from '../components/ProjectVM.svelte';
+    import Resource from './Resource.svelte';   
 
     export let params: any = {};
 
-    $: console.log($Projects);
+    $: console.log(params);
 
     const getProjectById = (id: string, _projects: any[]) => {
         let returnProject = null;
@@ -23,7 +24,7 @@
         return returnProject;
     }
 
-    $: project = getProjectById(params.id, $Projects)
+    $: project = getProjectById(params.project_id, $Projects)
     $: console.log(project);
 
     let views = ['RESOURCES', 'SETTINGS']
@@ -60,7 +61,7 @@
         </span>
         <div class="vm-list">
             {#each project.vms as vm}
-            <ProjectVM VM={toVM(vm)} link={'/dashboard/projects/' + project._id + '/resources/' + vm['hostname']}/>
+            <ProjectVM VM={toVM(vm)} link={'/dashboard/projects/' + project._id + '/resources/' + vm['uuid']}/>
             {/each}
         </div>
         {/if}

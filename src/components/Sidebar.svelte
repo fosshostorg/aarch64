@@ -34,7 +34,7 @@
                 <ul class="sidebar-category-items" class:closed={!category.open}>
                     {#if category.header == 'Projects'}
                     {#each $Projects as project}
-                    <a class="sidebar-category-item" href={'/dashboard/projects/' + project._id} use:link use:active={{path: '/dashboard/projects/' + project._id + '*', className: 'sidebar-item-active'}}>
+                    <a class="sidebar-category-item" href={'/dashboard/projects/' + project._id} use:link use:active={{path: new RegExp('/dashboard/projects/' + project._id + '/*'), className: 'sidebar-item-active'}}>
                         <span>
                             {project.name}
                         </span>
