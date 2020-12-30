@@ -13,6 +13,7 @@
         vcpus: 0,
         memory: 0,
         disk: 0,
+        enabled: false,
     }
 
     export let link: string = '';
@@ -38,7 +39,7 @@
     <span class="wrapper" on:click={() => {push(link)}}>
         <span class="img">
             <img src={'./img/' + VM.os.toLowerCase() + '.svg'} alt={VM.os + ' Logo'} />
-            <span class="status" class:online={VM.online}></span>
+            <span class="status" class:online={VM.enabled}></span>
         </span>
         <div class="hostname">
             {VM.hostname}
