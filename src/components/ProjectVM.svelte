@@ -45,7 +45,7 @@
             {VM.hostname}
         </div>
         <div class="location"> <!-- TODO: Make this align correctly -->
-            {VM.host.slice(0, -1)}
+            {VM.host.slice(0, -1).toUpperCase()}
         </div>
         <span class="ip">
             <b>v4: </b> {VM.ipv4.split("/")[0]} | <b> v6: </b> {VM.ipv6.split("/")[0]}
