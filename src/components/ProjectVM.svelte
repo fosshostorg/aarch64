@@ -9,7 +9,7 @@
         ipv6: '',
         online: false,
         host: '',
-        uuid: '', // TODO: This might not work
+        uuid: '',
         vcpus: 0,
         memory: 0,
         disk: 0,

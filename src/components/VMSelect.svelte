@@ -34,10 +34,7 @@
                     <b>{data[option].disk}GB</b> SSD
                 </span>
             </span>
-
             {/if}
-
-
         </div>
     </RadioButton>
     {/each}
