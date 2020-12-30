@@ -3,6 +3,7 @@
     import PageHeader from '../components/PageHeader.svelte';
     import PageTitle from '../components/PageTitle.svelte';
     import VMInfo from '../components/VMInfo.svelte';
+    import IPInfo from '../components/IPInfo.svelte';
     import {Projects} from '../stores'
 
     export let params: any = {};
@@ -33,15 +34,19 @@
 
 <main>
     {#if project}
-        <Navbar breadcrumbs={['Dashboard', 'Projects', project.name]}/>
-        <PageHeader>{project.name}</PageHeader>
-
     {#each project.vms as vm}
         {#if toVM(vm).uuid == params.resource_id}
-            <div>
+        <Navbar breadcrumbs={['Dashboard', 'Projects', project.name, 'Resources']} />
+        <PageHeader>{toVM(vm).hostname}</PageHeader>
+        <div>
+            <span class="title">System:</span>
+            <span class="info-wrapper">
                 <VMInfo vm={toVM(vm)} />
-            </div>
-
+            </span>
+            <span class="title">Network:</span>
+            <IPInfo vm={toVM(vm)} />
+        </div>
+            
         {/if}
     {/each}
     {/if}
@@ -59,6 +64,14 @@
     div {
         margin-left: 40px;
         margin-top: 20px;
+    }
+
+    span.title {
+        font-size: 24px;
+        opacity: 0.7;
+        font-weight: 500;
+        display: block;
+        padding: 10px 0px;
     }
 
 </style>

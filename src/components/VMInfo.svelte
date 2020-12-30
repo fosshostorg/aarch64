@@ -21,15 +21,18 @@
     </div>
     <div class="icons">
         <span>
+            <div class="version">v10.7.0</div>
             <img src={'./img/' + vm.os.toLowerCase() + '.svg'} alt={vm.os + ' Logo'} />
         </span>
         <span>
+            <div>Ampere eMAG&reg;</div>
             <img src="./img/cpuICON.svg" alt={'cpu icon'} />
         </span>
         <span>
             <img src="./img/ramICON.svg" alt={'ram icon'} />
         </span>
         <span>
+            <div class="version">ZFS Raid Z1</div>
             <img src="./img/hddICON.svg" alt={'disk icon'} />
         </span>
     </div>
@@ -41,6 +44,7 @@
         display: flex;
         flex-direction: column;
         border: 1px solid #0e0d0d;
+        box-sizing: border-box;
     }
 
     div.titles {
@@ -71,6 +75,7 @@
         align-items: flex-start;
         justify-content: center;
         padding-bottom: 20px;
+        height: 116px;
     }
 
     .icons span {
@@ -80,9 +85,10 @@
         border: 1px solid #0e0d0d;
         border-top: none;
         margin: 0px 20px;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        transition: ease box-shadow .2s;
+        transition: ease box-shadow .2s, ease height .2s;
     }
 
     .icons span:hover {
@@ -92,6 +98,31 @@
     img {
         width: 75px;
         height: 75px;
+        transition: ease all .2s;
+    }
+
+    span div.version {
+        font-size: 14px;
+    }
+
+    span div {
+        height: 0;
+        font-size: 12px;
+        overflow: hidden;
+        transition: ease all .2s;
+    }
+
+    span:hover {
+        height: 125px;
+    }
+
+    span:hover div {
+        height: 25px;
+        padding-bottom: 2px;
+    }
+
+    span:hover img {
+        /* transform: translate(0%, 10px); */
     }
 
 </style>
