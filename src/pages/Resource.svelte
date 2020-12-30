@@ -2,6 +2,7 @@
     import Navbar from '../components/Navbar.svelte';
     import PageHeader from '../components/PageHeader.svelte';
     import PageTitle from '../components/PageTitle.svelte';
+    import VMInfo from '../components/VMInfo.svelte';
     import {Projects} from '../stores'
 
     export let params: any = {};
@@ -37,7 +38,10 @@
 
     {#each project.vms as vm}
         {#if toVM(vm).uuid == params.resource_id}
-            <h1>Test {toVM(vm).uuid}</h1>
+            <div>
+                <VMInfo vm={toVM(vm)} />
+            </div>
+            
         {/if}
     {/each}
     {/if}
@@ -50,6 +54,11 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+    }
+
+    div {
+        margin-left: 40px;
+        margin-top: 20px;
     }
 
 </style>

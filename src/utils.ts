@@ -95,7 +95,10 @@ export const getUserInfoAndProjects = async (): Promise<{user: any, projects: an
                             "host": "pdx0",
                             "ipv4": "11.111.11.1/24",
                             "ipv6": "1a0e:1f00:fe01::1/24",
-                            "enabled": true
+                            "enabled": true,
+                            "vcpus": 1,
+                            "memory": 1,
+                            "disk": 10
                           }
                         ],
                         "keys": []

@@ -9,7 +9,10 @@
         ipv6: '',
         online: false,
         host: '',
-        uuid: '' // TODO: This might not work
+        uuid: '', // TODO: This might not work
+        vcpus: 0,
+        memory: 0,
+        disk: 0,
     }
 
     export let link: string = '';

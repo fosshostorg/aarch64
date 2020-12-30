@@ -6,6 +6,9 @@ type VM = {
     host: string,
     uuid: string,
     online: boolean;
+    vcpus: number;
+    memory: number;
+    disk: number;
 }
 
 type DropdownItem = {
