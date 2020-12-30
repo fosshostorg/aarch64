@@ -9,6 +9,7 @@ type VM = {
     vcpus: number;
     memory: number;
     disk: number;
+    enabled: boolean;
 }
 
 type DropdownItem = {

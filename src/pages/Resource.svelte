@@ -12,7 +12,7 @@
 
     const getProjectById = (id: string, _projects: any[]) => {
         let returnProject = null;
-        let projects = [ ..._projects ];
+        let projects = [..._projects];
         projects.forEach((project) => {
             if (project._id == id) {
                 returnProject = project;
@@ -30,7 +30,7 @@
 
 </script>
 
-<PageTitle title="Resources" />
+<PageTitle title="Resources"/>
 
 <main>
     {#if project}
