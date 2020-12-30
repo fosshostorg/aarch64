@@ -4,6 +4,7 @@
     import PageTitle from '../components/PageTitle.svelte';
     import VMInfo from '../components/VMInfo.svelte';
     import IPInfo from '../components/IPInfo.svelte';
+    import VMOptions from '../components/VMOptions.svelte';
     import {Projects} from '../stores'
 
     export let params: any = {};
@@ -38,13 +39,18 @@
         {#if toVM(vm).uuid == params.resource_id}
         <Navbar breadcrumbs={['Dashboard', 'Projects', project.name, 'Resources']} />
         <PageHeader>{toVM(vm).hostname}</PageHeader>
-        <div>
-            <span class="title">System:</span>
-            <span class="info-wrapper">
-                <VMInfo vm={toVM(vm)} />
-            </span>
-            <span class="title">Network:</span>
-            <IPInfo vm={toVM(vm)} />
+        <div class="wrapper">
+            <div class="info">
+                <span class="title">System:</span>
+                <span class="info-wrapper">
+                    <VMInfo vm={toVM(vm)} />
+                </span>
+                <span class="title">Network:</span>
+                <IPInfo vm={toVM(vm)} />
+            </div>
+            <div class="actions">
+                <VMOptions vm={toVM(vm)} />
+            </div>
         </div>
             
         {/if}
@@ -61,9 +67,23 @@
         flex-direction: column;
     }
 
-    div {
+    div.wrapper {
         margin-left: 40px;
         margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    div.info {
+        display: flex;
+        flex-direction: column;
+        padding-right: 20px;
+    }
+
+    div.actions {
+        display: flex;
+        margin-right: 25px;
+        border-left: 1px solid #ccc;
     }
 
     span.title {
@@ -71,7 +91,6 @@
         opacity: 0.7;
         font-weight: 500;
         display: block;
-        padding: 10px 0px;
+        margin: 10px 0px;
     }
-
 </style>
