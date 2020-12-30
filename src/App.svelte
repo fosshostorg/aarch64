@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Router, { push } from 'svelte-spa-router';
 	import {wrap} from 'svelte-spa-router/wrap';
 	import Index from './pages/Index.svelte';
@@ -13,6 +13,7 @@
 	import { Projects, User } from './stores';
 	import Dashboard from './Dashboard.svelte';
 	import NotFound from './pages/NotFound.svelte';
+	import MDPWrapper from 'rollup-plugin-mdsvex-pages/src/components/MDPWrapper.svelte';
 
 	const dashboardWrap = wrap({
 			component: Dashboard,
@@ -36,8 +37,6 @@
 		'/dashboard/*': dashboardWrap,
 		'*': NotFound,
 	}
-
-	let authenticated = null;
 
 	async function authenticate() {
 		let res = await getUserInfoAndProjects()
@@ -78,9 +77,12 @@
 
 </script>
 
-<main>
-	<Router {routes} on:conditionsFailed={conditionsFailed} />
-</main>
+<MDPWrapper>
+	<main>
+		<Router {routes} on:conditionsFailed={conditionsFailed} />
+	</main>
+</MDPWrapper>
+
 
 
 

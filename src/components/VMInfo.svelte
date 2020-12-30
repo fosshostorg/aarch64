@@ -121,8 +121,4 @@
         padding-bottom: 2px;
     }
 
-    span:hover img {
-        /* transform: translate(0%, 10px); */
-    }
-
 </style>
