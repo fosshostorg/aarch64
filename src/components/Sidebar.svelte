@@ -13,7 +13,7 @@
         {header: 'Account', items: [
             {name: 'Settings', route: '/account/settings'},
             {name: 'API', route: '/account/api'},
-            {name: 'Support', route: '/support'}
+            {name: 'Docs', route: '/docs'}
         ], open: true}
     ]
 
