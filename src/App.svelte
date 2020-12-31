@@ -25,7 +25,6 @@
 		conditions: [
 			async (detail) => {
 				const res = await authenticate();
-
 				if (res) {
 					return true;
 				} else {
