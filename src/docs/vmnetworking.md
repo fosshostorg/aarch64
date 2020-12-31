@@ -1,5 +1,5 @@
 ---
-id: vm-networking
+id: networking
 ---
 
 # VM Networking
