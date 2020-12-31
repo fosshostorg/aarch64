@@ -1,15 +1,13 @@
 <script lang="ts">
-    import {onDestroy} from 'svelte';
-    export let title: string = '';
+	import { onDestroy } from "svelte";
+	export let title: string = "";
 
-    let prev: string = document.title;
-    onDestroy(() => {
-        document.title = prev;
-    })
+	let prev: string = document.title;
+	onDestroy(() => {
+		document.title = prev;
+	});
 </script>
 
 <svelte:head>
-    <title>
-        {title}
-    </title>
+	<title>{title}</title>
 </svelte:head>
