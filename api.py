@@ -90,8 +90,15 @@ async def login(user: User):
 
 
 @app.post("/project")
-async def create_project(project: Project):
-    new_project = await db["projects"].insert_one(project.dict())
+async def create_project(project: Project, x_token: str = Header(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token})
+    if not user_doc:
+        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+
+    _project = project.dict()
+    _project["users"] = [str(user_doc["_id"])]
+
+    new_project = await db["projects"].insert_one(_project)
     if new_project.inserted_id:
         return Response(status_code=status.HTTP_200_OK, content={"detail": f"Projected created"})
 
@@ -99,9 +106,7 @@ async def create_project(project: Project):
 
 
 @app.post("/vms/create")
-async def create_vm(vm: VMRequest, authorization: str = Header(None)):
-    print(authorization)
-
+async def create_vm(vm: VMRequest):
     _vm = vm.dict()
 
     pop_doc = await db["pops"].find_one({"name": _vm["pop"]})
