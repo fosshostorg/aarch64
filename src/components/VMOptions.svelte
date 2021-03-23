@@ -43,6 +43,7 @@
 		justify-content: flex-start;
 		font-weight: 500;
 		padding: 0px 8px 0px 4px;
+		cursor: pointer;
 	}
 
 	span.action-option span {

@@ -20,7 +20,10 @@
 			<div>Ampere eMAG&reg;</div>
 			<img src="./img/cpuICON.svg" alt={'cpu icon'} />
 		</span>
-		<span> <img src="./img/ramICON.svg" alt={'ram icon'} /> </span>
+		<span> 
+			<div>DDR4-2666</div>
+			<img src="./img/ramICON.svg" alt={'ram icon'} /> 
+		</span>
 		<span>
 			<div class="version">ZFS Raid Z1</div>
 			<img src="./img/hddICON.svg" alt={'disk icon'} />

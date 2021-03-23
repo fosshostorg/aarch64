@@ -29,11 +29,12 @@
 <nav>
 	<div class="breadcrumb">
 		{#each breadcrumbs as breadcrumb, index}
-			<span
+			<a
 				class="breadcrumb-text"
-				class:breadcrumb-main={index == breadcrumbs.length - 1}>
-				{breadcrumb}
-			</span>
+				class:breadcrumb-main={index == breadcrumbs.length - 1}
+				href={`/#${breadcrumb.path}`}>
+				{breadcrumb.label}
+		</a>
 			{#if index !== breadcrumbs.length - 1}
 				<span class="material-icons icon"> chevron_right </span>
 			{/if}
@@ -82,6 +83,9 @@
 
 	.breadcrumb-text {
 		padding-bottom: 4px;
+		cursor: pointer;
+		text-decoration: none;
+		color: #0e0d0d;
 	}
 
 	.breadcrumb-main {

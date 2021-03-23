@@ -148,7 +148,10 @@
 <PageTitle title="Request New Resources" />
 
 <main>
-	<Navbar breadcrumbs={['Dashboard', 'Manage', 'Create New VM']} />
+	<Navbar breadcrumbs={[
+		{label: 'Dashboard', path:'/dashboard'},
+		{label: 'Create New VM', path:'/dashboard/create'},
+		]} />
 	<div class="content">
 		<PageHeader>Create VM</PageHeader>
 		<div class="create-form">

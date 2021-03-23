@@ -41,7 +41,10 @@
 <PageTitle title="New Project" />
 
 <main>
-	<Navbar breadcrumbs={['Dashboard', 'Projects', 'Add New Project']} />
+	<Navbar breadcrumbs={[
+		{label:'Dashboard', path: '/dashboard/projects/create'},
+		{label:'Add New Project', path:'/dashboard/projects/create'},
+		]} />
 	<PageHeader>Add New Project</PageHeader>
 	<div class="content">
 		<form on:submit|preventDefault={handleSubmit}>

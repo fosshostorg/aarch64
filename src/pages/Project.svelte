@@ -39,7 +39,10 @@
 
 <main>
 	{#if project}
-		<Navbar breadcrumbs={['Dashboard', 'Projects', project.name]} />
+		<Navbar breadcrumbs={[
+			{label: 'Dashboard', path: '/dashboard'},
+			{label: project.name, path: `/dashboard/projects/${project._id}`},
+			]} />
 		<PageHeader options bind:current={currentView} labels={views}>
 			{project.name}
 		</PageHeader>

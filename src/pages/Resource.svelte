@@ -36,8 +36,11 @@
 	{#if project}
 		{#each project.vms as vm}
 			{#if toVM(vm).uuid == params.resource_id}
-				<Navbar
-					breadcrumbs={['Dashboard', 'Projects', project.name, 'Resources']} />
+			<Navbar breadcrumbs={[
+				{label: 'Dashboard', path: '/dashboard/'},
+				{label: project.name, path: `/dashboard/projects/${project._id}`},
+				{label: 'Resource', path: `/dashboard/projects/${project._id}/resources/${vm.uuid}`}
+				]} />
 				<PageHeader>{toVM(vm).hostname}</PageHeader>
 				<div class="wrapper">
 					<div class="info">

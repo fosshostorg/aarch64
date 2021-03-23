@@ -31,7 +31,7 @@
 			<divider />
 			<li class="sidebar-category">
 				<span
-					class="sidebar-category-header"
+					class="sidebar-category-header noselect"
 					on:click={() => {
 						category.open = !category.open;
 					}}>
