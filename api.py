@@ -13,7 +13,7 @@ from starlette.responses import Response as StarletteResponse, RedirectResponse
 
 import database
 from models.admin import PoP, Host
-from models.auth import User
+from models.user import User, Project
 from models.vm import VMRequest
 
 install()  # Install rich traceback handler
@@ -97,6 +97,15 @@ async def signup(user: User):
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create user")
 
 
+@app.post("/project")
+async def create_project(project: Project):
+    new_project = await db["projects"].insert_one(project.dict())
+    if new_project.inserted_id:
+        return Response(status_code=status.HTTP_200_OK, content={"detail": f"Projected created"})
+
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create project")
+
+
 @app.post("/auth/login")
 async def login(user: User):
     user_doc = await db["users"].find_one({"email": user.email})
@@ -139,7 +148,6 @@ async def create_vm(vm: VMRequest):
 
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create VM")
 
-
 # @app.post("/vms/create")
 # async def create_vm(request: Request, container: Container):
 #     _container = container.dict()
@@ -153,8 +161,6 @@ async def create_vm(vm: VMRequest):
 #     del _sanitized_container["_id"]
 #
 #     return Response(status_code=status.HTTP_201_CREATED, content=_sanitized_container)
-
-
 # @app.get("/containers")
 # async def get_containers(request: Request):
 #     containers = []
