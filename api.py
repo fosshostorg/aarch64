@@ -1,10 +1,11 @@
 import ipaddress
 from json import JSONEncoder, dumps
 from secrets import token_hex
+from typing import Optional
 
 from argon2 import PasswordHasher
 from bson import json_util
-from fastapi import FastAPI, status, HTTPException, Header
+from fastapi import FastAPI, status, HTTPException, Header, Cookie
 from pydantic import typing
 from pymongo import ASCENDING
 from pymongo.errors import DuplicateKeyError
@@ -93,8 +94,8 @@ async def login(user: User):
 
 
 @app.post("/project")
-async def create_project(project: Project, x_token: str = Header(None)):
-    user_doc = await db["users"].find_one({"api_key": x_token})
+async def create_project(project: Project, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
     if not user_doc:
         return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
 
@@ -109,8 +110,8 @@ async def create_project(project: Project, x_token: str = Header(None)):
 
 
 @app.post("/vms/create")
-async def create_vm(vm: VMRequest, x_token: str = Header(None)):
-    user_doc = await db["users"].find_one({"api_key": x_token})
+async def create_vm(vm: VMRequest, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
     if not user_doc:
         return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
 
@@ -165,8 +166,8 @@ async def create_vm(vm: VMRequest, x_token: str = Header(None)):
 
 
 @app.post("/admin/pop")
-async def add_pop(pop: PoP, x_token: str = Header(None)):
-    user_doc = await db["users"].find_one({"api_key": x_token, "admin": True})
+async def add_pop(pop: PoP, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
     if not user_doc:
         return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 
@@ -180,8 +181,8 @@ async def add_pop(pop: PoP, x_token: str = Header(None)):
 
 
 @app.post("/admin/host")
-async def add_host(host: Host, x_token: str = Header(None)):
-    user_doc = await db["users"].find_one({"api_key": x_token, "admin": True})
+async def add_host(host: Host, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
     if not user_doc:
         return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 
@@ -215,8 +216,8 @@ async def add_host(host: Host, x_token: str = Header(None)):
 
 
 @app.get("/admin/ansible")
-async def get_ansible_hosts(x_token: str = Header(None)):
-    user_doc = await db["users"].find_one({"api_key": x_token, "admin": True})
+async def get_ansible_hosts(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
     if not user_doc:
         return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 
