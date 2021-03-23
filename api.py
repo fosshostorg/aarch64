@@ -93,7 +93,7 @@ async def login(user: User):
 async def create_project(project: Project, x_token: str = Header(None)):
     user_doc = await db["users"].find_one({"api_key": x_token})
     if not user_doc:
-        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
 
     _project = project.dict()
     _project["users"] = [str(user_doc["_id"])]
@@ -106,7 +106,18 @@ async def create_project(project: Project, x_token: str = Header(None)):
 
 
 @app.post("/vms/create")
-async def create_vm(vm: VMRequest):
+async def create_vm(vm: VMRequest, x_token: str = Header(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token})
+    if not user_doc:
+        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
+
+    project_doc = await db["projects"].find_one({"_id": database.to_object_id(vm.project)})
+    if not project_doc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project not found")
+
+    if not str(user_doc["_id"]) in project_doc["users"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized for project")
+
     _vm = vm.dict()
 
     pop_doc = await db["pops"].find_one({"name": _vm["pop"]})

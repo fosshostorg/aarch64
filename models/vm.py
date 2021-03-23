@@ -31,6 +31,7 @@ class VMRequest(BaseModel):
     plan: str
     os: str
     pop: str
+    project: str
 
     class Config:
         schema_extra = {
@@ -38,7 +39,8 @@ class VMRequest(BaseModel):
                 "hostname": "db1.example.com",
                 "plan": "v1.small.arm",
                 "os": "debian",
-                "pop": "dfw"
+                "pop": "dfw",
+                "project": "0123456789"
             }
         }
 
