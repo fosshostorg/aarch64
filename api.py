@@ -86,7 +86,10 @@ async def login(user: User):
     user_doc = await db["users"].find_one({"email": user.email})
     if not user_doc or not argon.verify(user_doc["password"], user.password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-    return Response(status_code=status.HTTP_200_OK, content=user_doc["api_key"])
+
+    response = Response(status_code=status.HTTP_200_OK, content=user_doc["api_key"])
+    response.set_cookie("api_key", user_doc["api_key"], httponly=True, secure=True, max_age=2628000)  # 1 month expiration
+    return response
 
 
 @app.post("/project")
