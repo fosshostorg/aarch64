@@ -1,3 +1,4 @@
+import ipaddress
 from json import JSONEncoder, dumps
 from secrets import token_hex
 
@@ -130,8 +131,19 @@ async def add_host(host: Host):
     # Cast IP types to string
     _host = host.dict()
     _host["ip"] = str(_host["ip"])
-    _host["prefix"] = str(_host["prefix"])
     del _host["pop"]
+
+    # Find available prefix
+    config_doc = await db["config"].find_one()
+    parent_prefix = ipaddress.ip_network(config_doc["prefix"])
+    for slash48 in list(parent_prefix.subnets(new_prefix=48))[::-1]:
+        slash48 = str(slash48)
+        prefix_taken = await db["hosts"].find_one({"prefix": slash48})
+        if not prefix_taken:
+            _host["prefix"] = slash48
+    if not _host.get("prefix"):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="No available prefixes to assign")
+
     new_host = await db["pops"].update_one({"name": host.pop}, {"$push": {"hosts": _host}})
 
     if new_host.matched_count == 1:
