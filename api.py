@@ -116,6 +116,25 @@ async def create_project(project: Project, x_token: Optional[str] = Header(None)
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create project")
 
 
+@app.get("/projects")
+async def get_projects(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
+    if not user_doc:
+        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
+
+    projects = []
+    async for project in db["projects"].find({
+        "users": {
+            "$in": [str(user_doc["_id"])]
+        }
+    }, {  # Ignore these keys
+        "users": 0
+    }):
+        projects.append(project)
+
+    return Response(status_code=status.HTTP_200_OK, content=projects)
+
+
 @app.post("/vms/create")
 async def create_vm(vm: VMRequest, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
