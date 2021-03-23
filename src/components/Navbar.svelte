@@ -82,7 +82,6 @@
 	}
 
 	.breadcrumb-text {
-		padding-bottom: 4px;
 		cursor: pointer;
 		text-decoration: none;
 		color: #0e0d0d;
