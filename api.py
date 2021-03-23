@@ -157,6 +157,30 @@ async def add_host(host: Host):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"PoP {host.pop} doesn't exist")
 
 
+@app.get("/admin/ansible")
+async def get_ansible_hosts():
+    config_doc = await db["config"].find_one()
+    _config = {
+        "all": {
+            "vars": {
+                "ansible_user": config_doc["user"],
+                "ansible_port": config_doc["port"],
+                "ansible_ssh_private_key_file": config_doc["key_file"]
+            },
+            "hosts": {}
+        }
+    }
+
+    async for pop in db["pops"].find():
+        if pop.get("hosts"):
+            for idx, host in enumerate(pop.get("hosts")):
+                _config["all"]["hosts"][pop["name"] + str(idx)] = {
+                    "ansible_host": host["ip"]
+                }
+
+    return Response(status_code=status.HTTP_200_OK, content=_config)
+
+
 @app.post("/vms/create")
 async def create_vm(vm: VMRequest):
     new_vm = await db["vms"].insert_one(vm.dict())
