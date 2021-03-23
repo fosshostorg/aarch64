@@ -1,5 +1,5 @@
 {
-  "tabWidth": 4,
-  "useTabs": true,
-  "svelteSortOrder": "scripts-markup-styles"
+	"tabWidth": 2,
+	"useTabs": true,
+	"svelteSortOrder": "scripts-markup-styles"
 }

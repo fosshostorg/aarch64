@@ -1,19 +1,17 @@
 {
-    "sidebar": {
-        "docs": {
-            "Documentation": [
-                {"route":"networking", "label": "Networking"}
-            ],
-            "default-open": ["Documentation"]
-        }
-    },
-    "navbar": {
-        "docs": {
-            "title": "Documentation",
-            "logo": {
-                "alt": "ARM-64 Logo",
-                "src": "./img/ARM-64B.png"
-            }
-        }
-    }
+	"sidebar": {
+		"docs": {
+			"Documentation": [{ "route": "networking", "label": "Networking" }],
+			"default-open": ["Documentation"]
+		}
+	},
+	"navbar": {
+		"docs": {
+			"title": "Documentation",
+			"logo": {
+				"alt": "ARM-64 Logo",
+				"src": "./img/ARM-64B.png"
+			}
+		}
+	}
 }
