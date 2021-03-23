@@ -162,7 +162,11 @@ async def create_vm(vm: VMRequest, x_token: str = Header(None)):
 
 
 @app.post("/admin/pop")
-async def add_pop(pop: PoP):
+async def add_pop(pop: PoP, x_token: str = Header(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token, "admin": True})
+    if not user_doc:
+        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+
     try:
         new_pop = await db["pops"].insert_one(pop.dict())
     except DuplicateKeyError:
@@ -173,7 +177,11 @@ async def add_pop(pop: PoP):
 
 
 @app.post("/admin/host")
-async def add_host(host: Host):
+async def add_host(host: Host, x_token: str = Header(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token, "admin": True})
+    if not user_doc:
+        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+
     # Cast IP types to string
     _host = host.dict()
     _host["ip"] = str(_host["ip"])
@@ -204,7 +212,11 @@ async def add_host(host: Host):
 
 
 @app.get("/admin/ansible")
-async def get_ansible_hosts():
+async def get_ansible_hosts(x_token: str = Header(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token, "admin": True})
+    if not user_doc:
+        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+
     config_doc = await db["config"].find_one()
     _config = {
         "all": {
