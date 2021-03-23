@@ -11,7 +11,9 @@ from rich.traceback import install
 from starlette.responses import Response as StarletteResponse, RedirectResponse
 
 import database
-from models import Container, UpdateContainer, User
+
+from models.auth import User
+from models.admin import PoP, Host
 
 install()  # Install rich traceback handler
 
@@ -23,6 +25,7 @@ argon = PasswordHasher()
 app = FastAPI(title="aarch64", version=VERSION)
 db = database.get()
 db["users"].create_index([("email", ASCENDING)], background=True, unique=True)
+db["pops"].create_index([("name", ASCENDING)], background=True, unique=True)
 
 
 class SafeJSONEncoder(JSONEncoder):
@@ -99,6 +102,17 @@ async def login(user: User):
     if not user_doc or not argon.verify(user_doc["password"], user.password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
     return Response(status_code=status.HTTP_200_OK, content=user_doc["api_key"])
+
+
+@app.post("/admin/pop")
+async def add_pop(pop: PoP):
+    try:
+        new_pop = await db["pops"].insert_one(pop.dict())
+    except DuplicateKeyError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="PoP with this name already exists")
+    if new_pop.inserted_id:
+        return Response(status_code=status.HTTP_200_OK, content={"detail": f"PoP {pop.name} added"})
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create pop")
 
 
 # @app.post("/vms/create")
