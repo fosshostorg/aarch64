@@ -131,20 +131,25 @@ async def add_host(host: Host):
     # Cast IP types to string
     _host = host.dict()
     _host["ip"] = str(_host["ip"])
-    del _host["pop"]
 
-    # Find available prefix
+    # Get taken prefixes
+    taken_prefixes = []
+    async for pop in db["pops"].find():
+        if pop.get("hosts"):
+            for host in pop.get("hosts"):
+                taken_prefixes.append(host["prefix"])
+
+    # Find next available prefix
     config_doc = await db["config"].find_one()
     parent_prefix = ipaddress.ip_network(config_doc["prefix"])
     for slash48 in list(parent_prefix.subnets(new_prefix=48))[::-1]:
         slash48 = str(slash48)
-        prefix_taken = await db["hosts"].find_one({"prefix": slash48})
-        if not prefix_taken:
+        if slash48 not in taken_prefixes:
             _host["prefix"] = slash48
     if not _host.get("prefix"):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="No available prefixes to assign")
 
-    new_host = await db["pops"].update_one({"name": host.pop}, {"$push": {"hosts": _host}})
+    new_host = await db["pops"].update_one({"name": _host["pop"]}, {"$push": {"hosts": _host}})
 
     if new_host.matched_count == 1:
         return Response(status_code=status.HTTP_200_OK, content={"detail": f"Host added"})
