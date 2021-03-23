@@ -1,8 +1,9 @@
 from json import JSONEncoder, dumps
 from secrets import token_hex
+
 from argon2 import PasswordHasher
 from bson import json_util
-from fastapi import FastAPI, Request, status, HTTPException
+from fastapi import FastAPI, status, HTTPException
 from pydantic import typing
 from pymongo import ASCENDING
 from pymongo.errors import DuplicateKeyError
@@ -11,9 +12,9 @@ from rich.traceback import install
 from starlette.responses import Response as StarletteResponse, RedirectResponse
 
 import database
-
-from models.auth import User
 from models.admin import PoP, Host
+from models.auth import User
+from models.vm import VMRequest
 
 install()  # Install rich traceback handler
 
@@ -128,6 +129,16 @@ async def add_host(host: Host):
         return Response(status_code=status.HTTP_200_OK, content={"detail": f"Host added"})
     else:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"PoP {host.pop} doesn't exist")
+
+
+@app.post("/vms/create")
+async def create_vm(vm: VMRequest):
+    new_vm = await db["vms"].insert_one(vm.dict())
+    if new_vm.inserted_id:
+        return Response(status_code=status.HTTP_200_OK, content={"detail": f"VM added"})
+
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create VM")
+
 
 # @app.post("/vms/create")
 # async def create_vm(request: Request, container: Container):
