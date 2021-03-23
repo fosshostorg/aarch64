@@ -15,7 +15,7 @@ from starlette.responses import Response as StarletteResponse, RedirectResponse
 import database
 from models.admin import PoP, Host
 from models.user import User, Project
-from models.vm import VMRequest
+from models.vm import plans, VMRequest
 
 install()  # Install rich traceback handler
 
@@ -183,7 +183,43 @@ async def get_ansible_hosts():
 
 @app.post("/vms/create")
 async def create_vm(vm: VMRequest):
-    new_vm = await db["vms"].insert_one(vm.dict())
+    _vm = vm.dict()
+
+    pop_doc = await db["pops"].find_one({"name": _vm["pop"]})
+    if not pop_doc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="PoP doesn't exist")
+
+    # Calculate host usage for pop
+    _host_usage = {}
+    for idx, host in enumerate(pop_doc["hosts"]):
+        if idx not in _host_usage:
+            _host_usage[idx] = 0
+
+        async for host_vm in db["vms"].find({"pop": _vm["pop"], "host": idx}):
+            vm_plan_spec = plans[host_vm["plan"]]
+            _host_usage[idx] += (vm_plan_spec["vcpus"] + vm_plan_spec["memory"])
+
+    # Sort host usage dict by value (ordered from least used to greatest)
+    _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
+
+    # Find the least utilized host by taking the first element (call next on iter)
+    _vm["host"] = next(iter(_host_usage))
+
+    # Find taken prefixes
+    taken_prefixes = []
+    async for vm in db["vms"].find({"pop": _vm["pop"]}):
+        taken_prefixes.append(vm["prefix"])
+
+    # Iterate over the selected host's prefix
+    host_prefix = pop_doc["hosts"][_vm["host"]]["prefix"]
+    for prefix in list(ipaddress.ip_network(host_prefix).subnets(new_prefix=64)):
+        prefix = str(prefix)
+        if prefix not in taken_prefixes:
+            _vm["prefix"] = prefix
+    if not _vm.get("prefix"):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to assign VM prefix")
+
+    new_vm = await db["vms"].insert_one(_vm)
     if new_vm.inserted_id:
         return Response(status_code=status.HTTP_200_OK, content={"detail": f"VM added"})
 

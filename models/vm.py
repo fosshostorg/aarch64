@@ -1,6 +1,6 @@
 from pydantic import BaseModel, validator
 
-_plans = {
+plans = {
     "v1.small.arm": {
         "vcpus": 1,
         "memory": 1,
@@ -44,7 +44,7 @@ class VMRequest(BaseModel):
 
     @validator("plan")
     def plan_validator(v):
-        if not _plans.get(v):
+        if not plans.get(v):
             raise ValueError(f"Plan {v} doesn't exist")
         return v
 
