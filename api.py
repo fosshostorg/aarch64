@@ -135,6 +135,21 @@ async def get_projects(x_token: Optional[str] = Header(None), api_key: Optional[
     return Response(status_code=status.HTTP_200_OK, content=projects)
 
 
+@app.get("/projects/{project_id}")
+async def get_project(project_id: str, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
+    if not user_doc:
+        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
+
+    project_doc = await db["projects"].find_one({"_id": database.to_object_id(project_id)}, {
+        "users": 0  # Ignore users keys
+    })
+    if not project_doc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project doesn't exist")
+
+    return Response(status_code=status.HTTP_200_OK, content=project_doc)
+
+
 @app.post("/vms/create")
 async def create_vm(vm: VMRequest, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
