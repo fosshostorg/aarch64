@@ -93,6 +93,13 @@ async def login(user: User):
     return response
 
 
+@app.post("/auth/logout")
+async def logout():
+    response = Response(status_code=status.HTTP_200_OK, content="")
+    response.set_cookie("api_key", "", httponly=True, secure=True, max_age=0)  # Immediate expiration
+    return response
+
+
 @app.post("/project")
 async def create_project(project: Project, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
