@@ -53,7 +53,6 @@
 							} }]} />
 			</span>
 		</span>
-		<!-- TODO: Dropdown here with a logout button that calls userLogout() -->
 	</div>
 </nav>
 

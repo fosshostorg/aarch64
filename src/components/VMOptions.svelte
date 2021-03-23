@@ -50,6 +50,10 @@
 		padding: 0px 4px;
 	}
 
+	span.action-option:hover {
+		background-color: #0e0d0d15;
+	}
+
 	div.action-title {
 		height: 35px;
 		display: flex;
