@@ -115,6 +115,20 @@ async def add_pop(pop: PoP):
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create pop")
 
 
+@app.post("/admin/host")
+async def add_host(host: Host):
+    # Cast IP types to string
+    _host = host.dict()
+    _host["ip"] = str(_host["ip"])
+    _host["prefix"] = str(_host["prefix"])
+    del _host["pop"]
+    new_host = await db["pops"].update_one({"name": host.pop}, {"$push": {"hosts": _host}})
+
+    if new_host.matched_count == 1:
+        return Response(status_code=status.HTTP_200_OK, content={"detail": f"Host added"})
+    else:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"PoP {host.pop} doesn't exist")
+
 # @app.post("/vms/create")
 # async def create_vm(request: Request, container: Container):
 #     _container = container.dict()
