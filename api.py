@@ -241,7 +241,7 @@ async def add_host(host: Host, x_token: Optional[str] = Header(None), api_key: O
     # Find next available prefix
     config_doc = await db["config"].find_one()
     parent_prefix = ipaddress.ip_network(config_doc["prefix"])
-    for slash48 in list(parent_prefix.subnets(new_prefix=48))[::-1]:
+    for slash48 in list(parent_prefix.subnets(new_prefix=48)):
         slash48 = str(slash48)
         if slash48 not in taken_prefixes:
             _host["prefix"] = slash48
