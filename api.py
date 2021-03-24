@@ -230,6 +230,19 @@ async def delete_vm(vm_id: str, x_token: Optional[str] = Header(None), api_key: 
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete VM")
 
 
+@app.get("/admin/pops")
+async def get_pops(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
+    if not user_doc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+
+    pops = []
+    async for pop in db["pops"].find():
+        pops.append(pop)
+
+    return Response(status_code=status.HTTP_200_OK, content=pops)
+
+
 @app.post("/admin/pop")
 async def add_pop(pop: PoP, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
