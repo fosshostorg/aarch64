@@ -55,7 +55,7 @@
 				<span class="labels">
 					<div class="hostname-label">HOSTNAME</div>
 					<div class="location-label">LOCATION</div>
-					<div class="ip-label">IP</div>
+					<div class="ip-label">PREFIX</div>
 				</span>
 				<div class="vm-list">
 					{#each project.vms as vm}

@@ -6,6 +6,7 @@
 	import IPInfo from "../components/IPInfo.svelte";
 	import VMOptions from "../components/VMOptions.svelte";
 	import { Projects } from "../stores";
+	import { replace } from "svelte-spa-router";
 
 	export let params: any = {};
 
@@ -35,8 +36,8 @@
 <main>
 	{#if project}
 		{#each project.vms as vm}
-			{#if toVM(vm).uuid == params.resource_id}
-			<Navbar breadcrumbs={[
+			{#if toVM(vm).uuid === params.resource_id}
+				<Navbar breadcrumbs={[
 				{label: 'Dashboard', path: '/dashboard/'},
 				{label: project.name, path: `/dashboard/projects/${project._id}`},
 				{label: 'Resource', path: `/dashboard/projects/${project._id}/resources/${vm.uuid}`}
@@ -48,7 +49,7 @@
 						<span class="info-wrapper">
 							<VMInfo vm={toVM(vm)} />
 						</span>
-						<span class="title">Network:</span>
+						<span class="title">Network:&nbsp;<span class="material-icons" on:click={() => {replace("/docs/networking")}}>help_outline</span></span>
 						<IPInfo vm={toVM(vm)} />
 					</div>
 					<div class="actions">
@@ -61,37 +62,42 @@
 </main>
 
 <style>
-	main {
-		width: 100%;
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-	}
+    main {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-	div.wrapper {
-		margin-left: 40px;
-		margin-top: 20px;
-		display: flex;
-		justify-content: space-between;
-	}
+    div.wrapper {
+        margin-left: 40px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
 
-	div.info {
-		display: flex;
-		flex-direction: column;
-		padding-right: 20px;
-	}
+    div.info {
+        display: flex;
+        flex-direction: column;
+        padding-right: 20px;
+    }
 
-	div.actions {
-		display: flex;
-		margin-right: 25px;
-		border-left: 1px solid #ccc;
-	}
+    div.actions {
+        display: flex;
+        margin-right: 25px;
+        border-left: 1px solid #ccc;
+    }
 
-	span.title {
-		font-size: 24px;
-		opacity: 0.7;
-		font-weight: 500;
-		display: block;
-		margin: 10px 0px;
-	}
+    span.title {
+        font-size: 24px;
+        opacity: 0.7;
+        font-weight: 500;
+        margin: 10px 0px;
+				display: flex;
+				align-items: center;
+    }
+
+		.material-icons {
+				cursor: pointer;
+		}
 </style>

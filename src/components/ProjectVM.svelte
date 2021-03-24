@@ -5,8 +5,7 @@
 	export let VM: VM = {
 		hostname: "",
 		os: "",
-		ipv4: "",
-		ipv6: "",
+		prefix: "",
 		online: false,
 		host: "",
 		uuid: "",
@@ -58,11 +57,7 @@
 			{VM.host.slice(0, -1).toUpperCase()}
 		</div>
 		<span class="ip">
-			<b>v4: </b>
-			{VM.ipv4.split('/')[0]}
-			|
-			<b> v6: </b>
-			{VM.ipv6.split('/')[0]}
+			{VM.prefix}
 		</span>
 	</span>
 	<button class="material-icons icon" on:click={handleSettings}>
