@@ -104,7 +104,7 @@ async def logout():
 async def create_project(project: Project, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
     if not user_doc:
-        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
 
     _project = project.dict()
     _project["users"] = [str(user_doc["_id"])]
@@ -120,7 +120,7 @@ async def create_project(project: Project, x_token: Optional[str] = Header(None)
 async def get_projects(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
     if not user_doc:
-        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
 
     projects = []
     async for project in db["projects"].find({
@@ -139,7 +139,7 @@ async def get_projects(x_token: Optional[str] = Header(None), api_key: Optional[
 async def get_project(project_id: str, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
     if not user_doc:
-        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
 
     project_doc = await db["projects"].find_one({"_id": database.to_object_id(project_id)}, {
         "users": 0  # Ignore users keys
@@ -154,7 +154,7 @@ async def get_project(project_id: str, x_token: Optional[str] = Header(None), ap
 async def create_vm(vm: VMRequest, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
     if not user_doc:
-        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
 
     project_doc = await db["projects"].find_one({"_id": database.to_object_id(vm.project)})
     if not project_doc:
@@ -234,7 +234,7 @@ async def delete_vm(vm_id: str, x_token: Optional[str] = Header(None), api_key: 
 async def add_pop(pop: PoP, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
     if not user_doc:
-        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 
     try:
         new_pop = await db["pops"].insert_one(pop.dict())
@@ -249,7 +249,7 @@ async def add_pop(pop: PoP, x_token: Optional[str] = Header(None), api_key: Opti
 async def add_host(host: Host, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
     if not user_doc:
-        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 
     # Cast IP types to string
     _host = host.dict()
@@ -284,7 +284,7 @@ async def add_host(host: Host, x_token: Optional[str] = Header(None), api_key: O
 async def get_ansible_hosts(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
     if not user_doc:
-        return HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 
     config_doc = await db["config"].find_one()
     _config = {
