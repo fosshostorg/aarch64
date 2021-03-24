@@ -16,7 +16,7 @@
 			header: "Account",
 			items: [
 				{ name: "Settings", route: "/account/settings" },
-				{ name: "API", route: "/account/api" },
+				// { name: "API", route: "https://api.aarch64.com/docs" },  // TODO: This does work as a link, but throws an error
 				{ name: "Docs", route: "/docs" },
 			],
 			open: true,
