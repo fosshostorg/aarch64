@@ -206,6 +206,30 @@ async def create_vm(vm: VMRequest, x_token: Optional[str] = Header(None), api_ke
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create VM")
 
 
+@app.post("/vms/{vm_id}")
+async def delete_vm(vm_id: str, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
+    if not user_doc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
+
+    vm_doc = await db["vms"].find_one({"_id": database.to_object_id(vm_id)})
+    if not vm_doc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="VM doesn't exist")
+
+    project_doc = await db["projects"].find_one({"_id": database.to_object_id(vm_doc["project"])})
+    if not project_doc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project not found")
+
+    if not str(user_doc["_id"]) in project_doc["users"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized for project")
+
+    deleted_vm = await db["vms"].delete_one({"_id": database.to_object_id(vm_id)})
+    if deleted_vm.deleted_count == 1:
+        return Response(status_code=status.HTTP_200_OK, content="VM deleted")
+
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete VM")
+
+
 @app.post("/admin/pop")
 async def add_pop(pop: PoP, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
