@@ -1,8 +1,8 @@
 type VM = {
 	hostname: string;
 	os: string;
-	ipv4: string;
-	ipv6: string;
+	prefix: string;
+	gateway: string;
 	host: string;
 	uuid: string;
 	online: boolean;

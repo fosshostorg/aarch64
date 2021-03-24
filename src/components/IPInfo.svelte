@@ -5,18 +5,14 @@
 <table>
 	<thead>
 		<tr>
-			<th>IP ADDRESS</th>
-			<th>GATEWAY</th>
+			<th>Prefix</th>
+			<th>Gateway</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
-			<td>{vm.ipv4}</td>
-			<td>Managed Automatically</td>
-		</tr>
-		<tr>
-			<td>{vm.ipv6}</td>
-			<td>Managed Automatically</td>
+			<td>{vm.prefix}</td>
+			<td>{vm.gateway}</td>
 		</tr>
 	</tbody>
 </table>
