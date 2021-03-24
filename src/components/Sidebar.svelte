@@ -16,7 +16,7 @@
 			header: "Account",
 			items: [
 				{ name: "Settings", route: "/account/settings" },
-				// { name: "API", route: "https://api.aarch64.com/docs" },  // TODO: This does work as a link, but throws an error
+				{ name: "API", route: "https://api.aarch64.com/docs", isGlobal: true },
 				{ name: "Docs", route: "/docs" },
 			],
 			open: true,
@@ -68,6 +68,14 @@
 						</a>
 					{:else}
 						{#each category.items as item}
+							{#if item.isGlobal}
+							<a
+								class="sidebar-category-item"
+								href={item.route}
+								>
+								<span> {item.name} </span>
+							</a>
+							{:else}
 							<a
 								class="sidebar-category-item"
 								href={item.route}
@@ -75,6 +83,7 @@
 								use:active={{ path: item.route + '*', className: 'sidebar-item-active' }}>
 								<span> {item.name} </span>
 							</a>
+							{/if}
 						{/each}
 					{/if}
 				</ul>
