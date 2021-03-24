@@ -58,15 +58,16 @@ export const requestNewResources = async (
 
 export const login = async (data: { email: string; password: string }) => {
 	let body: any = null;
+	let res: any = null;
 	await fetch("__apiRoute__/user/login", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(data),
 	})
-		.then((res) => (body = res.json()))
+		.then((resp) => {body = res.json(); res = resp;})
 		.catch((err) => console.log(err));
 
-	return body;
+	return {body , res};
 };
 
 export const getUserInfoAndProjects = async (): Promise<{
