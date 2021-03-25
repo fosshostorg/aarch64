@@ -297,9 +297,13 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     raise _resp(False, "Unable to create VM")
 
 
-@app.route("/pops", methods=["GET"])
+@app.route("/system", methods=["GET"])
 @with_authentication(admin=False)
-def get_pops(user_doc: dict):
+def get_system(user_doc: dict):
+    # Update config doc
+    config_doc = db["config"].find_one()
+
+    # Get PoPs
     pops = []
     for idx, pop in enumerate(db["pops"].find()):
         if not user_doc.get("admin"):
@@ -307,7 +311,11 @@ def get_pops(user_doc: dict):
             del pop["_id"]
         pops.append(pop)
 
-    return _resp(True, "Retrieved PoPs", data=pops)
+    return _resp(True, "Retrieved PoPs", data={
+        "pops": pops,
+        "plans": config_doc["plans"],
+        "oses": list(config_doc["oses"].keys())
+    })
 
 
 @app.route("/admin/pop", methods=["POST"])
