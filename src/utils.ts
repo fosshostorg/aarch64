@@ -28,7 +28,7 @@ export const updateUserInfo = async (user: { email: string }) => {
 
 export const addNewProject = async (data: { name: string }) => {
 	let body: any = null;
-	await fetch("__apiRoute__/projects", {
+	await fetch("__apiRoute__/project", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(data),
@@ -39,33 +39,17 @@ export const addNewProject = async (data: { name: string }) => {
 	return body;
 };
 
-export const requestNewResources = async (
-	project_id: string,
-	data: { hostname: string; tier: string; os: string; location: string }
-) => {
+export const createVM = async (project: string, hostname: string, plan: string, os: string, pop: string) => {
 	let body: any = null;
-	await fetch("__apiRoute__/project/" + project_id + "/request", {
+	await fetch("__apiRoute__/vms/create", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(data),
+		body: JSON.stringify({project, hostname, plan, os, pop}),
 	})
 		.then((res) => (body = res.json()))
 		.catch((err) => console.log(err));
 
 	console.log(body);
-	return body;
-};
-
-export const login = async (data: { email: string; password: string }) => {
-	let body: any = null;
-	await fetch("__apiRoute__/user/login", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(data),
-	})
-		.then((res) => (body = res.json()))
-		.catch((err) => console.log(err));
-
 	return body;
 };
 
