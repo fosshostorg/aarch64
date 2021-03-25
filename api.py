@@ -345,31 +345,28 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Unable to add host")
 
 
-# @app.get("/admin/ansible")
-# def get_ansible_hosts(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
-#     user_doc = db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
-#     if not user_doc:
-#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
-#
-#     config_doc = db["config"].find_one()
-#     _config = {
-#         "all": {
-#             "vars": {
-#                 "ansible_user": config_doc["user"],
-#                 "ansible_port": config_doc["port"],
-#                 "ansible_ssh_private_key_file": config_doc["key_file"]
-#             },
-#             "hosts": {}
-#         }
-#     }
-#
-#     for pop in db["pops"].find():
-#         if pop.get("hosts"):
-#             for idx, host in enumerate(pop.get("hosts")):
-#                 _config["all"]["hosts"][pop["name"] + str(idx)] = {
-#                     "ansible_host": host["ip"]
-#                 }
-#
-#     return Response(status_code=status.HTTP_200_OK, content=_config)
+@app.route("/admin/ansible", methods=["GET"])
+@with_authentication(admin=True)
+def get_ansible_hosts(user_doc: dict):
+    _config = {
+        "all": {
+            "vars": {
+                "ansible_user": "test_user",
+                "ansible_port": 0,
+                "ansible_ssh_private_key_file": "test_key"
+            },
+            "hosts": {}
+        }
+    }
+
+    for pop in db["pops"].find():
+        if pop.get("hosts"):
+            for idx, host in enumerate(pop.get("hosts")):
+                _config["all"]["hosts"][pop["name"] + str(idx)] = {
+                    "ansible_host": host["ip"]
+                }
+
+    return _resp(True, "Retrieved ansible config", data=_config)
+
 
 app.run(debug=True)
