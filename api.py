@@ -3,7 +3,6 @@ import ipaddress
 import json
 from functools import wraps
 from secrets import token_hex
-from typing import Optional
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
@@ -216,60 +215,45 @@ def projects_list(user_doc: dict) -> Response:
     return _resp(True, "Retrieved project list", data=projects)
 
 
-@app.post("/vms/create", response_model=VMResponse)
-async def create_vm(vm: VM, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
-    user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
-    if not user_doc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't exist")
-
-    project_doc = await db["projects"].find_one({"_id": database.to_object_id(vm.project)})
-    if not project_doc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project not found")
-
-    if not str(user_doc["_id"]) in project_doc["users"]:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized for project")
-
-    _vm = vm.dict()
-
-    pop_doc = await db["pops"].find_one({"name": _vm["pop"]})
-    if not pop_doc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="PoP doesn't exist")
-
-    # Calculate host usage for pop
-    _host_usage = {}
-    for idx, host in enumerate(pop_doc["hosts"]):
-        if idx not in _host_usage:
-            _host_usage[idx] = 0
-
-        # async for host_vm in db["vms"].find({"pop": _vm["pop"], "host": idx}):
-        #     vm_plan_spec = plans[host_vm["plan"]]
-        #     _host_usage[idx] += (vm_plan_spec["vcpus"] + vm_plan_spec["memory"])
-
-    # Sort host usage dict by value (ordered from least used to greatest)
-    _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
-
-    # Find the least utilized host by taking the first element (call next on iter)
-    _vm["host"] = next(iter(_host_usage))
-
-    # Find taken prefixes
-    taken_prefixes = []
-    async for vm in db["vms"].find({"pop": _vm["pop"]}):
-        taken_prefixes.append(vm["prefix"])
-
-    # Iterate over the selected host's prefix
-    host_prefix = pop_doc["hosts"][_vm["host"]]["prefix"]
-    for prefix in list(ipaddress.ip_network(host_prefix).subnets(new_prefix=64)):
-        prefix = str(prefix)
-        if prefix not in taken_prefixes:
-            _vm["prefix"] = prefix
-    if not _vm.get("prefix"):
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to assign VM prefix")
-
-    new_vm = await db["vms"].insert_one(_vm)
-    if new_vm.inserted_id:
-        return Response(status_code=status.HTTP_200_OK, content=VMResponse(**_vm))  # TODO: Make this fit the fields
-
-    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create VM")
+# @app.route("/vms/create", methods=["POST"])
+# @with_authentication
+# @with_json("hostname", "plan", "pop", "project")
+# async def create_vm(json_body: dict, user_doc: dict) -> Response:
+#     # Calculate host usage for pop
+#     _host_usage = {}
+#     for idx, host in enumerate(pop_doc["hosts"]):
+#         if idx not in _host_usage:
+#             _host_usage[idx] = 0
+#
+#         # async for host_vm in db["vms"].find({"pop": _vm["pop"], "host": idx}):
+#         #     vm_plan_spec = plans[host_vm["plan"]]
+#         #     _host_usage[idx] += (vm_plan_spec["vcpus"] + vm_plan_spec["memory"])
+#
+#     # Sort host usage dict by value (ordered from least used to greatest)
+#     _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
+#
+#     # Find the least utilized host by taking the first element (call next on iter)
+#     _vm["host"] = next(iter(_host_usage))
+#
+#     # Find taken prefixes
+#     taken_prefixes = []
+#     async for vm in db["vms"].find({"pop": _vm["pop"]}):
+#         taken_prefixes.append(vm["prefix"])
+#
+#     # Iterate over the selected host's prefix
+#     host_prefix = pop_doc["hosts"][_vm["host"]]["prefix"]
+#     for prefix in list(ipaddress.ip_network(host_prefix).subnets(new_prefix=64)):
+#         prefix = str(prefix)
+#         if prefix not in taken_prefixes:
+#             _vm["prefix"] = prefix
+#     if not _vm.get("prefix"):
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to assign VM prefix")
+#
+#     new_vm = await db["vms"].insert_one(_vm)
+#     if new_vm.inserted_id:
+#         return Response(status_code=status.HTTP_200_OK, content=VMResponse(**_vm))  # TODO: Make this fit the fields
+#
+#     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create VM")
 
 # @app.get("/pops")
 # async def get_pops(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
@@ -304,41 +288,46 @@ async def create_vm(vm: VM, x_token: Optional[str] = Header(None), api_key: Opti
 #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create pop")
 #
 #
-# @app.post("/admin/host")
-# async def add_host(host: Host, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
-#     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
-#     if not user_doc:
-#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
-#
-#     # Cast IP types to string
-#     _host = host.dict()
-#     _host["ip"] = str(_host["ip"])
-#
-#     # Get taken prefixes
-#     taken_prefixes = []
-#     async for pop in db["pops"].find():
-#         if pop.get("hosts"):
-#             for host in pop.get("hosts"):
-#                 taken_prefixes.append(host["prefix"])
-#
-#     # Find next available prefix
-#     config_doc = await db["config"].find_one()
-#     parent_prefix = ipaddress.ip_network(config_doc["prefix"])
-#     for slash48 in list(parent_prefix.subnets(new_prefix=48)):
-#         slash48 = str(slash48)
-#         if slash48 not in taken_prefixes:
-#             _host["prefix"] = slash48
-#     if not _host.get("prefix"):
-#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="No available prefixes to assign")
-#
-#     new_host = await db["pops"].update_one({"name": _host["pop"]}, {"$push": {"hosts": _host}})
-#
-#     if new_host.matched_count == 1:
-#         return Response(status_code=status.HTTP_200_OK, content={"detail": f"Host added"})
-#     else:
-#         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=f"PoP {host.pop} doesn't exist")
-#
-#
+
+@app.route("/admin/host", methods=["POST"])
+@with_authentication
+@with_json("ip", "pop")
+def add_host(json_body: dict, user_doc: dict) -> Response:
+    if not user_doc.get("admin"):
+        return _resp(False, "Unauthorized")
+
+    if not json_body.get("ip"):  # TODO: IP validation
+        return _resp(False, "IP must not be blank")
+
+    pop_doc = db["pops"].find_one({"name": json_body["pop"]})
+    if not pop_doc:
+        return _resp(False, "PoP doesn't exist")
+
+    host = {"ip": json_body["ip"]}
+
+    # Get taken prefixes
+    taken_prefixes = []
+    async for pop in db["pops"].find():
+        if pop.get("hosts"):
+            for host in pop.get("hosts"):
+                taken_prefixes.append(host["prefix"])
+
+    # Find next available prefix
+    config_doc = await db["config"].find_one()
+    parent_prefix = ipaddress.ip_network(config_doc["prefix"])
+    for slash48 in list(parent_prefix.subnets(new_prefix=48)):
+        slash48 = str(slash48)
+        if slash48 not in taken_prefixes:
+            host["prefix"] = slash48
+    if not host.get("prefix"):
+        raise _resp(False, "No available prefixes to assign")
+
+    new_host = db["pops"].update_one({"_id": pop_doc["_id"]}, {"$push": {"hosts": host}})
+    if new_host.upserted_id:
+        return _resp(True, "Host added")
+    else:
+        return _resp(False, "Unable to add host")
+
 # @app.get("/admin/ansible")
 # async def get_ansible_hosts(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
 #     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
