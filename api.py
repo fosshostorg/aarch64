@@ -37,6 +37,14 @@ except ValueError as e:
     console.log(f"Invalid prefix {config_doc.get('prefix')} ({e})")
     exit(1)
 
+if (not config_doc.get("oses")) or (len(config_doc.get("oses")) < 1):
+    console.log("Config must have at least one OS defined")
+    exit(1)
+
+if (not config_doc.get("plans")) or (len(config_doc.get("plans")) < 1):
+    console.log("Config must have at least one plan defined")
+    exit(1)
+
 
 def to_object_id(object_id: str):
     """
@@ -267,22 +275,19 @@ def projects_list(user_doc: dict) -> Response:
 #
 #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create VM")
 
-# @app.get("/pops")
-# def get_pops(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
-#     user_doc = db["users"].find_one({"api_key": x_token if x_token else api_key})
-#     if not user_doc:
-#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
-#
-#     pops = []
-#     for pop in db["pops"].find():
-#         if user_doc.get("admin"):
-#             pops.append(pop)
-#         else:
-#             del pop["hosts"]
-#             del pop["_id"]
-#             pops.append(pop)
-#
-#     return Response(status_code=status.HTTP_200_OK, content=pops)
+
+@app.route("/pops", methods=["GET"])
+@with_authentication(admin=False)
+def get_pops(user_doc: dict):
+    pops = []
+    for idx, pop in enumerate(db["pops"].find()):
+        if not user_doc.get("admin"):
+            del pop["hosts"]
+            del pop["_id"]
+        pops.append(pop)
+
+    return _resp(True, "Retrieved PoPs", data=pops)
+
 
 @app.route("/admin/pop", methods=["POST"])
 @with_authentication(admin=True)
