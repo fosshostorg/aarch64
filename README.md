@@ -6,11 +6,11 @@ All routes return a JSON object with `meta` and `data` keys. `meta` will always 
 
 ```json
 {
-    "meta": {
-        "success": true,
-        "message": "A short description of what went wrong or right"
-    },
-    "data": {}
+  "meta": {
+    "success": true,
+    "message": "A short description of what went wrong or right"
+  },
+  "data": {}
 }
 ```
 
@@ -19,20 +19,22 @@ All routes return a JSON object with `meta` and `data` keys. `meta` will always 
 POST `/auth/signup`
 
 Request body:
+
 ```json
 {
-    "email": "user@example.com",
-    "password": "OCfF23Jg0g0us0LQmg0us0LQm2SkD"
+  "email": "user@example.com",
+  "password": "OCfF23Jg0g0us0LQmg0us0LQm2SkD"
 }
 ```
 
 POST `/auth/login`
 
 Request body:
+
 ```json
 {
-    "email": "user@example.com",
-    "password": "OCfF23Jg0g0us0LQmg0us0LQm2SkD"
+  "email": "user@example.com",
+  "password": "OCfF23Jg0g0us0LQmg0us0LQm2SkD"
 }
 ```
 
@@ -47,9 +49,10 @@ POST `/project`
 Authentication required
 
 Request body:
+
 ```json
 {
-    "name": "My Project Name"
+  "name": "My Project Name"
 }
 ```
 
@@ -63,27 +66,27 @@ Response body:
 
 ```json
 {
-    "meta": {
-        "success": true,
-        "message": "Retrieved project list"
-    },
-    "data": [
+  "meta": {
+    "success": true,
+    "message": "Retrieved project list"
+  },
+  "data": [
+    {
+      "_id": "605d1fbc361f9e55eec97986",
+      "name": "Test Project",
+      "vms": [
         {
-            "_id": "605d1fbc361f9e55eec97986",
-            "name": "Test Project",
-            "vms": [
-                {
-                "_id": "605d1fea3c05da2790ea3dbb",
-                "hostname": "testvm1",
-                "plan": "v1.medium.aarch64",
-                "pop": "dfw",
-                "project": "605d1fbc361f9e55eec97986",
-                "host": 0,
-                "prefix": "2001:db8:ffff::/64"
-                }
-            ]
+          "_id": "605d1fea3c05da2790ea3dbb",
+          "hostname": "testvm1",
+          "plan": "v1.medium.aarch64",
+          "pop": "dfw",
+          "project": "605d1fbc361f9e55eec97986",
+          "host": 0,
+          "prefix": "2001:db8:ffff::/64"
         }
-    ]
+      ]
+    }
+  ]
 }
 ```
 
@@ -97,10 +100,10 @@ Request body:
 
 ```json
 {
-    "hostname": "testvm1",
-    "pop": "dfw",
-    "project": "605d1fbc361f9e55eec97986",
-    "plan": "v1.medium.aarch64"
+  "hostname": "testvm1",
+  "pop": "dfw",
+  "project": "605d1fbc361f9e55eec97986",
+  "plan": "v1.medium.aarch64"
 }
 ```
 
@@ -108,19 +111,19 @@ Response body:
 
 ```json
 {
-    "meta": {
-        "success": true,
-        "message": "VM created"
-    },
-    "data": {
-        "hostname": "testvm1",
-        "plan": "v1.medium.aarch64",
-        "pop": "dfw",
-        "project": "605d1fbc361f9e55eec97986",
-        "host": 0,
-        "prefix": "2001:db8:ffff::/64",
-        "_id": "605d1fea3c05da2790ea3dbb"
-    }
+  "meta": {
+    "success": true,
+    "message": "VM created"
+  },
+  "data": {
+    "hostname": "testvm1",
+    "plan": "v1.medium.aarch64",
+    "pop": "dfw",
+    "project": "605d1fbc361f9e55eec97986",
+    "host": 0,
+    "prefix": "2001:db8:ffff::/64",
+    "_id": "605d1fea3c05da2790ea3dbb"
+  }
 }
 ```
 
@@ -195,10 +198,10 @@ Request body:
 
 ```json
 {
-    "name": "dfw",
-    "provider": "Equinix Metal",
-    "location": "Dallas, TX",
-    "peeringdb_id": 4
+  "name": "dfw",
+  "provider": "Equinix Metal",
+  "location": "Dallas, TX",
+  "peeringdb_id": 4
 }
 ```
 
@@ -210,8 +213,8 @@ Request body:
 
 ```json
 {
-    "pop": "dfw",
-    "ip": "192.0.2.1"
+  "pop": "dfw",
+  "ip": "192.0.2.1"
 }
 ```
 
