@@ -184,3 +184,39 @@ Response body:
   }
 }
 ```
+
+### Admin
+
+POST `/admin/pop`
+
+Admin authentication required
+
+Request body:
+
+```json
+{
+    "name": "dfw",
+    "provider": "Equinix Metal",
+    "location": "Dallas, TX",
+    "peeringdb_id": 4
+}
+```
+
+POST `/admin/host`
+
+Admin authentication required
+
+Request body:
+
+```json
+{
+    "pop": "dfw",
+    "ip": "192.0.2.1"
+}
+```
+
+GET `/admin/ansible`
+
+Admin authentication required
+
+Request body: Ansible config in JSON format
