@@ -90,29 +90,32 @@ def with_json(*outer_args):
     return decorator
 
 
-def with_authentication(func):
+def with_authentication(admin=False):
     """
     Require a user to be authenticated and pass user_doc to function
-    :param func:
-    :return:
     """
 
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        # Get API key from header (default) or cookie (fallback)
-        api_key = request.headers.get("Authorization")
-        if not api_key:
-            api_key = request.cookies.get("key")
-        if not api_key:
-            return _resp(False, "Not authenticated"), 403
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Get API key from header (default) or cookie (fallback)
+            api_key = request.headers.get("Authorization")
+            if not api_key:
+                api_key = request.cookies.get("key")
+            if not api_key:
+                return _resp(False, "Not authenticated"), 403
 
-        user_doc = db["users"].find_one({"key": api_key})
-        if not user_doc:
-            return _resp(False, "Not authenticated"), 403
+            user_doc = db["users"].find_one({"key": api_key})
+            if not user_doc:
+                return _resp(False, "Not authenticated"), 403
+            if admin and not user_doc.get("admin"):
+                return _resp(False, "Unauthorized"), 403
 
-        return func(*args, **kwargs, user_doc=user_doc)
+            return func(*args, **kwargs, user_doc=user_doc)
 
-    return decorated_function
+        return wrapper
+
+    return decorator
 
 
 @app.route("/auth/signup", methods=["POST"])
@@ -272,12 +275,12 @@ def projects_list(user_doc: dict) -> Response:
 #
 #     return Response(status_code=status.HTTP_200_OK, content=pops)
 
-#
-# @app.post("/admin/pop")
-# async def add_pop(pop: PoP, x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
-#     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
-#     if not user_doc:
-#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+# @app.route("/admin/pop")
+# @with_authentication
+# @with_json("name", "provider", "peeringdb_id")
+# def add_pop(json_body: dict, user_doc: dict) -> Response:
+#     if not user_doc.get("admin"):
+#         return _resp(False, "Unauthorized")
 #
 #     try:
 #         new_pop = await db["pops"].insert_one(pop.dict())
@@ -286,8 +289,7 @@ def projects_list(user_doc: dict) -> Response:
 #     if new_pop.inserted_id:
 #         return Response(status_code=status.HTTP_200_OK, content={"detail": f"PoP {pop.name} added"})
 #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create pop")
-#
-#
+
 
 @app.route("/admin/host", methods=["POST"])
 @with_authentication
