@@ -1,14 +1,20 @@
 <script>
 	import { link, push } from "svelte-spa-router";
-	import { getUserInfo, getUserProjects, login } from "../utils";
+	import { getUserInfo, getUserProjects } from "../utils";
 	import { User, Projects } from "../stores";
 	import PageTitle from "../components/PageTitle.svelte";
 
 	let email, password;
 
 	const handleSubmit = async (e) => {
+		// noinspection JSUnresolvedVariable
 		if (__production__) {
-			await login({ email, password })
+			await fetch("__apiRoute__/user/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({email, password}),
+			})
+				.then((resp) => (resp = resp.json()))
 				.then(async (data) => {
 					if (data.meta.success) {
 						await getUserProjects()
