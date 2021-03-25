@@ -238,7 +238,7 @@ def projects_list(user_doc: dict) -> Response:
 
 @app.route("/vms/create", methods=["POST"])
 @with_authentication(admin=False)
-@with_json("hostname", "plan", "pop", "project")
+@with_json("hostname", "plan", "pop", "project", "os")
 def create_vm(json_body: dict, user_doc: dict) -> Response:
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})
     if not pop_doc:
@@ -249,6 +249,9 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     if json_body["plan"] not in config_doc["plans"].keys():
         return _resp(False, "Plan doesn't exist")
+
+    if json_body["os"] not in config_doc["oses"].keys():
+        return _resp(False, "OS doesn't exist")
 
     project_doc = db["projects"].find_one({
         "_id": to_object_id(json_body["project"]),
