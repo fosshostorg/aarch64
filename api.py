@@ -190,7 +190,7 @@ def create_project(json_body: dict, user_doc: dict) -> Response:
 
     project = db["projects"].insert_one({
         "name": json_body["name"],
-        "users": user_doc["_id"]
+        "users": [user_doc["_id"]]
     })
 
     return _resp(True, "Project created", str(project.inserted_id))
@@ -205,7 +205,7 @@ def projects_list(user_doc: dict) -> Response:
 
     projects = list(db["projects"].find({
         "users": {
-            "$in": [str(user_doc["_id"])]
+            "$in": [user_doc["_id"]]
         }
     }, {  # Ignore these keys
         "users": 0
