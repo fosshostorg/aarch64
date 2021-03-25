@@ -4,16 +4,15 @@ import json
 from functools import wraps
 from secrets import token_hex
 
+# noinspection PyPackageRequirements
 from argon2 import PasswordHasher
+# noinspection PyPackageRequirements
 from argon2.exceptions import VerifyMismatchError
 from bson import ObjectId
 from flask import Flask, request, Response, make_response
 from pymongo import ASCENDING, MongoClient
 from pymongo.errors import DuplicateKeyError, InvalidId
 from rich.console import Console
-from rich.traceback import install
-
-install()  # Install rich traceback handler
 
 VERSION = "0.0.1"
 
@@ -90,9 +89,11 @@ def with_json(*outer_args):
     return decorator
 
 
-def with_authentication(admin=False):
+def with_authentication(admin: bool):
     """
     Require a user to be authenticated and pass user_doc to function
+    :param admin: Does the user have to be an administrator?
+    :return:
     """
 
     def decorator(func):
@@ -186,7 +187,7 @@ def user_logout() -> Response:
 
 
 @app.route("/project", methods=["POST"])
-@with_authentication
+@with_authentication(admin=False)
 @with_json("name")
 def create_project(json_body: dict, user_doc: dict) -> Response:
     if not json_body.get("name"):
@@ -201,7 +202,7 @@ def create_project(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/projects", methods=["GET"])
-@with_authentication
+@with_authentication(admin=False)
 def projects_list(user_doc: dict) -> Response:
     """
     Get all projects that a user is part of
@@ -275,31 +276,31 @@ def projects_list(user_doc: dict) -> Response:
 #
 #     return Response(status_code=status.HTTP_200_OK, content=pops)
 
-# @app.route("/admin/pop")
-# @with_authentication
-# @with_json("name", "provider", "peeringdb_id")
-# def add_pop(json_body: dict, user_doc: dict) -> Response:
-#     if not user_doc.get("admin"):
-#         return _resp(False, "Unauthorized")
-#
-#     try:
-#         new_pop = db["pops"].insert_one(pop.dict())
-#     except DuplicateKeyError:
-#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="PoP with this name already exists")
-#     if new_pop.inserted_id:
-#         return Response(status_code=status.HTTP_200_OK, content={"detail": f"PoP {pop.name} added"})
-#     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create pop")
+@app.route("/admin/pop")
+@with_authentication(admin=True)
+@with_json("name", "provider", "peeringdb_id")
+def add_pop(json_body: dict) -> Response:
+    try:
+        new_pop = db["pops"].insert_one({
+            "name": json_body["name"],
+            "provider": json_body["provider"],
+            "peeringdb_id": json_body["peeringdb_id"],
+        })
+    except DuplicateKeyError:
+        return _resp(False, "PoP already exists")
+    if new_pop.inserted_id:
+        return _resp(True, f"PoP {json_body['name']} added")
+    raise _resp(False, "Unable to create PoP")
 
 
 @app.route("/admin/host", methods=["POST"])
-@with_authentication
+@with_authentication(admin=True)
 @with_json("ip", "pop")
-def add_host(json_body: dict, user_doc: dict) -> Response:
-    if not user_doc.get("admin"):
-        return _resp(False, "Unauthorized")
-
-    if not json_body.get("ip"):  # TODO: IP validation
-        return _resp(False, "IP must not be blank")
+def add_host(json_body: dict) -> Response:
+    try:
+        ipaddress.ip_address(json_body["ip"])
+    except ValueError:
+        return _resp(False, "Invalid IP address")
 
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})
     if not pop_doc:
@@ -330,6 +331,7 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
     else:
         return _resp(False, "Unable to add host")
 
+
 # @app.get("/admin/ansible")
 # def get_ansible_hosts(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
 #     user_doc = db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
@@ -356,3 +358,5 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
 #                 }
 #
 #     return Response(status_code=status.HTTP_200_OK, content=_config)
+
+app.run(debug=True)
