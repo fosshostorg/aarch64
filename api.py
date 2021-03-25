@@ -235,45 +235,65 @@ def projects_list(user_doc: dict) -> Response:
     return _resp(True, "Retrieved project list", data=projects)
 
 
-# @app.route("/vms/create", methods=["POST"])
-# @with_authentication
-# @with_json("hostname", "plan", "pop", "project")
-# def create_vm(json_body: dict, user_doc: dict) -> Response:
-#     # Calculate host usage for pop
-#     _host_usage = {}
-#     for idx, host in enumerate(pop_doc["hosts"]):
-#         if idx not in _host_usage:
-#             _host_usage[idx] = 0
-#
-#         # for host_vm in db["vms"].find({"pop": _vm["pop"], "host": idx}):
-#         #     vm_plan_spec = plans[host_vm["plan"]]
-#         #     _host_usage[idx] += (vm_plan_spec["vcpus"] + vm_plan_spec["memory"])
-#
-#     # Sort host usage dict by value (ordered from least used to greatest)
-#     _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
-#
-#     # Find the least utilized host by taking the first element (call next on iter)
-#     _vm["host"] = next(iter(_host_usage))
-#
-#     # Find taken prefixes
-#     taken_prefixes = []
-#     for vm in db["vms"].find({"pop": _vm["pop"]}):
-#         taken_prefixes.append(vm["prefix"])
-#
-#     # Iterate over the selected host's prefix
-#     host_prefix = pop_doc["hosts"][_vm["host"]]["prefix"]
-#     for prefix in list(ipaddress.ip_network(host_prefix).subnets(new_prefix=64)):
-#         prefix = str(prefix)
-#         if prefix not in taken_prefixes:
-#             _vm["prefix"] = prefix
-#     if not _vm.get("prefix"):
-#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to assign VM prefix")
-#
-#     new_vm = db["vms"].insert_one(_vm)
-#     if new_vm.inserted_id:
-#         return Response(status_code=status.HTTP_200_OK, content=VMResponse(**_vm))  # TODO: Make this fit the fields
-#
-#     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create VM")
+@app.route("/vms/create", methods=["POST"])
+@with_authentication(admin=False)
+@with_json("hostname", "plan", "pop", "project")
+def create_vm(json_body: dict, user_doc: dict) -> Response:
+    pop_doc = db["pops"].find_one({"name": json_body["pop"]})
+    if not pop_doc:
+        return _resp(False, "PoP doesn't exist")
+
+    # Update config doc
+    config_doc = db["config"].find_one()
+
+    if json_body["plan"] not in config_doc["plans"].keys():
+        return _resp(False, "Plan doesn't exist")
+
+    project_doc = db["projects"].find_one({
+        "_id": to_object_id(json_body["project"]),
+        "users": {
+            "$in": [user_doc["_id"]]
+        }
+    })
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+    json_body["project"] = to_object_id(json_body["project"])
+
+    # Calculate host usage for pop
+    _host_usage = {}
+    for idx, host in enumerate(pop_doc["hosts"]):
+        if idx not in _host_usage:
+            _host_usage[idx] = 0
+
+        for host_vm in db["vms"].find({"pop": json_body["pop"], "host": idx}):
+            vm_plan_spec = config_doc["plans"][host_vm["plan"]]
+            _host_usage[idx] += (vm_plan_spec["vcpus"] + vm_plan_spec["memory"])
+
+    # Sort host usage dict by value (ordered from least used to greatest)
+    _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
+
+    # Find the least utilized host by taking the first element (call next on iter)
+    json_body["host"] = next(iter(_host_usage))
+
+    # Find taken prefixes
+    taken_prefixes = []
+    for vm in db["vms"].find({"pop": json_body["pop"]}):
+        taken_prefixes.append(vm["prefix"])
+
+    # Iterate over the selected host's prefix
+    host_prefix = pop_doc["hosts"][json_body["host"]]["prefix"]
+    for prefix in list(ipaddress.ip_network(host_prefix).subnets(new_prefix=64)):
+        prefix = str(prefix)
+        if prefix not in taken_prefixes:
+            json_body["prefix"] = prefix
+    if not json_body.get("prefix"):
+        raise _resp(False, "Unable to assign VM prefix")
+
+    new_vm = db["vms"].insert_one(json_body)
+    if new_vm.inserted_id:
+        return _resp(True, "VM created", data=json_body)
+
+    raise _resp(False, "Unable to create VM")
 
 
 @app.route("/pops", methods=["GET"])
