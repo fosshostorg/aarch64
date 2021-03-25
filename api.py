@@ -24,6 +24,19 @@ db = MongoClient("mongodb://localhost:27017")["aarch64"]
 db["users"].create_index([("email", ASCENDING)], background=True, unique=True)
 db["pops"].create_index([("name", ASCENDING)], background=True, unique=True)
 
+# Check for config doc
+config_doc = db["config"].find_one()
+if not config_doc:
+    console.log("Config doc doesn't exist")
+    exit(1)
+
+# Validate config prefix
+try:
+    ipaddress.ip_network(config_doc.get("prefix"), False)
+except ValueError as e:
+    console.log(f"Invalid prefix {config_doc.get('prefix')} ({e})")
+    exit(1)
+
 
 def to_object_id(object_id: str):
     """
@@ -271,10 +284,10 @@ def projects_list(user_doc: dict) -> Response:
 #
 #     return Response(status_code=status.HTTP_200_OK, content=pops)
 
-@app.route("/admin/pop")
+@app.route("/admin/pop", methods=["POST"])
 @with_authentication(admin=True)
 @with_json("name", "provider", "peeringdb_id")
-def add_pop(json_body: dict) -> Response:
+def add_pop(json_body: dict, user_doc: dict) -> Response:
     try:
         new_pop = db["pops"].insert_one({
             "name": json_body["name"],
@@ -291,7 +304,7 @@ def add_pop(json_body: dict) -> Response:
 @app.route("/admin/host", methods=["POST"])
 @with_authentication(admin=True)
 @with_json("ip", "pop")
-def add_host(json_body: dict) -> Response:
+def add_host(json_body: dict, user_doc: dict) -> Response:
     try:
         ipaddress.ip_address(json_body["ip"])
     except ValueError:
@@ -300,6 +313,11 @@ def add_host(json_body: dict) -> Response:
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})
     if not pop_doc:
         return _resp(False, "PoP doesn't exist")
+
+    if pop_doc.get("hosts"):
+        for host in pop_doc.get("hosts"):
+            if host["ip"] == json_body["ip"]:
+                return _resp(False, f"Host with IP {json_body['ip']} already exists")
 
     host = {"ip": json_body["ip"]}
 
@@ -312,7 +330,7 @@ def add_host(json_body: dict) -> Response:
 
     # Find next available prefix
     config_doc = db["config"].find_one()
-    parent_prefix = ipaddress.ip_network(config_doc["prefix"])
+    parent_prefix = ipaddress.ip_network(config_doc["prefix"], False)
     for slash48 in list(parent_prefix.subnets(new_prefix=48)):
         slash48 = str(slash48)
         if slash48 not in taken_prefixes:
@@ -321,7 +339,7 @@ def add_host(json_body: dict) -> Response:
         raise _resp(False, "No available prefixes to assign")
 
     new_host = db["pops"].update_one({"_id": pop_doc["_id"]}, {"$push": {"hosts": host}})
-    if new_host.upserted_id:
+    if new_host.modified_count == 1:
         return _resp(True, "Host added")
     else:
         return _resp(False, "Unable to add host")
