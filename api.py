@@ -2,6 +2,7 @@ import datetime
 import ipaddress
 import json
 from functools import wraps
+from os import environ
 from secrets import token_hex
 
 # noinspection PyPackageRequirements
@@ -394,4 +395,4 @@ def get_ansible_hosts(user_doc: dict):
     return _resp(True, "Retrieved ansible config", data=_config)
 
 
-app.run(debug=True)
+app.run(debug=environ.get("AARCH64_DEBUG"))
