@@ -233,6 +233,12 @@ def projects_list(user_doc: dict) -> Response:
         "users": 0
     }))
 
+    for project in projects:
+        if not project.get("vms"):
+            project["vms"] = []
+        for vm in db["vms"].find({"project": project["_id"]}):
+            project["vms"].append(vm)
+
     return _resp(True, "Retrieved project list", data=projects)
 
 
