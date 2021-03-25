@@ -135,8 +135,6 @@ def signup(json_body: dict) -> Response:
     try:
         db["users"].insert_one({
             "email": json_body["email"],
-            "name": json_body["name"],
-            "role": json_body["role"],
             "password": argon.hash(json_body["password"]),
             "key": token_hex(24)
         })
@@ -163,10 +161,7 @@ def user_login(json_body: dict) -> Response:
         if not valid:
             raise VerifyMismatchError
         else:
-            rsp = make_response(_resp(True, "Authentication successful", {
-                "role": user["role"],
-                "name": user["name"]
-            }))
+            rsp = make_response(_resp(True, "Authentication successful"))
             # Set the API key cookie with a 90 day expiration date
             rsp.set_cookie("key", user["key"], httponly=True, secure=True, expires=datetime.datetime.now() + datetime.timedelta(days=90))
             return rsp
