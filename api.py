@@ -120,7 +120,7 @@ def with_authentication(admin=False):
 
 @app.route("/auth/signup", methods=["POST"])
 @with_json("email", "password")
-async def signup(json_body: dict) -> Response:
+def signup(json_body: dict) -> Response:
     if not json_body.get("email"):
         return _resp(False, "Account email must exist")
 
@@ -221,14 +221,14 @@ def projects_list(user_doc: dict) -> Response:
 # @app.route("/vms/create", methods=["POST"])
 # @with_authentication
 # @with_json("hostname", "plan", "pop", "project")
-# async def create_vm(json_body: dict, user_doc: dict) -> Response:
+# def create_vm(json_body: dict, user_doc: dict) -> Response:
 #     # Calculate host usage for pop
 #     _host_usage = {}
 #     for idx, host in enumerate(pop_doc["hosts"]):
 #         if idx not in _host_usage:
 #             _host_usage[idx] = 0
 #
-#         # async for host_vm in db["vms"].find({"pop": _vm["pop"], "host": idx}):
+#         # for host_vm in db["vms"].find({"pop": _vm["pop"], "host": idx}):
 #         #     vm_plan_spec = plans[host_vm["plan"]]
 #         #     _host_usage[idx] += (vm_plan_spec["vcpus"] + vm_plan_spec["memory"])
 #
@@ -240,7 +240,7 @@ def projects_list(user_doc: dict) -> Response:
 #
 #     # Find taken prefixes
 #     taken_prefixes = []
-#     async for vm in db["vms"].find({"pop": _vm["pop"]}):
+#     for vm in db["vms"].find({"pop": _vm["pop"]}):
 #         taken_prefixes.append(vm["prefix"])
 #
 #     # Iterate over the selected host's prefix
@@ -252,20 +252,20 @@ def projects_list(user_doc: dict) -> Response:
 #     if not _vm.get("prefix"):
 #         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to assign VM prefix")
 #
-#     new_vm = await db["vms"].insert_one(_vm)
+#     new_vm = db["vms"].insert_one(_vm)
 #     if new_vm.inserted_id:
 #         return Response(status_code=status.HTTP_200_OK, content=VMResponse(**_vm))  # TODO: Make this fit the fields
 #
 #     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to create VM")
 
 # @app.get("/pops")
-# async def get_pops(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
-#     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key})
+# def get_pops(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+#     user_doc = db["users"].find_one({"api_key": x_token if x_token else api_key})
 #     if not user_doc:
 #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 #
 #     pops = []
-#     async for pop in db["pops"].find():
+#     for pop in db["pops"].find():
 #         if user_doc.get("admin"):
 #             pops.append(pop)
 #         else:
@@ -283,7 +283,7 @@ def projects_list(user_doc: dict) -> Response:
 #         return _resp(False, "Unauthorized")
 #
 #     try:
-#         new_pop = await db["pops"].insert_one(pop.dict())
+#         new_pop = db["pops"].insert_one(pop.dict())
 #     except DuplicateKeyError:
 #         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="PoP with this name already exists")
 #     if new_pop.inserted_id:
@@ -309,13 +309,13 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
 
     # Get taken prefixes
     taken_prefixes = []
-    async for pop in db["pops"].find():
+    for pop in db["pops"].find():
         if pop.get("hosts"):
             for host in pop.get("hosts"):
                 taken_prefixes.append(host["prefix"])
 
     # Find next available prefix
-    config_doc = await db["config"].find_one()
+    config_doc = db["config"].find_one()
     parent_prefix = ipaddress.ip_network(config_doc["prefix"])
     for slash48 in list(parent_prefix.subnets(new_prefix=48)):
         slash48 = str(slash48)
@@ -331,12 +331,12 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Unable to add host")
 
 # @app.get("/admin/ansible")
-# async def get_ansible_hosts(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
-#     user_doc = await db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
+# def get_ansible_hosts(x_token: Optional[str] = Header(None), api_key: Optional[str] = Cookie(None)):
+#     user_doc = db["users"].find_one({"api_key": x_token if x_token else api_key, "admin": True})
 #     if not user_doc:
 #         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 #
-#     config_doc = await db["config"].find_one()
+#     config_doc = db["config"].find_one()
 #     _config = {
 #         "all": {
 #             "vars": {
@@ -348,7 +348,7 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
 #         }
 #     }
 #
-#     async for pop in db["pops"].find():
+#     for pop in db["pops"].find():
 #         if pop.get("hosts"):
 #             for idx, host in enumerate(pop.get("hosts")):
 #                 _config["all"]["hosts"][pop["name"] + str(idx)] = {
