@@ -81,6 +81,7 @@ Response body:
           "plan": "v1.medium.aarch64",
           "pop": "dfw",
           "project": "605d1fbc361f9e55eec97986",
+          "os": "debian",
           "host": 0,
           "prefix": "2001:db8:ffff::/64"
         }
