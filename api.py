@@ -281,8 +281,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
             _host_usage[idx] = 0
 
         for host_vm in db["vms"].find({"pop": json_body["pop"], "host": idx}):
-            vm_plan_spec = config_doc["plans"][host_vm["plan"]]
-            _host_usage[idx] += (vm_plan_spec["vcpus"] + vm_plan_spec["memory"])
+            _host_usage[idx] += (host_vm["vcpus"] + host_vm["memory"])
 
     # Sort host usage dict by value (ordered from least used to greatest)
     _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
