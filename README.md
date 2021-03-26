@@ -106,7 +106,8 @@ Request body:
   "hostname": "testvm1",
   "pop": "dfw",
   "project": "605d1fbc361f9e55eec97986",
-  "plan": "v1.medium.aarch64"
+  "plan": "v1.medium.aarch64",
+  "os": "debian"
 }
 ```
 
