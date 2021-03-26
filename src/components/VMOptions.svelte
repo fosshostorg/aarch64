@@ -6,7 +6,7 @@
 			label: "CONSOLE",
 			icon: "airplay",
 			action: (e) => {
-				alert(`ssh ${vm.uuid}@${vm.host}.rescue.arm-64.com`);
+				alert(`ssh ${vm.hostname}@${vm.host}.rescue.arm-64.com`);
 			},
 		},
 		{ label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },

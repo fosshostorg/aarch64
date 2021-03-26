@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import VMSelect from "../components/VMSelect.svelte";
 	import Navbar from "../components/Navbar.svelte";
 	import PageHeader from "../components/PageHeader.svelte";
@@ -11,7 +11,7 @@
 	import PageTitle from "../components/PageTitle.svelte";
 
 	let images = {};
-	let tiers = {};
+	let plans = {};
 	let locations = [];
 	let image = "";
 	let tier = "";
@@ -65,76 +65,34 @@
 		}
 	};
 
-	const countryCodeToFlag = (cc) => {
-		const chars = [...cc.toUpperCase()].map((c) => c.charCodeAt() + 127397);
-		return String.fromCodePoint(...chars);
-	};
+	// const countryCodeToFlag = (cc) => {
+	// 	const chars = [...cc.toUpperCase()].map((c) => c.charCodeAt() + 127397);
+	// 	return String.fromCodePoint(...chars);
+	// };
 
 	const loadData = async () => {
+		// @ts-ignore
 		if (__production__) {
 			await fetch("__apiRoute__/system")
 				.then((res) => res.json())
 				.then((body) => {
 					if (!body.meta.success) {
+						console.log(body.meta.message);
 						window.location.href = "/#/login";
 					}
 
-					console.log(body.data.locations);
+					let data: System = body.data as System;
+					plans = data.plans;
+					data.oses.forEach(os => {images[os] = { version: "latest" }});
+					locations = data.pops;
 
-					tiers = body.data.tiers;
-					images = body.data.images;
-					locations = Object.keys(body.data.locations).map((key) => {
-						let name = body.data.locations[key].name;
-						return {
-							id: key,
-							label:
-								countryCodeToFlag(
-									name.split(" ")[name.split(" ").length - 1]
-								) +
-								"   " +
-								name,
-						};
-					});
 					console.log(locations);
 					image = Object.keys(images)[0];
-					tier = Object.keys(tiers)[0];
+					tier = Object.keys(plans)[0];
 					location = locations[0];
 				});
 		} else {
-			tiers = {
-				"1": { vcpus: "1", memory: "1", disk: "32" },
-				"2": { vcpus: "4", memory: "8", disk: "64" },
-				"3": { vcpus: "8", memory: "16", disk: "10" },
-				"4": { vcpus: "16", memory: "32", disk: "128" },
-				"5": { vcpus: "32", memory: "64", disk: "128" },
-			};
-
-			images = {
-				Debian: { version: "latest" },
-				Ubuntu: { version: "latest" },
-				CentOS: { version: "latest" },
-			};
-
-			image = Object.keys(images)[0];
-			tier = Object.keys(tiers)[0];
-
-			locations = {
-				fmt: { name: "Fremont, US" },
-				pdx: { name: "Portland, US" },
-			};
-			locations = Object.keys(locations).map((key) => {
-				let name = locations[key].name;
-				return {
-					id: key,
-					label:
-						countryCodeToFlag(
-							name.split(" ")[name.split(" ").length - 1]
-						) +
-						"   " +
-						name,
-				};
-			});
-			location = locations[0];
+			
 		}
 	};
 
@@ -142,7 +100,6 @@
 		loadData();
 	});
 
-	$: console.log(locations);
 </script>
 
 <PageTitle title="Request New Resources" />
@@ -162,7 +119,7 @@
 				</div>
 				<span class="form-header"> Choose a tier: </span>
 				<div class="create-form-select">
-					<VMSelect bind:current={tier} data={tiers} isOS={false} />
+					<VMSelect bind:current={tier} data={plans} isOS={false} />
 				</div>
 				<span class="form-header"> Finalize and create: </span>
 				<div class="create-form-final">
@@ -222,7 +179,7 @@
 									isClearable={false}
 									isSearchable={false}
 									items={locations}
-									optionIdentifier="id"
+									optionIdentifier="name"
 									bind:selectedValue={location} />
 							{/if}
 						</div>

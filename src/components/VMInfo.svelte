@@ -11,7 +11,7 @@
 	</div>
 	<div class="icons">
 		<span>
-			<div class="version">v10.7.0</div>
+			<div class="version">latest</div>
 			<img
 				src={'./img/' + vm.os.toLowerCase() + '.svg'}
 				alt={vm.os + ' Logo'} />

@@ -3,7 +3,7 @@
 	import { User } from "../stores";
 	import Dropdown from "./Dropdown.svelte";
 
-	export let breadcrumbs: string[] = [];
+	export let breadcrumbs: { path: string, label: string }[] = [];
 
 	async function logout() {
 		await fetch("__apiRoute__/user/logout", {

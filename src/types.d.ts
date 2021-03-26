@@ -30,3 +30,23 @@ type VM = {
 	memory: number;
 	disk: number;
 }
+
+type System = {
+	pops: Pop[];
+	plans: { [key: string]: Plan };
+	oses: string[];
+}
+
+type Pop = {
+	"_id": string;
+	name: string;
+	provider: string;
+	location: string;
+	peeringdb_id: number;
+}
+
+type Plan = {
+	vcpus: number;
+	memory: number;
+	disk: number;
+}
