@@ -78,7 +78,9 @@ Response body:
         {
           "_id": "605d1fea3c05da2790ea3dbb",
           "hostname": "testvm1",
-          "plan": "v1.medium.aarch64",
+          "vcpus": 4,
+          "memory": 8,
+          "disk": 16,
           "pop": "dfw",
           "project": "605d1fbc361f9e55eec97986",
           "os": "debian",
@@ -118,7 +120,9 @@ Response body:
   },
   "data": {
     "hostname": "testvm1",
-    "plan": "v1.medium.aarch64",
+    "vcpus": 4,
+    "memory": 8,
+    "disk": 16,
     "pop": "dfw",
     "project": "605d1fbc361f9e55eec97986",
     "host": 0,

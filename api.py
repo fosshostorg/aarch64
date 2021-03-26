@@ -256,6 +256,11 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     if json_body["plan"] not in config_doc["plans"].keys():
         return _resp(False, "Plan doesn't exist")
 
+    json_body["vcpus"] = config_doc["plans"][json_body["plan"]]["vcpus"]
+    json_body["memory"] = config_doc["plans"][json_body["plan"]]["memory"]
+    json_body["disk"] = config_doc["plans"][json_body["plan"]]["disk"]
+    del json_body["plan"]
+
     if json_body["os"] not in config_doc["oses"].keys():
         return _resp(False, "OS doesn't exist")
 
