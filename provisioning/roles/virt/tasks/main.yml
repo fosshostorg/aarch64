@@ -14,3 +14,9 @@
   with_items:
     - /opt/aarch64/images/
     - /opt/aarch64/vms/
+
+- name: Get images
+  get_url:
+    url: "{{ oses[item] }}"
+    dest: "/opt/aarch64/images/{{ item }}.qcow2"
+  with_items: "{{ oses }}"
