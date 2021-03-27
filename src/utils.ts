@@ -1,3 +1,5 @@
+import { push } from "svelte-spa-router";
+
 const checkMeta = (body: any): void => {
 	if (!body.meta.success) {
 		console.warn(
@@ -11,7 +13,15 @@ export const getUserInfo = async () => {
 	await fetch("__apiRoute__/auth/user", {
 		method: "GET",
 	})
-		.then((res) => (body = res.json()))
+		.then((res) => {
+			if (!res.ok) {
+				console.log("User not logged in, redirecting...");
+				push('/login');
+				body = null;
+			} else {
+				body = res.json()
+			}
+		})
 		.catch((err) => console.log(err));
 
 	checkMeta(body);
@@ -76,24 +86,22 @@ export const getUserInfoAndProjects = async (): Promise<{
 			},
 			projects: [
 				{
-					_id: "5fe427dd7354646035cd74cf",
-					name: "Dev Project",
-					vms: [
+					"_id": "605d1fbc361f9e55eec97986",
+					"name": "Test Project",
+					"vms": [
 						{
-							uuid: "11111111-66ba-1111-1111-9a3db3111a21",
-							hostname: "11111111-1111-4ecc-b989-0022d2415136",
-							tier: 1,
-							os: "Debian",
-							host: "pdx0",
-							prefix: "2001:db8:18fc:184::/64",
-							gateway: "2001:db8:18fc:184::1",
-							enabled: true,
-							vcpus: 1,
-							memory: 1,
-							disk: 10,
-						},
+							"_id": "605d1fea3c05da2790ea3dbb",
+							"hostname": "testvm1",
+							"vcpus": 4,
+							"memory": 8,
+							"disk": 16,
+							"pop": "dfw",
+							"project": "605d1fbc361f9e55eec97986",
+							"os": "debian",
+							"host": 0,
+							"prefix": "2001:db8:ffff::/64"
+						}
 					],
-					keys: [],
 				},
 			],
 		};
