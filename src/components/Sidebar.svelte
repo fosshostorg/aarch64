@@ -15,8 +15,8 @@
 		{
 			header: "Account",
 			items: [
-				{ name: "Settings", route: "/account/settings" },
-				{ name: "API", route: "https://api.aarch64.com/docs", isGlobal: true },
+				// { name: "Settings", route: "/account/settings" },
+				// { name: "API", route: "https://github.com/", isGlobal: true },
 				{ name: "Docs", route: "/docs" },
 			],
 			open: true,
