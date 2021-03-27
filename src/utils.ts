@@ -1,7 +1,7 @@
 import { push } from "svelte-spa-router";
 
 const checkMeta = (body: any): void => {
-	if (!body.meta.success) {
+	if (body !== null && !body.meta.success) {
 		console.warn(
 			"Failed request: " + body.meta.message,
 		)
@@ -19,11 +19,11 @@ export const getUserInfo = async () => {
 				push('/login');
 				body = null;
 			} else {
-				body = res.json()
+				body = res.json();
 			}
 		})
 		.catch((err) => console.log(err));
-
+	
 	checkMeta(body);
 	return body.data;
 };
