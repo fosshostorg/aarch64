@@ -107,7 +107,7 @@
 
 </script>
 
-<PageTitle title="Request New Resources" />
+<PageTitle title="AARCH64 | Create VM" />
 
 <main>
 	<Navbar breadcrumbs={[
