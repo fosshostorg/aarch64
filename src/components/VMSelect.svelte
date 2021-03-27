@@ -16,7 +16,7 @@
 						src={'./img/' + option.toLowerCase() + '.svg'}
 						alt={option + ' Logo'} />
 				{/if}
-				<span class="selection-card-header"> {i+1} </span>
+				<span class="selection-card-header"> {option} </span>
 				<divider />
 				{#if isOS}
 					<span class="selection-card-text">
@@ -78,7 +78,7 @@
 	.selection-card-header {
 		color: white;
 		font-weight: 500;
-		font-size: 22px;
+		font-size: 17px;
 	}
 
 	.selected .selection-card-header {
