@@ -3,6 +3,7 @@
 	import { wrap } from "svelte-spa-router/wrap";
 	import Index from "./pages/Index.svelte";
 	import Login from "./pages/Login.svelte";
+	import Signup from "./pages/Signup.svelte";
 	import { onMount } from "svelte";
 	import { consoleWelcomeMessage, getUserInfoAndProjects } from "./utils";
 	import { Projects, User } from "./stores";
@@ -22,6 +23,7 @@
 	const routes = {
 		"/": Index,
 		"/login": Login,
+		"/signup": Signup,
 		"/dashboard": dashboardWrap,
 		"/dashboard/*": dashboardWrap,
 		"*": NotFound,

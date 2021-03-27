@@ -1,26 +1,21 @@
 <script>
 	import { link, push } from "svelte-spa-router";
-	import { getUserInfo, getUserProjects, login } from "../utils";
-	import { User, Projects } from "../stores";
 	import PageTitle from "../components/PageTitle.svelte";
 
 	let email, password;
 
 	const handleSubmit = async (e) => {
+		// noinspection JSUnresolvedVariable
 		if (__production__) {
-			await login({ email, password })
+			await fetch("__apiRoute__/auth/signup", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({email, password}),
+			})
+				.then((resp) => resp.json())
 				.then(async (data) => {
 					if (data.meta.success) {
-						await getUserProjects()
-							.then((data) => {
-								$Projects = data.data;
-							})
-							.then(async () => {
-								await getUserInfo().then((data) => {
-									$User = data.data;
-									push("/dashboard/create");
-								});
-							});
+						await push("/login")
 					} else {
 						alert(data.meta.message);
 					}
@@ -51,76 +46,77 @@
 				type="password" />
 			<button type="submit">SIGNUP</button>
 		</form>
+		<a href="/login" use:link>Already have an account? <b>Log In</b></a>
 	</div>
 </main>
 
-<PageTitle title="ARM-64 Dashboard Login" />
+<PageTitle title="ARM-64 Dashboard Signup" />
 
 <style>
-	main {
-		width: 100vw;
-		min-height: 100vh;
-		background-color: #0e0d0d;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+    main {
+        width: 100vw;
+        min-height: 100vh;
+        background-color: #0e0d0d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-	button {
-		width: 100%;
-		height: 40px;
-		border: none;
-		color: white;
-		background-color: #0e0d0d;
-		font-size: 22px;
-		font-weight: 500;
-		font-family: inherit;
-		margin: 0px;
-	}
+    button {
+        width: 100%;
+        height: 40px;
+        border: none;
+        color: white;
+        background-color: #0e0d0d;
+        font-size: 22px;
+        font-weight: 500;
+        font-family: inherit;
+        margin: 0px;
+    }
 
-	button:active {
-		margin: 0px;
-		padding: 0px 8px;
-		opacity: 0.85;
-	}
+    button:active {
+        margin: 0px;
+        padding: 0px 8px;
+        opacity: 0.85;
+    }
 
-	a {
-		color: #0e0d0d;
-		font-size: 12px;
-		margin-top: 10px;
-	}
+    a {
+        color: #0e0d0d;
+        font-size: 12px;
+        margin-top: 10px;
+    }
 
-	div {
-		width: 324px;
-		height: 368px;
-		background-color: white;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
+    div {
+        width: 324px;
+        height: 368px;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-	form {
-		width: calc(100% - 50px);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		margin-top: 25px;
-		padding-top: 25px;
-		border-top: 1px solid #0e0d0d4f;
-	}
+    form {
+        width: calc(100% - 50px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 25px;
+        padding-top: 25px;
+        border-top: 1px solid #0e0d0d4f;
+    }
 
-	input {
-		width: calc(100% - 12px);
-		border: 1px solid #0e0d0d;
-		height: 38px;
-		color: #0e0d0d;
-		padding: 0 0 0 10px;
-		font-size: 18px;
-		margin: 0 0 18px 0;
-	}
+    input {
+        width: calc(100% - 12px);
+        border: 1px solid #0e0d0d;
+        height: 38px;
+        color: #0e0d0d;
+        padding: 0 0 0 10px;
+        font-size: 18px;
+        margin: 0 0 18px 0;
+    }
 
-	img {
-		width: calc(100% - 50px);
-		margin-top: 25px;
-	}
+    img {
+        width: calc(100% - 50px);
+        margin-top: 25px;
+    }
 </style>
