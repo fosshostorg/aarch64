@@ -76,6 +76,18 @@ Request body:
 }
 ```
 
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "Project created"
+  },
+  "data": "605d72d2ccfea63484bfe78e"
+}
+```
+
 GET `/projects`
 
 Authentication required
