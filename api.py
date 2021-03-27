@@ -308,9 +308,10 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     # Iterate over the selected host's prefix
     host_prefix = pop_doc["hosts"][json_body["host"]]["prefix"]
     for prefix in list(ipaddress.ip_network(host_prefix).subnets(new_prefix=64)):
-        prefix = str(prefix)
-        if prefix not in taken_prefixes:
-            json_body["prefix"] = prefix
+        if str(prefix) not in taken_prefixes:
+            json_body["prefix"] = str(prefix)
+            json_body["gateway"] = str(prefix[1])
+            json_body["address"] = str(prefix[2]) + "/" + str(str(prefix.prefixlen))
     if not json_body.get("prefix"):
         raise _resp(False, "Unable to assign VM prefix")
 
