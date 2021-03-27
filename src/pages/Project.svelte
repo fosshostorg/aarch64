@@ -86,8 +86,8 @@
         margin: 0 auto;
         font-size: 16px;
         padding: 0 30px;
-				text-decoration: none;
-				width: 150px;
+        text-decoration: none;
+        width: 150px;
     }
 
     button:active {
