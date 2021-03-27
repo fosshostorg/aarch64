@@ -13,7 +13,7 @@
 		"/create": Create,
 		"/projects/create": NewProject,
 		"/projects/:project_id": Project,
-		"/projects/:project_id/resources/:resource_id": Resource,
+		"/projects/:project_id/resources/:resource_id": Resource
 	};
 
 	onMount(() => {
@@ -22,10 +22,12 @@
 		}
 
 		// Redirect to projects create page if user doesn't have any projects, otherwise redirect to their first project
-		if ($Projects.length < 1) {
-			push("/dashboard/projects/create")
-		} else {
-			push("/dashboard/projects/" + $Projects[0]._id)
+		if (window.location.hash === "#/dashboard") {
+			if ($Projects.length < 1) {
+				push("/dashboard/projects/create");
+			} else {
+				push("/dashboard/projects/" + $Projects[0]._id);
+			}
 		}
 	});
 </script>
@@ -38,7 +40,7 @@
 {/if}
 
 <style>
-	div {
-		width: calc(100% - var(--sidebar-width));
-	}
+    div {
+        width: calc(100% - var(--sidebar-width));
+    }
 </style>
