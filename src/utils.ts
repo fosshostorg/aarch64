@@ -11,7 +11,7 @@ const checkMeta = (body: any): void => {
 export const getUserInfo = async () => {
 	let body: any = null;
 	await fetch("__apiRoute__/auth/user", {
-		method: "GET"
+		method: "GET",
 	})
 		.then(async (res) => {
 			if (!res.ok) {
@@ -25,14 +25,14 @@ export const getUserInfo = async () => {
 		})
 		.catch((err) => console.log(err));
 
-	console.log(body)
+	console.log(body);
 	return body;
 };
 
 export const getUserProjects = async () => {
 	let body: any = null;
 	const res = await fetch("__apiRoute__/projects", {
-		method: "GET"
+		method: "GET",
 	})
 		.then(async (res) => {
 			body = await res.json();
@@ -54,7 +54,7 @@ export const addNewProject = async (data: { name: string }) => {
 	await fetch("__apiRoute__/project", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(data)
+		body: JSON.stringify(data),
 	})
 		.then(async (res) => {
 			body = await res.json();
@@ -65,12 +65,18 @@ export const addNewProject = async (data: { name: string }) => {
 	return body;
 };
 
-export const createVM = async (project: string, hostname: string, plan: string, os: string, pop: string) => {
+export const createVM = async (
+	project: string,
+	hostname: string,
+	plan: string,
+	os: string,
+	pop: string
+) => {
 	let body: any = null;
 	await fetch("__apiRoute__/vms/create", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ project, hostname, plan, os, pop })
+		body: JSON.stringify({ project, hostname, plan, os, pop }),
 	})
 		.then(async (res) => {
 			body = await res.json();
@@ -89,28 +95,28 @@ export const getUserInfoAndProjects = async (): Promise<{
 	if (!__production__) {
 		return {
 			user: {
-				email: "dev@dev.dev"
+				email: "dev@dev.dev",
 			},
 			projects: [
 				{
-					"_id": "605d1fbc361f9e55eec97986",
-					"name": "Test Project",
-					"vms": [
+					_id: "605d1fbc361f9e55eec97986",
+					name: "Test Project",
+					vms: [
 						{
-							"_id": "605d1fea3c05da2790ea3dbb",
-							"hostname": "testvm1",
-							"vcpus": 4,
-							"memory": 8,
-							"disk": 16,
-							"pop": "dfw",
-							"project": "605d1fbc361f9e55eec97986",
-							"os": "debian",
-							"host": 0,
-							"prefix": "2001:db8:ffff::/64"
-						}
-					]
-				}
-			]
+							_id: "605d1fea3c05da2790ea3dbb",
+							hostname: "testvm1",
+							vcpus: 4,
+							memory: 8,
+							disk: 16,
+							pop: "dfw",
+							project: "605d1fbc361f9e55eec97986",
+							os: "debian",
+							host: 0,
+							prefix: "2001:db8:ffff::/64",
+						},
+					],
+				},
+			],
 		};
 	}
 

@@ -19,7 +19,6 @@ jobs:
 
       - name: Build frontend
         run: npm i ; npm run build
-
 #      - name: Copy files to server
 #        uses: appleboy/scp-action@master
 #        with:
