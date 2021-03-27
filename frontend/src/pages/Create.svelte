@@ -46,7 +46,9 @@
 				for (const hostname of hostnames) {
 					project_id = project._id;
 					await createVM(project._id, hostname, plan, image, location.name)
-						.then((data) => {}) // TODO: Forward here somehow
+						.then((data) => {
+							console.log(data)
+						}) // TODO: Forward here somehow
 						.catch((err) => console.log(err));
 				}
 				await push("/dashboard/projects/" + project_id);
@@ -55,8 +57,10 @@
 
 			await createVM(project._id, hostnames[0], plan, image, location.name)
 				.then((data) => {
-					if (data !== null) {
+					if (data !== null && data.meta.success) {
 						push("/dashboard/projects/" + project._id);
+					} else {
+						console.log(data)
 					}
 				})
 				.catch((err) => console.log(err));
