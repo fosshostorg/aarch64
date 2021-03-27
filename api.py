@@ -414,7 +414,8 @@ def get_ansible_hosts(user_doc: dict):
             "vars": {
                 "ansible_user": config_doc["user"],
                 "ansible_port": config_doc["port"],
-                "ansible_ssh_private_key_file": config_doc["key"]
+                "ansible_ssh_private_key_file": config_doc["key"],
+                "oses": config_doc["oses"]
             },
             "hosts": {}
         }
