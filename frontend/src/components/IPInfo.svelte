@@ -6,13 +6,11 @@
 	<thead>
 		<tr>
 			<th>Prefix</th>
-			<th>Gateway</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
 			<td>{vm.prefix}</td>
-			<td>{vm.gateway}</td>
 		</tr>
 	</tbody>
 </table>
