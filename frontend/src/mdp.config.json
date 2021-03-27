@@ -1,0 +1,17 @@
+{
+	"sidebar": {
+		"docs": {
+			"Documentation": [{ "route": "networking", "label": "Networking" }],
+			"default-open": ["Documentation"]
+		}
+	},
+	"navbar": {
+		"docs": {
+			"title": "Documentation",
+			"logo": {
+				"alt": "AARCH64 Logo",
+				"src": "./img/AARCH64B.png"
+			}
+		}
+	}
+}
