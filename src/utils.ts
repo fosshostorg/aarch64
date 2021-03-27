@@ -24,7 +24,7 @@ export const getUserInfo = async () => {
 		})
 		.catch((err) => console.log(err));
 	
-	checkMeta(body);
+
 	return body.data;
 };
 
@@ -33,11 +33,11 @@ export const getUserProjects = async () => {
 	const res = await fetch("__apiRoute__/projects", {
 		method: "GET",
 	})
-		.then((res) => (body = res.json()))
+		.then((res) => {body = res.json(); body = body.data})
 		.catch((err) => console.log(err));
 
-	checkMeta(body);
-	return body.data;
+
+	return body;
 };
 
 export const updateUserInfo = async (user: { email: string }) => {
@@ -53,11 +53,11 @@ export const addNewProject = async (data: { name: string }) => {
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(data),
 	})
-		.then((res) => (body = res.json()))
+		.then((res) => {body = res.json(); body = body.data})
 		.catch((err) => console.log(err));
 
-	checkMeta(body);
-	return body.data;
+
+	return body;
 };
 
 export const createVM = async (project: string, hostname: string, plan: string, os: string, pop: string) => {
@@ -67,11 +67,11 @@ export const createVM = async (project: string, hostname: string, plan: string, 
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({project, hostname, plan, os, pop}),
 	})
-		.then((res) => (body = res.json()))
+		.then((res) => {body = res.json(); body = body.data})
 		.catch((err) => console.log(err));
 	
-	checkMeta(body);
-	return body.data;
+
+	return body;
 };
 
 export const getUserInfoAndProjects = async (): Promise<{
