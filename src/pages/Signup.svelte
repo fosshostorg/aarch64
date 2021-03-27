@@ -10,12 +10,12 @@
 			await fetch("__apiRoute__/auth/signup", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({email, password}),
+				body: JSON.stringify({ email, password })
 			})
 				.then((resp) => resp.json())
 				.then(async (data) => {
 					if (data.meta.success) {
-						await push("/login")
+						await push("/login");
 					} else {
 						alert(data.meta.message);
 					}
@@ -32,7 +32,7 @@
 
 <main>
 	<div>
-		<img alt="ARM-64 Logo" src="./img/ARM-64B.png" />
+		<img alt="AARCH64 Logo" src="./img/AARCH64B.png" />
 		<form on:submit|preventDefault={handleSubmit}>
 			<input
 				autocomplete="email"
@@ -50,7 +50,7 @@
 	</div>
 </main>
 
-<PageTitle title="ARM-64 Dashboard Signup" />
+<PageTitle title="AARCH64 Dashboard Signup" />
 
 <style>
     main {

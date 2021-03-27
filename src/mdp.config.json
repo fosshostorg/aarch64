@@ -9,8 +9,8 @@
 		"docs": {
 			"title": "Documentation",
 			"logo": {
-				"alt": "ARM-64 Logo",
-				"src": "./img/ARM-64B.png"
+				"alt": "AARCH64 Logo",
+				"src": "./img/AARCH64B.png"
 			}
 		}
 	}

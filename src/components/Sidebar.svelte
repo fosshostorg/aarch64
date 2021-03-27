@@ -25,7 +25,7 @@
 </script>
 
 <nav>
-	<img class="logo" src="./img/ARM-64.png" alt="ARM-64 Logo" />
+	<img class="logo" src="./img/AARCH64.png" alt="AARCH64 Logo" />
 	<ul class="sidebar-categories">
 		{#each sidebar as category}
 			<divider />

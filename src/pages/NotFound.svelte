@@ -7,7 +7,7 @@
 
 <main>
 	<div>
-		<img alt="ARM-64 Logo" src="./img/ARM-64B.png" />
+		<img alt="AARCH64 Logo" src="./img/AARCH64B.png" />
 		<h1>404 Not Found</h1>
 		<a href="/" use:link>Back to home</a>
 	</div>

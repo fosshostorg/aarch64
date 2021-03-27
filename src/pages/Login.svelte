@@ -43,7 +43,7 @@
 
 <main>
 	<div>
-		<img alt="ARM-64 Logo" src="./img/ARM-64B.png" />
+		<img alt="AARCH64 Logo" src="./img/AARCH64B.png" />
 		<form on:submit|preventDefault={handleSubmit}>
 			<input
 				autocomplete="email"
@@ -61,7 +61,7 @@
 	</div>
 </main>
 
-<PageTitle title="ARM-64 Dashboard Login" />
+<PageTitle title="AARCH64 Dashboard Login" />
 
 <style>
 	main {
