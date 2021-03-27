@@ -1,0 +1,33 @@
+- name: Add natesales apt repo
+  apt_repository:
+    repo: deb [trusted=yes] https://repo.natesales.net/apt /
+    state: present
+
+- name: Add apt repo for bird
+  apt_repository:
+    repo: deb http://deb.debian.org/debian/ sid main
+    state: present
+
+- name: Set default release
+  copy:
+    content: APT::Default-Release "stable";
+    dest: /etc/apt/apt.conf.d/default-release
+
+- name: Install BIRD2 from sid
+  apt:
+    update_cache: true
+    name: bird2
+    default_release: sid
+
+- name: Install packages
+  apt:
+    install_recommends: false
+    pkg:
+      - qemu-system
+      - libvirt-clients
+      - libvirt-daemon-system
+      - cloud-image-utils
+      - virtinst
+      - bridge-utils
+      - ebtables
+      - bcg
