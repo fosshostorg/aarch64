@@ -308,7 +308,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
         taken_indices.append(vm["index"])
 
     # Set unique VM index
-    for index in range(65535, 0):
+    for index in range(0, 65535):
         if index not in taken_indices:
             json_body["index"] = index
 
