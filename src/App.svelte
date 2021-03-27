@@ -1,20 +1,10 @@
 <script>
-	import Router, { push } from "svelte-spa-router";
+	import Router from "svelte-spa-router";
 	import { wrap } from "svelte-spa-router/wrap";
 	import Index from "./pages/Index.svelte";
-	import Create from "./pages/Create.svelte";
 	import Login from "./pages/Login.svelte";
-	import Project from "./pages/Project.svelte";
-	import NewProject from "./pages/NewProject.svelte";
-	import Sidebar from "./components/Sidebar.svelte";
-	import { location } from "svelte-spa-router";
-	import { afterUpdate, onMount } from "svelte";
-	import {
-		consoleWelcomeMessage,
-		getUserInfo,
-		getUserInfoAndProjects,
-		getUserProjects,
-	} from "./utils";
+	import { onMount } from "svelte";
+	import { consoleWelcomeMessage, getUserInfoAndProjects } from "./utils";
 	import { Projects, User } from "./stores";
 	import Dashboard from "./Dashboard.svelte";
 	import NotFound from "./pages/NotFound.svelte";
@@ -24,12 +14,7 @@
 		component: Dashboard,
 		conditions: [
 			async (detail) => {
-				const res = await authenticate();
-				if (res) {
-					return true;
-				} else {
-					return false;
-				}
+				return await authenticate();
 			},
 		],
 	});
