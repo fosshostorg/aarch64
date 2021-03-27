@@ -9,7 +9,8 @@ import css from "rollup-plugin-css-only";
 import replace from "@rollup/plugin-replace";
 import mdsvexPages from "rollup-plugin-mdsvex-pages";
 
-const production = true;
+// const production = !process.env.ROLLUP_WATCH;
+const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
 	let server;
@@ -46,8 +47,9 @@ export default {
 	},
 	plugins: [
 		replace({
-			__apiRoute__: production ? "https://console.aarch64.com/api" : "https://localhost/api",
-			__production__: production,
+			// __apiRoute__: production ? "https://console.aarch64.com/api" : "https://localhost/api",
+			__apiRoute__: "https://localhost/api",
+			__production__: true,
 		}),
 
 		mdsvexPages({
