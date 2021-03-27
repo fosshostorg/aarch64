@@ -28,7 +28,7 @@
 	}
 </script>
 
-<PageTitle title="Resources" />
+<PageTitle title="AARCH64 | VMs" />
 
 <main>
 	{#if project}

@@ -427,4 +427,15 @@ def get_ansible_hosts(user_doc: dict):
     return _resp(True, "Retrieved ansible config", data=_config)
 
 
+@app.route("/intra/info", methods=["GET"])
+def intra_info():
+    for pop in db["pops"].find():
+        if pop.get("hosts"):
+            for host in pop.get("hosts"):
+                if host["ip"] == request.remote_addr:
+                    return _resp(True, "Retrieved host config", data=host)
+
+    return _resp(False, "Unauthorized"), 403
+
+
 app.run(debug=environ.get("AARCH64_DEBUG"))
