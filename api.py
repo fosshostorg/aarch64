@@ -203,6 +203,17 @@ def user_logout() -> Response:
     return resp
 
 
+@app.route("/auth/user", methods=["GET"])
+@with_authentication(admin=False)
+def user_info(user_doc: dict) -> Response:
+    """
+    Get user info doc
+    """
+
+    del user_doc["password"]
+    return _resp(True, "Retrieved user info", data=user_doc)
+
+
 @app.route("/project", methods=["POST"])
 @with_authentication(admin=False)
 @with_json("name")

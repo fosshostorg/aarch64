@@ -42,6 +42,26 @@ POST `/auth/logout`
 
 Request body: `None`
 
+GET `/auth/user`
+
+Request body: `None`
+
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "Retrieved user info"
+  },
+  "data": {
+    "_id": "605d72d2ccfea63484bfe78e",
+    "email": "user@example.com",
+    "key": "cfea63484ccfea63484bfe78ed72d2cbfe78eea63484bfe78e"
+  }
+}
+```
+
 ### Project
 
 POST `/project`
