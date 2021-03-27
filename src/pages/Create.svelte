@@ -6,7 +6,7 @@
 	import Select from "svelte-select";
 	import { onMount } from "svelte";
 	import { Projects } from "../stores";
-	import { requestNewResources, getUserProjects } from "../utils";
+	import { createVM, getUserProjects } from "../utils";
 	import { push } from "svelte-spa-router";
 	import PageTitle from "../components/PageTitle.svelte";
 
@@ -14,7 +14,7 @@
 	let plans = {};
 	let locations = [];
 	let image = "";
-	let tier = "";
+	let plan = "";
 
 	let batch = 1;
 	let hostnames = [uuidv4()];
@@ -37,38 +37,35 @@
 	};
 
 	const createFormSubmit = async (e) => {
-		const data = {
-			hostnames: hostnames.map((hostname) => {
-				return hostname == "" || hostname == null ? uuidv4() : hostname;
-			}),
-			os: image,
-			tier: parseInt(tier),
-			location: location.id,
-		};
 
+		// @ts-ignore
 		if (__production__) {
-			await requestNewResources(project._id, data)
+
+			if (hostnames.length > 1) {
+				for (const hostname in hostnames) {
+					await createVM(project._id, hostname, plan, image, location.name)
+						.then((data) => {}) // TODO: Forward here somehow
+						.catch((err) => console.log(err));
+				}
+				return;
+			}
+
+			await createVM(project._id, hostnames[0], plan, image, location.name)
 				.then((data) => {
 					if (data !== null) {
-						if (data.meta.success) {
-							push("/dashboard/projects/" + project._id);
-						}
+						push("/dashboard/projects/" + project._id);
 					}
 				})
 				.catch((err) => console.log(err));
+
 		} else {
 			console.log(
 				"%cFetch would have been posted with: ",
 				"color: lightgreen"
 			);
-			console.log(data);
+			console.log(project._id, hostnames, plan, image, location.name);
 		}
 	};
-
-	// const countryCodeToFlag = (cc) => {
-	// 	const chars = [...cc.toUpperCase()].map((c) => c.charCodeAt() + 127397);
-	// 	return String.fromCodePoint(...chars);
-	// };
 
 	const loadData = async () => {
 		// @ts-ignore
@@ -88,7 +85,7 @@
 
 					console.log(locations);
 					image = Object.keys(images)[0];
-					tier = Object.keys(plans)[0];
+					plan = Object.keys(plans)[0];
 					location = locations[0];
 				});
 		} else {
@@ -117,9 +114,9 @@
 				<div class="create-form-select">
 					<VMSelect bind:current={image} data={images} />
 				</div>
-				<span class="form-header"> Choose a tier: </span>
+				<span class="form-header"> Choose a plan: </span>
 				<div class="create-form-select">
-					<VMSelect bind:current={tier} data={plans} isOS={false} />
+					<VMSelect bind:current={plan} data={plans} isOS={false} />
 				</div>
 				<span class="form-header"> Finalize and create: </span>
 				<div class="create-form-final">

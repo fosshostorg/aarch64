@@ -8,7 +8,7 @@
 </script>
 
 <main>
-	{#each Object.keys(data) as option}
+	{#each Object.keys(data) as option, i}
 		<RadioButton id={option} bind:group={current}>
 			<div class="selection-card" class:selected={current == option}>
 				{#if isOS}
@@ -16,7 +16,7 @@
 						src={'./img/' + option.toLowerCase() + '.svg'}
 						alt={option + ' Logo'} />
 				{/if}
-				<span class="selection-card-header"> {option} </span>
+				<span class="selection-card-header"> {i+1} </span>
 				<divider />
 				{#if isOS}
 					<span class="selection-card-text">

@@ -1,12 +1,21 @@
+const checkMeta = (body: any): void => {
+	if (!body.meta.success) {
+		console.warn(
+			"Failed request: " + body.meta.message,
+		)
+	}
+}
+
 export const getUserInfo = async () => {
 	let body: any = null;
-	await fetch("__apiRoute__/user/info", {
+	await fetch("__apiRoute__/auth/user", {
 		method: "GET",
 	})
 		.then((res) => (body = res.json()))
 		.catch((err) => console.log(err));
 
-	return body;
+	checkMeta(body);
+	return body.data;
 };
 
 export const getUserProjects = async () => {
@@ -17,7 +26,8 @@ export const getUserProjects = async () => {
 		.then((res) => (body = res.json()))
 		.catch((err) => console.log(err));
 
-	return body;
+	checkMeta(body);
+	return body.data;
 };
 
 export const updateUserInfo = async (user: { email: string }) => {
@@ -36,7 +46,8 @@ export const addNewProject = async (data: { name: string }) => {
 		.then((res) => (body = res.json()))
 		.catch((err) => console.log(err));
 
-	return body;
+	checkMeta(body);
+	return body.data;
 };
 
 export const createVM = async (project: string, hostname: string, plan: string, os: string, pop: string) => {
@@ -48,9 +59,9 @@ export const createVM = async (project: string, hostname: string, plan: string, 
 	})
 		.then((res) => (body = res.json()))
 		.catch((err) => console.log(err));
-
-	console.log(body);
-	return body;
+	
+	checkMeta(body);
+	return body.data;
 };
 
 export const getUserInfoAndProjects = async (): Promise<{
@@ -61,49 +72,37 @@ export const getUserInfoAndProjects = async (): Promise<{
 	if (!__production__) {
 		return {
 			user: {
-				meta: {
-					success: true,
-					message: "development variable is set to true",
-				},
-				data: {
-					email: "dev@dev.dev",
-				},
+				email: "dev@dev.dev",
 			},
-			projects: {
-				meta: {
-					success: true,
-					message: "development variable is set to true",
+			projects: [
+				{
+					_id: "5fe427dd7354646035cd74cf",
+					name: "Dev Project",
+					vms: [
+						{
+							uuid: "11111111-66ba-1111-1111-9a3db3111a21",
+							hostname: "11111111-1111-4ecc-b989-0022d2415136",
+							tier: 1,
+							os: "Debian",
+							host: "pdx0",
+							prefix: "2001:db8:18fc:184::/64",
+							gateway: "2001:db8:18fc:184::1",
+							enabled: true,
+							vcpus: 1,
+							memory: 1,
+							disk: 10,
+						},
+					],
+					keys: [],
 				},
-				data: [
-					{
-						_id: "5fe427dd7354646035cd74cf",
-						name: "Dev Project",
-						vms: [
-							{
-								uuid: "11111111-66ba-1111-1111-9a3db3111a21",
-								hostname: "11111111-1111-4ecc-b989-0022d2415136",
-								tier: 1,
-								os: "Debian",
-								host: "pdx0",
-								prefix: "2001:db8:18fc:184::/64",
-								gateway: "2001:db8:18fc:184::1",
-								enabled: true,
-								vcpus: 1,
-								memory: 1,
-								disk: 10,
-							},
-						],
-						keys: [],
-					},
-				],
-			},
+			],
 		};
 	}
 
 	const user: any = await getUserInfo();
 	const projects: any = await getUserProjects();
 
-	return { user, projects };
+	return { user: user, projects };
 };
 
 export const consoleWelcomeMessage = () => {
