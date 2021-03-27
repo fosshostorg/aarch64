@@ -432,7 +432,7 @@ def intra_info():
     for pop in db["pops"].find():
         if pop.get("hosts"):
             for host in pop.get("hosts"):
-                if host["ip"] == request.remote_addr:
+                if host["ip"] == request.headers.get("X-Forwarded-For"):
                     return _resp(True, "Retrieved host config", data=host)
 
     return _resp(False, "Unauthorized"), 403
