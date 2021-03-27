@@ -2,8 +2,8 @@ version: 2
 ethernets:
   eth0:
      addresses:
-       - {{ vms[item].prefix }}
-     dhcp6: true
+       - {{ item.address }}
+     gateway6: {{ item.gateway }}
      nameservers:
        addresses:
          - 2606:4700:4700::64

@@ -3,49 +3,67 @@
   register: virsh_list
   changed_when: false
 
+- name: Create VM bridge
+  shell: ip link add br-{{ item["_id"] }} type bridge ; ip addr add dev br-{{ item["_id"] }} {{ item["gateway"] }}/64 ; ip link set dev br-{{ item["_id"] }} up
+  loop: "{{ vms }}"
+  when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
+
 - name: Create cloud config
   template:
-    src: cloud-config.yml.j2
-    dest: /tmp/cloud-config-{{ item }}.yml
-  with_items: "{{ vms }}"
-  when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+    src: cloud-config.yml
+    dest: /tmp/{{ item["_id"] }}-cloud-config.yml
+  loop: "{{ vms }}"
+  when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
 
 - name: Create network config
   template:
-    src: network-config.yml.j2
-    dest: /tmp/network-config-{{ item }}.yml
-  with_items: "{{ vms }}"
-  when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+    src: netplan.yml
+    dest: /tmp/{{ item["_id"] }}-network-config.yml
+  loop: "{{ vms }}"
+  when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
 
 - name: Create cloud-init image
-  shell: cloud-localds -v --network-config=/tmp/network-config-{{ item }}.yml /opt/kvm/vms/{{ item }}-cloudinit.iso /tmp/cloud-config-{{ item }}.yml
-  with_items: "{{ vms }}"
-  when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+  shell:
+    cmd: cloud-localds -v --network-config=/tmp/{{ item["_id"] }}-network-config.yml /opt/aarch64/vms/{{ item["_id"] }}-cloudinit.iso /tmp/{{ item["_id"] }}-cloud-config.yml
+    creates: /opt/aarch64/vms/{{ item["_id"] }}-cloudinit.iso
+  loop: "{{ vms }}"
+  when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
 
 - name: Create VM disk
-  shell: qemu-img create -f qcow2 -o backing_file=/opt/kvm/images/{{ vms[item].os }}.qcow2 /opt/kvm/vms/{{ item }}-disk.qcow2
-  with_items: "{{ vms }}"
-  when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+  shell:
+    cmd: qemu-img create -f qcow2 -o backing_file=/opt/aarch64/images/{{ item["os"] }}.qcow2 /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2
+    creates: /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2
+  loop: "{{ vms }}"
+  when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
+  register: vm_disk_create
 
 - name: Resize disk
-  shell: qemu-img resize /opt/kvm/vms/{{ item }}-disk.qcow2 +{{ (vms[item].disk)-2 }}G
-  with_items: "{{ vms }}"
-  when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+  shell: qemu-img resize /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2 +{{ (item["disk"])-2 }}G
+  loop: "{{ vms }}"
+  when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname) and (vm_disk_create.changed)
+
+#- name: Cleanup config images
+#  file:
+#    path: "{{ item }}"
+#    state: absent
+#    with_fileglob:
+#      - /tmp/*-cloud-config.yml
+#      - /tmp/*-network-config.yml
 
 - name: Run virt-install
   shell: |
     virt-install \
-      --name "{{ item }}" \
-      --uuid "{{ item }}" \
-      --memory {{ vms[item].memory * 1024 }} \
-      --vcpus {{ vms[item].vcpus }} \
-      --network bridge=br0,model=virtio \
+      --boot uefi \
+      --arch aarch64 \
+      --name "{{ item["_id"] }}" \
+      --memory {{ item["memory"] * 1024 }} \
+      --vcpus {{ item["vcpus"] }} \
+      --network bridge=br-{{ item["_id"] }},model=virtio \
       --import \
-      --disk path=/opt/kvm/vms/{{ item }}-disk.qcow2 \
-      --disk path=/opt/kvm/vms/{{ item }}-cloudinit.iso,device=cdrom \
+      --disk path=/opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2 \
+      --disk path=/opt/aarch64/vms/{{ item["_id"]}}-cloudinit.iso,device=cdrom \
       --nographics \
       --noautoconsole \
-      --autostart \
-      --metadata description="{{ ','.join(vms[item].ssh_keys) }}"
-  with_items: "{{ vms }}"
-  when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+      --autostart
+  loop: "{{ vms }}"
+  when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)

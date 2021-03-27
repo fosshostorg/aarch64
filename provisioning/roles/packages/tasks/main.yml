@@ -24,6 +24,8 @@
     install_recommends: false
     pkg:
       - qemu-system
+      - qemu-system-arm
+      - qemu-efi
       - libvirt-clients
       - libvirt-daemon-system
       - cloud-image-utils
