@@ -14,16 +14,16 @@
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({email, password}),
 			})
-				.then((resp) => (resp = resp.json()))
+				.then((resp) => resp.json())
 				.then(async (data) => {
 					if (data.meta.success) {
 						await getUserProjects()
 							.then((data) => {
-								$Projects = data.data;
+								$Projects = data;
 							})
 							.then(async () => {
 								await getUserInfo().then((data) => {
-									$User = data.data;
+									$User = data;
 									push("/dashboard/create");
 								});
 							});
