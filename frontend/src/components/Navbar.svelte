@@ -19,7 +19,7 @@
 	}
 
 	const handleLogout = (e) => {
-		open = !open;
+		open = true;
 	};
 
 	let open: boolean = false;
@@ -41,7 +41,7 @@
 	</div>
 	<div class="navbar-right">
 		<span class="material-icons">account_circle</span>
-		<span class="navbar-user-name">{$User['email']}</span>
+		<span class="navbar-user-name" on:click={handleLogout}>{$User['email']}</span>
 		<span class="material-icons" on:click={handleLogout}>
 			expand_more
 			<span class="dropdown">
