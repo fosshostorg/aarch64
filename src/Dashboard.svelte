@@ -22,7 +22,7 @@
 		}
 
 		// Redirect to projects create page if user doesn't have any projects, otherwise redirect to their first project
-		if (window.location.hash === "#/dashboard") {
+		if (window.location.hash === "#/dashboard" || window.location.hash === "#/dashboard/") {
 			if ($Projects.length < 1) {
 				push("/dashboard/projects/create");
 			} else {
