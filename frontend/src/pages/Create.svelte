@@ -6,7 +6,7 @@
 	import Select from "svelte-select";
 	import { onMount } from "svelte";
 	import { Projects } from "../stores";
-	import { createVM, getUserProjects } from "../utils";
+	import { createVM, getMockSystemData, getUserProjects } from "../utils";
 	import { push } from "svelte-spa-router";
 	import PageTitle from "../components/PageTitle.svelte";
 
@@ -90,7 +90,14 @@
 					location = locations[0];
 				});
 		} else {
-			
+			let data: System = getMockSystemData() as System;
+					plans = data.plans;
+					data.oses.forEach(os => {images[os] = { version: "latest" }});
+					locations = data.pops;
+
+					image = Object.keys(images)[0];
+					plan = Object.keys(plans)[0];
+					location = locations[0];
 		}
 	};
 
