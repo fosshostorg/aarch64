@@ -50,16 +50,18 @@
     }
 
     .selection-card {
-        width: 123px;
-        height: 123px;
+        width: 125px;
+        height: 125px;
         border: 1px solid #0e0d0d;
         background-color: #0e0d0d;
         display: flex;
+        flex-shrink: 0;
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
         margin-left: 15px;
         cursor: pointer;
+        box-sizing: border-box;
     }
 
     .selection-card.selected {
@@ -118,7 +120,6 @@
         width: 125px;
         height: 1px;
         background-color: white;
-        margin-left: -1px;
     }
 
     .selected divider {

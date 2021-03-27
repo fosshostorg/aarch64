@@ -147,3 +147,48 @@ export const consoleWelcomeMessage = () => {
 		"font-size: .4rem; display: flex; overflow: hidden;"
 	);
 };
+
+export const getMockSystemData = () => {
+	return {
+		"pops": [
+			{
+				"_id": "605a8ee1cdf6bb6559de1cb7",
+				"name": "dfw",
+				"provider": "Equinix Metal",
+				"location": "Dallas, TX",
+				"peeringdb_id": 4
+			}
+		],
+		"plans": {
+			"v1.xsmall": {
+				"vcpus": 1,
+				"memory": 1,
+				"disk": 4
+			},
+			"v1.small": {
+				"vcpus": 2,
+				"memory": 4,
+				"disk": 8
+			},
+			"v1.medium": {
+				"vcpus": 4,
+				"memory": 8,
+				"disk": 16
+			},
+			"v1.large": {
+				"vcpus": 8,
+				"memory": 16,
+				"disk": 32
+			},
+			"v1.xlarge": {
+				"vcpus": 16,
+				"memory": 32,
+				"disk": 64
+			}
+		},
+		"oses": [
+			"debian",
+			"ubuntu"
+		]
+	}
+}
