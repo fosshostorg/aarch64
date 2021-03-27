@@ -406,12 +406,15 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
 @app.route("/admin/ansible", methods=["GET"])
 @with_authentication(admin=True)
 def get_ansible_hosts(user_doc: dict):
+    # Update config doc
+    config_doc = db["config"].find_one()
+
     _config = {
         "all": {
             "vars": {
-                "ansible_user": "test_user",
-                "ansible_port": 0,
-                "ansible_ssh_private_key_file": "test_key"
+                "ansible_user": config_doc["user"],
+                "ansible_port": config_doc["port"],
+                "ansible_ssh_private_key_file": config_doc["key"]
             },
             "hosts": {}
         }
