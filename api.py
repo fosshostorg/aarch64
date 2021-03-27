@@ -428,10 +428,12 @@ def get_ansible_hosts(user_doc: dict):
                     "bcg": {
                         "asn": config_doc["asn"],
                         "prefixes": [host["prefix"]],
-                        "peers": host.get("peers") if host.get("peers") else []
                     },
                     "vms": list(db["vms"].find({"pop": pop["name"], "host": idx}))
                 }
+
+                if host.get("peers"):
+                    _config["all"]["hosts"][pop["name"] + str(idx)]["bcg"]["peers"] = host.get("peers")
 
     return _resp(True, "Retrieved ansible config", data=_config)
 
