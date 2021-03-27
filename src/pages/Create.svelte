@@ -77,7 +77,6 @@
 				.then((res) => res.json())
 				.then((body) => {
 					if (!body.meta.success) {
-						console.log(body.meta.message);
 						window.location.href = "/#/login";
 					}
 
@@ -86,7 +85,6 @@
 					data.oses.forEach(os => {images[os] = { version: "latest" }});
 					locations = data.pops;
 
-					console.log(locations);
 					image = Object.keys(images)[0];
 					plan = Object.keys(plans)[0];
 					location = locations[0];

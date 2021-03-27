@@ -7,8 +7,6 @@
 
 	export let params: any = {};
 
-	$: console.log(params);
-
 	const getProjectById = (id: string, _projects: any[]) => {
 		let returnProject = null;
 		let projects = [..._projects];
@@ -21,7 +19,6 @@
 	};
 
 	$: project = getProjectById(params.project_id, $Projects);
-	$: console.log(project);
 
 	let views = ["RESOURCES", "SETTINGS"];
 	let currentView = "RESOURCES";

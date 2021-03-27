@@ -9,10 +9,6 @@
 
 	let name = "";
 
-	onMount(() => {
-		console.log("New Project mounted");
-	});
-
 	const handleSubmit = async (e) => {
 		if (__production__ && name !== "") {
 			let data = {
