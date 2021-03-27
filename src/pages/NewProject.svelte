@@ -20,15 +20,12 @@
 			};
 
 			await addNewProject(data).then(async (data) => {
-				if (data.meta.success) {
 					await getUserProjects().then((body) => {
-						$Projects = body.data;
-						push("/dashboard/projects/" + data.data);
+						$Projects = body;
+						push("/dashboard/projects/" + data);
 					});
-				} else {
-					console.log(data.meta.message);
 				}
-			});
+			);
 		} else {
 			console.log(
 				"%cRequest would have been sent with name: " + name,
