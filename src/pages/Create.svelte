@@ -42,11 +42,14 @@
 		if (__production__) {
 
 			if (hostnames.length > 1) {
+				let project_id;
 				for (const hostname of hostnames) {
+					project_id = project._id;
 					await createVM(project._id, hostname, plan, image, location.name)
 						.then((data) => {}) // TODO: Forward here somehow
 						.catch((err) => console.log(err));
 				}
+				await push("/dashboard/projects/" + project_id);
 				return;
 			}
 
