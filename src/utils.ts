@@ -1,41 +1,44 @@
 import { push } from "svelte-spa-router";
 
 const checkMeta = (body: any): void => {
-	if (body !== null && !body.meta.success) {
-		console.warn(
-			"Failed request: " + body.meta.message,
-		)
-	}
-}
+	// if (body !== null && !body.meta.success) {
+	// 	console.warn(
+	// 		"Failed request: " + body.meta.message,
+	// 	)
+	// }
+};
 
 export const getUserInfo = async () => {
 	let body: any = null;
 	await fetch("__apiRoute__/auth/user", {
-		method: "GET",
+		method: "GET"
 	})
-		.then((res) => {
+		.then(async (res) => {
 			if (!res.ok) {
 				console.log("User not logged in, redirecting...");
-				push('/login');
+				push("/login");
 				body = null;
 			} else {
-				body = res.json();
+				body = await res.json();
+				body = body.data;
 			}
 		})
 		.catch((err) => console.log(err));
-	
 
-	return body.data;
+	console.log(body)
+	return body;
 };
 
 export const getUserProjects = async () => {
 	let body: any = null;
 	const res = await fetch("__apiRoute__/projects", {
-		method: "GET",
+		method: "GET"
 	})
-		.then((res) => {body = res.json(); body = body.data})
+		.then(async (res) => {
+			body = await res.json();
+			body = body.data;
+		})
 		.catch((err) => console.log(err));
-
 
 	return body;
 };
@@ -51,11 +54,13 @@ export const addNewProject = async (data: { name: string }) => {
 	await fetch("__apiRoute__/project", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(data),
+		body: JSON.stringify(data)
 	})
-		.then((res) => {body = res.json(); body = body.data})
+		.then(async (res) => {
+			body = await res.json();
+			body = body.data;
+		})
 		.catch((err) => console.log(err));
-
 
 	return body;
 };
@@ -65,11 +70,13 @@ export const createVM = async (project: string, hostname: string, plan: string, 
 	await fetch("__apiRoute__/vms/create", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({project, hostname, plan, os, pop}),
+		body: JSON.stringify({ project, hostname, plan, os, pop })
 	})
-		.then((res) => {body = res.json(); body = body.data})
+		.then(async (res) => {
+			body = await res.json();
+			body = body.data;
+		})
 		.catch((err) => console.log(err));
-	
 
 	return body;
 };
@@ -82,7 +89,7 @@ export const getUserInfoAndProjects = async (): Promise<{
 	if (!__production__) {
 		return {
 			user: {
-				email: "dev@dev.dev",
+				email: "dev@dev.dev"
 			},
 			projects: [
 				{
@@ -101,9 +108,9 @@ export const getUserInfoAndProjects = async (): Promise<{
 							"host": 0,
 							"prefix": "2001:db8:ffff::/64"
 						}
-					],
-				},
-			],
+					]
+				}
+			]
 		};
 	}
 
