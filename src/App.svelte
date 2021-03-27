@@ -45,18 +45,9 @@
 	async function authenticate() {
 		let res = await getUserInfoAndProjects();
 		console.log(res, "RES");
-		if (res.user !== null) {
-			if (res.user.meta.success && res.projects.meta.success) {
-				$User = res.user.data;
-				$Projects = res.projects.data;
-				return true;
-			} else if (res.user.meta.message == "Not authenticated") {
-				push("/login");
-				return false;
-			}
-		} else {
-			return false;
-		}
+		$User = res.user;
+		$Projects = res.projects;
+		return true;
 	}
 
 	function conditionsFailed(event) {
