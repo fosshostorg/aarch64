@@ -9,7 +9,7 @@
 	const handleSubmit = async (e) => {
 		// noinspection JSUnresolvedVariable
 		if (__production__) {
-			await fetch("__apiRoute__/user/login", {
+			await fetch("__apiRoute__/auth/login", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({email, password}),
