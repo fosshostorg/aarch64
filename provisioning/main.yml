@@ -1,0 +1,51 @@
+    - name: Get defined VMs
+      shell: virsh list --all
+      register: virsh_list
+      changed_when: false
+
+    - name: Create cloud config
+      template:
+        src: cloud-config.yml.j2
+        dest: /tmp/cloud-config-{{ item }}.yml
+      with_items: "{{ vms }}"
+      when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+
+    - name: Create network config
+      template:
+        src: network-config.yml.j2
+        dest: /tmp/network-config-{{ item }}.yml
+      with_items: "{{ vms }}"
+      when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+
+    - name: Create cloud-init image
+      shell: cloud-localds -v --network-config=/tmp/network-config-{{ item }}.yml /opt/kvm/vms/{{ item }}-cloudinit.iso /tmp/cloud-config-{{ item }}.yml
+      with_items: "{{ vms }}"
+      when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+
+    - name: Create VM disk
+      shell: qemu-img create -f qcow2 -o backing_file=/opt/kvm/images/{{ vms[item].os }}.qcow2 /opt/kvm/vms/{{ item }}-disk.qcow2
+      with_items: "{{ vms }}"
+      when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+
+    - name: Resize disk
+      shell: qemu-img resize /opt/kvm/vms/{{ item }}-disk.qcow2 +{{ (vms[item].disk)-2 }}G
+      with_items: "{{ vms }}"
+      when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
+
+    - name: Run virt-install
+      shell: |
+        virt-install \
+          --name "{{ item }}" \
+          --uuid "{{ item }}" \
+          --memory {{ vms[item].memory * 1024 }} \
+          --vcpus {{ vms[item].vcpus }} \
+          --network bridge=br0,model=virtio \
+          --import \
+          --disk path=/opt/kvm/vms/{{ item }}-disk.qcow2 \
+          --disk path=/opt/kvm/vms/{{ item }}-cloudinit.iso,device=cdrom \
+          --nographics \
+          --noautoconsole \
+          --autostart \
+          --metadata description="{{ ','.join(vms[item].ssh_keys) }}"
+      with_items: "{{ vms }}"
+      when: (item not in virsh_list.stdout) and (vms[item].host == inventory_hostname)
