@@ -1,0 +1,32 @@
+- name: Create bcg directory
+  become: true
+  file:
+    path: /etc/bcg/
+    state: directory
+
+- name: Copy bcg config
+  become: true
+  copy:
+    content: "{{ bcg }}"
+    dest: /etc/bcg/config.json
+  register: bcg
+
+- name: Start bird
+  become: true
+  systemd:
+    name: bird
+    state: started
+    enabled: true
+
+- name: Reload bcg config
+  become: true
+  shell: bcg -c /etc/bcg/config.json
+  when: bcg.changed
+
+- name: Add bcg crontab entry
+  become: true
+  cron:
+    name: "bcg update"
+    hour: "*/12"
+    minute: "0"
+    job: "/usr/local/bin/bcg -c /etc/bcg/config.json"
