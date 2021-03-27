@@ -117,6 +117,7 @@ Response body:
           "project": "605d1fbc361f9e55eec97986",
           "os": "debian",
           "host": 0,
+          "index": 0,
           "prefix": "2001:db8:ffff::/64",
           "gateway": "2001:db8:ffff::1",
           "address": "2001:db8:ffff::2/64"
@@ -161,6 +162,7 @@ Response body:
     "pop": "dfw",
     "project": "605d1fbc361f9e55eec97986",
     "host": 0,
+    "index": 0,
     "prefix": "2001:db8:ffff::/64",
     "gateway": "2001:db8:ffff::1",
     "address": "2001:db8:ffff::2/64",

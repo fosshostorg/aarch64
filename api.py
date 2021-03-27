@@ -302,8 +302,18 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     # Find taken prefixes
     taken_prefixes = []
+    taken_indices = []
     for vm in db["vms"].find({"pop": json_body["pop"]}):
         taken_prefixes.append(vm["prefix"])
+        taken_indices.append(vm["index"])
+
+    # Set unique VM index
+    for index in range(65535, 0):
+        if index not in taken_indices:
+            json_body["index"] = index
+
+    if not json_body.get("index"):
+        return _resp(False, "Unable to assign VM index")
 
     # Iterate over the selected host's prefix
     host_prefix = pop_doc["hosts"][json_body["host"]]["prefix"]
