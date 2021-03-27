@@ -4,27 +4,27 @@
 
 <main>
 	<div class="titles">
-		<span class="os"> <b>{vm.os}</b> </span>
+		<span class="os"> <b>{vm.os}</b> OS</span>
 		<span class="vCPU"> <b>{vm.vcpus}</b> vCPU </span>
 		<span class="RAM"> <b>{vm.memory}GB</b> RAM </span>
 		<span class="SSD"> <b>{vm.disk}GB</b> SSD </span>
 	</div>
 	<div class="icons">
-		<span>
+		<span class="hover-card">
 			<div class="version">latest</div>
 			<img
 				src={'./img/' + vm.os.toLowerCase() + '.svg'}
 				alt={vm.os + ' Logo'} />
 		</span>
-		<span>
+		<span class="hover-card">
 			<div>Ampere eMAG&reg;</div>
 			<img src="./img/cpuICON.svg" alt={'cpu icon'} />
 		</span>
-		<span> 
+		<span class="hover-card">
 			<div>DDR4-2666</div>
 			<img src="./img/ramICON.svg" alt={'ram icon'} /> 
 		</span>
-		<span>
+		<span class="hover-card">
 			<div class="version">ZFS Raid Z1</div>
 			<img src="./img/hddICON.svg" alt={'disk icon'} />
 		</span>
@@ -105,11 +105,11 @@
 		transition: ease all 0.2s;
 	}
 
-	span:hover {
+  span.hover-card:hover {
 		height: 125px;
 	}
 
-	span:hover div {
+	span.hover-card:hover div {
 		height: 25px;
 		padding-bottom: 2px;
 	}
