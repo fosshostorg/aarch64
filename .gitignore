@@ -1,3 +1,6 @@
 .idea/
 frontend/node_modules/
 frontend/public/build/
+provisioning/hosts.yml
+provisioning/*automation*
+provisioning/*.retry
