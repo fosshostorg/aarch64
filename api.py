@@ -421,7 +421,8 @@ def get_ansible_hosts(user_doc: dict):
         if pop.get("hosts"):
             for idx, host in enumerate(pop.get("hosts")):
                 _config["all"]["hosts"][pop["name"] + str(idx)] = {
-                    "ansible_host": host["ip"]
+                    "ansible_host": host["ip"],
+                    "vms": list(db["vms"].find({"pop": pop["name"], "host": idx}))
                 }
 
     return _resp(True, "Retrieved ansible config", data=_config)
