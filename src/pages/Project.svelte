@@ -57,7 +57,7 @@
 					{#each project.vms as vm}
 						<ProjectVM
 							VM={toVM(vm)}
-							link={'/dashboard/projects/' + project._id + '/resources/' + vm['uuid']} />
+							link={'/dashboard/projects/' + project._id + '/resources/' + vm['_id']} />
 					{/each}
 				</div>
 			{/if}

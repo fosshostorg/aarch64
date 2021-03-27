@@ -166,7 +166,8 @@
 								}}
 								getSelectionLabel={(option) => {
 									if (option) return option.name;
-								}} />
+								}}
+							/>
 							<!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
 						</div>
 						<div class="create-form-subheader">Location:</div>
@@ -176,7 +177,13 @@
 									isClearable={false}
 									isSearchable={false}
 									items={locations}
-									optionIdentifier="name"
+									optionIdentifier="location"
+									getOptionLabel={(option, filterText) => {
+										return option.isCreator ? `Create \"${filterText}\"` : option.location;
+									}}
+										getSelectionLabel={(option) => {
+										if (option) return option.location;
+									}}
 									bind:selectedValue={location} />
 							{/if}
 						</div>

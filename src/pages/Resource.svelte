@@ -36,11 +36,11 @@
 <main>
 	{#if project}
 		{#each project.vms as vm}
-			{#if toVM(vm).uuid === params.resource_id}
+			{#if toVM(vm)._id === params.resource_id}
 				<Navbar breadcrumbs={[
 				{label: 'Dashboard', path: '/dashboard/'},
 				{label: project.name, path: `/dashboard/projects/${project._id}`},
-				{label: 'Resource', path: `/dashboard/projects/${project._id}/resources/${vm.uuid}`}
+				{label: 'Resource', path: `/dashboard/projects/${project._id}/resources/${vm._id}`}
 				]} />
 				<PageHeader>{toVM(vm).hostname}</PageHeader>
 				<div class="wrapper">

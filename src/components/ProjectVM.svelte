@@ -22,7 +22,7 @@
 			label: "CONSOLE",
 			icon: "airplay",
 			action: (e) => {
-				alert(`ssh ${VM.uuid}@${VM.host}.rescue.arm-64.com`);
+				alert(`ssh ${VM.uuid}@${VM.host}.rescue.aarch64.com`);
 			},
 		},
 		{ label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },
@@ -54,7 +54,7 @@
 		<div class="hostname">{VM.hostname}</div>
 		<div class="location">
 			<!-- TODO: Make this align correctly -->
-			{VM.host.slice(0, -1).toUpperCase()}
+			{VM.pop.toUpperCase()}
 		</div>
 		<span class="ip">
 			{VM.prefix}
