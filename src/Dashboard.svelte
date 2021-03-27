@@ -17,7 +17,7 @@
 	};
 
 	onMount(() => {
-		if ($User == {} || $User == null || $User == "undefined") {
+		if ($User === {} || $User == null || $User === "undefined") {
 			console.log("redirected");
 		}
 

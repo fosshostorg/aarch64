@@ -30,7 +30,7 @@
 		{#each breadcrumbs as breadcrumb, index}
 			<a
 				class="breadcrumb-text"
-				class:breadcrumb-main={index == breadcrumbs.length - 1}
+				class:breadcrumb-main={index === breadcrumbs.length - 1}
 				href={`/#${breadcrumb.path}`}>
 				{breadcrumb.label}
 		</a>
