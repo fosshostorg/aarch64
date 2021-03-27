@@ -42,7 +42,7 @@
 		if (__production__) {
 
 			if (hostnames.length > 1) {
-				for (const hostname in hostnames) {
+				for (const hostname of hostnames) {
 					await createVM(project._id, hostname, plan, image, location.name)
 						.then((data) => {}) // TODO: Forward here somehow
 						.catch((err) => console.log(err));
