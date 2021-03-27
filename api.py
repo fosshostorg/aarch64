@@ -425,7 +425,11 @@ def get_ansible_hosts(user_doc: dict):
             for idx, host in enumerate(pop.get("hosts")):
                 _config["all"]["hosts"][pop["name"] + str(idx)] = {
                     "ansible_host": host["ip"],
-                    "prefix": host["prefix"],
+                    "bcg": {
+                        "asn": config_doc["asn"],
+                        "prefixes": [host["prefix"]],
+                        "peers": host["peers"]
+                    },
                     "vms": list(db["vms"].find({"pop": pop["name"], "host": idx}))
                 }
 
