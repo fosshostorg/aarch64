@@ -166,7 +166,8 @@ Response body:
     "prefix": "2001:db8:ffff::/64",
     "gateway": "2001:db8:ffff::1",
     "address": "2001:db8:ffff::2/64",
-    "_id": "605d1fea3c05da2790ea3dbb"
+    "_id": "605d1fea3c05da2790ea3dbb",
+    "temp_password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d"
   }
 }
 ```
