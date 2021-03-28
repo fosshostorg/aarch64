@@ -22,7 +22,7 @@
 	let project = $Projects[0];
 	let location = null;
 
-	let showSpinner = false;
+	let showSpinner = true;
 
 	// // Debugging
 	// $: console.log(project)
@@ -127,7 +127,9 @@
 		]} />
 	<div class="content">
 		{#if showSpinner}
-			<Spinner/>
+			<div style="display: flex; justify-content: center;">
+				<Spinner/>
+			</div>
 		{:else}
 			<PageHeader>Create VM</PageHeader>
 			<div class="create-form">
