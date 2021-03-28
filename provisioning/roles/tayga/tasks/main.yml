@@ -1,0 +1,11 @@
+- name: Copy tayga config
+  template:
+    src: tayga.conf
+    dest: /etc/tayga.conf
+  register: tayga_config
+
+- name: Restart tayga
+  systemd:
+    name: tayga
+    state: restarted
+  when: tayga_config.changed
