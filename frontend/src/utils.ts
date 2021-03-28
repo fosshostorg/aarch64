@@ -149,6 +149,7 @@ export async function deleteVM(id: string) {
     let body;
     await fetch("__apiRoute__/vms/delete", {
         method: "DELETE",
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify({vm: id})
     })
         .then(resp => resp.json())
