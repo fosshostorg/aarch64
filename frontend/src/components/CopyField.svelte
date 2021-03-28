@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {replace} from "svelte-spa-router";
+    import {push} from "svelte-spa-router";
 
     export let text: string = "";
 
@@ -13,7 +13,7 @@
 </script>
 
 <main>
-    <label for="text-input">Password: &nbsp;<span class="material-icons" on:click={() => replace("/docs/quickstart")}>help_outline</span></label>
+    <label for="text-input">Password: &nbsp;<span class="material-icons" on:click={() => push("/docs/quickstart")}>help_outline</span></label>
     <div>
         <input type="text" value="{text}" id="text-input">
         <button on:click={copyHandler}>COPY</button>

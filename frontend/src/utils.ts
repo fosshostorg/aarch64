@@ -1,3 +1,5 @@
+import {push} from "svelte-spa-router";
+
 export function dropdownItems(vm: any): DropdownItem[] {
     return [
         // {
@@ -13,7 +15,7 @@ export function dropdownItems(vm: any): DropdownItem[] {
         // { label: "RESET", icon: "sync_problem", action: (e) => {} },
         {
             label: "DELETE", icon: "delete", action: (e) => {
-                deleteVM(vm._id).then((data) => {alert(data)});
+                deleteVM(vm._id).then(() => {push("/")});
             }
         },
     ]

@@ -6,7 +6,7 @@
     import IPInfo from "../components/IPInfo.svelte";
     import VMOptions from "../components/VMOptions.svelte";
     import {Projects} from "../stores";
-    import {replace} from "svelte-spa-router";
+    import {push} from "svelte-spa-router";
     import CopyField from "../components/CopyField.svelte";
 
     export let params: any = {};
@@ -47,7 +47,7 @@
                         <span class="info-wrapper">
 							<VMInfo vm={toVM(vm)}/>
 						</span>
-                        <span class="title">Network:&nbsp;<span class="material-icons" on:click={() => {replace("/docs/networking")}}>help_outline</span></span>
+                        <span class="title">Network:&nbsp;<span class="material-icons" on:click={() => {push("/docs/networking")}}>help_outline</span></span>
                         <IPInfo vm={toVM(vm)}/>
                         <CopyField text={vm.password}/>
                     </div>
