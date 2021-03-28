@@ -514,4 +514,5 @@ def intra_info():
     return _resp(False, "Unauthorized"), 403
 
 
-app.run(debug=environ.get("AARCH64_DEBUG"))
+if environ.get("AARCH64_DEBUG"):
+    app.run(debug=True)
