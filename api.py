@@ -332,6 +332,29 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     raise _resp(False, "Unable to create VM")
 
 
+@app.route("/vms/delete", methods=["DELETE"])
+@with_authentication(admin=False)
+@with_json("vm")
+def delete_vm(json_body: dict, user_doc: dict) -> Response:
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+
+    project_doc = db["projects"].find_one({
+        "_id": vm_doc["project"],
+        "users": {
+            "$in": [user_doc["_id"]]
+        }
+    })
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    deleted_vm = db["vms"].delete_one({"_id": to_object_id(json_body["vm"])})
+    if deleted_vm.deleted_count == 1:
+        return _resp(True, "VM deleted")
+    return _resp(False, "Unable to delete VM")
+
+
 @app.route("/system", methods=["GET"])
 @with_authentication(admin=False)
 def get_system(user_doc: dict):

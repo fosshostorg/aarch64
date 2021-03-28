@@ -171,6 +171,30 @@ Response body:
 }
 ```
 
+DELETE `/vms/delete`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "vm": "605fdf4e4177beeb253eed4b"
+}
+```
+
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "VM deleted"
+  },
+  "data": null
+}
+```
+
 ### System
 
 GET `/system`
