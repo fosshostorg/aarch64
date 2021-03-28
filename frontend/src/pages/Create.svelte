@@ -2,13 +2,14 @@
 	import VMSelect from "../components/VMSelect.svelte";
 	import Navbar from "../components/Navbar.svelte";
 	import PageHeader from "../components/PageHeader.svelte";
-	import { v4 as uuidv4 } from "uuid";
+	import {v4 as uuidv4} from "uuid";
 	import Select from "svelte-select";
-	import { onMount } from "svelte";
-	import { Projects } from "../stores";
-	import { createVM, getMockSystemData, getUserProjects } from "../utils";
-	import { push } from "svelte-spa-router";
+	import {onMount} from "svelte";
+	import {Projects} from "../stores";
+	import {createVM, getMockSystemData, getUserProjects} from "../utils";
+	import {push} from "svelte-spa-router";
 	import PageTitle from "../components/PageTitle.svelte";
+	import Spinner from "../components/Spinner.svelte";
 
 	let images = {};
 	let plans = {};
@@ -20,6 +21,8 @@
 	let hostnames = [uuidv4()];
 	let project = $Projects[0];
 	let location = null;
+
+	let showSpinner = false;
 
 	// // Debugging
 	// $: console.log(project)
@@ -37,38 +40,38 @@
 	};
 
 	const createFormSubmit = async (e) => {
+		showSpinner = true;
 
 		// @ts-ignore
 		if (__production__) {
-
 			if (hostnames.length > 1) {
 				let project_id;
 				for (const hostname of hostnames) {
 					project_id = project._id;
 					await createVM(project._id, hostname, plan, image, location.name)
-						.then((data) => {
-							console.log(data)
-						}) // TODO: Forward here somehow
-						.catch((err) => console.log(err));
+							.then((data) => {
+								console.log(data)
+							}) // TODO: Forward here somehow
+							.catch((err) => console.log(err));
 				}
 				await push("/dashboard/projects/" + project_id);
 				return;
 			}
 
 			await createVM(project._id, hostnames[0], plan, image, location.name)
-				.then((data) => {
-					if (data !== null) {
-						push("/dashboard/projects/" + project._id);
-					} else {
-						console.log(data)
-					}
-				})
-				.catch((err) => console.log(err));
+					.then((data) => {
+						if (data !== null) {
+							push("/dashboard/projects/" + project._id);
+						} else {
+							console.log(data)
+						}
+					})
+					.catch((err) => console.log(err));
 
 		} else {
 			console.log(
-				"%cFetch would have been posted with: ",
-				"color: lightgreen"
+					"%cFetch would have been posted with: ",
+					"color: lightgreen"
 			);
 			console.log(project._id, hostnames, plan, image, location.name);
 		}
@@ -78,30 +81,34 @@
 		// @ts-ignore
 		if (__production__) {
 			await fetch("__apiRoute__/system")
-				.then((res) => res.json())
-				.then((body) => {
-					if (!body.meta.success) {
-						window.location.href = "/#/login";
-					}
+					.then((res) => res.json())
+					.then((body) => {
+						if (!body.meta.success) {
+							window.location.href = "/#/login";
+						}
 
-					let data: System = body.data as System;
-					plans = data.plans;
-					data.oses.forEach(os => {images[os] = { version: "latest" }});
-					locations = data.pops;
+						let data: System = body.data as System;
+						plans = data.plans;
+						data.oses.forEach(os => {
+							images[os] = {version: "latest"}
+						});
+						locations = data.pops;
 
-					image = Object.keys(images)[0];
-					plan = Object.keys(plans)[0];
-					location = locations[0];
-				});
+						image = Object.keys(images)[0];
+						plan = Object.keys(plans)[0];
+						location = locations[0];
+					});
 		} else {
 			let data: System = getMockSystemData() as System;
-					plans = data.plans;
-					data.oses.forEach(os => {images[os] = { version: "latest" }});
-					locations = data.pops;
+			plans = data.plans;
+			data.oses.forEach(os => {
+				images[os] = {version: "latest"}
+			});
+			locations = data.pops;
 
-					image = Object.keys(images)[0];
-					plan = Object.keys(plans)[0];
-					location = locations[0];
+			image = Object.keys(images)[0];
+			plan = Object.keys(plans)[0];
+			location = locations[0];
 		}
 	};
 
@@ -119,107 +126,111 @@
 		{label: 'Create New VM', path:'/dashboard/create'},
 		]} />
 	<div class="content">
-		<PageHeader>Create VM</PageHeader>
-		<div class="create-form">
-			<form on:submit|preventDefault={createFormSubmit}>
-				<span class="form-header"> Choose an image: </span>
-				<div class="create-form-select">
-					<VMSelect bind:current={image} data={images} />
-				</div>
-				<span class="form-header"> Choose a plan: </span>
-				<div class="create-form-select">
-					<VMSelect bind:current={plan} data={plans} isOS={false} />
-				</div>
-				<span class="form-header"> Finalize and create: </span>
-				<div class="create-form-final">
-					<div class="create-form-final-section">
+		{#if showSpinner}
+			<Spinner/>
+		{:else}
+			<PageHeader>Create VM</PageHeader>
+			<div class="create-form">
+				<form on:submit|preventDefault={createFormSubmit}>
+					<span class="form-header"> Choose an image: </span>
+					<div class="create-form-select">
+						<VMSelect bind:current={image} data={images} />
+					</div>
+					<span class="form-header"> Choose a plan: </span>
+					<div class="create-form-select">
+						<VMSelect bind:current={plan} data={plans} isOS={false} />
+					</div>
+					<span class="form-header"> Finalize and create: </span>
+					<div class="create-form-final">
+						<div class="create-form-final-section">
 						<span class="create-form-subheader">
 							Batch creation:
 						</span>
-						<span class="create-form-subtitle">
+							<span class="create-form-subtitle">
 							Deploy multiple machines at the same time.
 						</span>
-						<div class="batch-create-button">
-							<button
-								class="batch-create-add"
-								on:click={(e) => {
+							<div class="batch-create-button">
+								<button
+										class="batch-create-add"
+										on:click={(e) => {
 									e.preventDefault();
 									if (batch < 5) {
 										batch++;
 										addHost(e);
 									}
 								}}>
-								<span class="material-icons"> add </span>
-							</button>
-							<div class="batch-label">
-								<b>{batch}</b>VM{batch > 1 ? 's' : ''}
-							</div>
-							<button
-								class="batch-create-remove"
-								on:click={(e) => {
+									<span class="material-icons"> add </span>
+								</button>
+								<div class="batch-label">
+									<b>{batch}</b>VM{batch > 1 ? 's' : ''}
+								</div>
+								<button
+										class="batch-create-remove"
+										on:click={(e) => {
 									e.preventDefault();
 									if (batch > 1) {
 										batch--, removeHost(e);
 									}
 								}}>
-								<span class="material-icons"> remove </span>
-							</button>
-						</div>
-						<div class="create-form-subheader">Project:</div>
-						<div class="select-wrapper">
-							<Select
-								isClearable={false}
-								isSearchable={false}
-								items={$Projects}
-								optionIdentifier="_id"
-								selectedValue={project}
-								getOptionLabel={(option, filterText) => {
+									<span class="material-icons"> remove </span>
+								</button>
+							</div>
+							<div class="create-form-subheader">Project:</div>
+							<div class="select-wrapper">
+								<Select
+										isClearable={false}
+										isSearchable={false}
+										items={$Projects}
+										optionIdentifier="_id"
+										selectedValue={project}
+										getOptionLabel={(option, filterText) => {
 									return option.isCreator ? `Create \"${filterText}\"` : option.name;
 								}}
-								getSelectionLabel={(option) => {
+										getSelectionLabel={(option) => {
 									if (option) return option.name;
 								}}
-							/>
-							<!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
-						</div>
-						<div class="create-form-subheader">Location:</div>
-						<div class="select-wrapper">
-							{#if location !== null}
-								<Select
-									isClearable={false}
-									isSearchable={false}
-									items={locations}
-									optionIdentifier="location"
-									getOptionLabel={(option, filterText) => {
+								/>
+								<!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
+							</div>
+							<div class="create-form-subheader">Location:</div>
+							<div class="select-wrapper">
+								{#if location !== null}
+									<Select
+											isClearable={false}
+											isSearchable={false}
+											items={locations}
+											optionIdentifier="location"
+											getOptionLabel={(option, filterText) => {
 										return option.isCreator ? `Create \"${filterText}\"` : option.location;
 									}}
-										getSelectionLabel={(option) => {
+											getSelectionLabel={(option) => {
 										if (option) return option.location;
 									}}
-									bind:selectedValue={location} />
-							{/if}
+											bind:selectedValue={location} />
+								{/if}
+							</div>
+							<button class="submit" type="submit"> CREATE </button>
 						</div>
-						<button class="submit" type="submit"> CREATE </button>
-					</div>
-					<div class="create-form-final-section">
+						<div class="create-form-final-section">
 						<span class="create-form-subheader">
 							Choose a hostname:
 						</span>
-						<span class="create-form-subtitle">
+							<span class="create-form-subtitle">
 							Give your machines a name.
 						</span>
-						{#each hostnames as hostname, index}
-							<input
-								autocomplete="off"
-								type="text"
-								class="hostname-input"
-								name={'hostname-' + index}
-								bind:value={hostname} />
-						{/each}
+							{#each hostnames as hostname, index}
+								<input
+										autocomplete="off"
+										type="text"
+										class="hostname-input"
+										name={'hostname-' + index}
+										bind:value={hostname} />
+							{/each}
+						</div>
 					</div>
-				</div>
-			</form>
-		</div>
+				</form>
+			</div>
+		{/if}
 	</div>
 </main>
 <!-- markup (zero or more items) goes here -->
