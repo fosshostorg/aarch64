@@ -1,5 +1,5 @@
 <script>
-	import Router, {location} from "svelte-spa-router";
+	import Router, {location, push} from "svelte-spa-router";
 	import { wrap } from "svelte-spa-router/wrap";
 	import Index from "./pages/Index.svelte";
 	import Login from "./pages/Login.svelte";
@@ -41,6 +41,7 @@
 
 	function conditionsFailed(event) {
 		console.log("conditions failed");
+		push("/login");
 	}
 
 	function routeLoaded(event) {
