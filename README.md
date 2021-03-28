@@ -292,3 +292,18 @@ GET `/admin/ansible`
 Admin authentication required
 
 Request body: Ansible config in JSON format
+
+POST `/admin/bgp`
+
+Admin authentication required
+
+Request body:
+
+```json
+{
+  "ip": "192.0.2.3",
+  "name": "Transit",
+  "asn": 65530,
+  "neighbor": "192.0.2.100"
+}
+```
