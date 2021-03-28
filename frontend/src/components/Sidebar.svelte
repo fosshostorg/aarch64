@@ -96,7 +96,7 @@
 	nav {
 		background-color: #0e0d0d;
 		width: var(--sidebar-width);
-		height: 100vh;
+		min-height: 100vh;
 		position: sticky;
 		top: 0;
 		left: 0;
