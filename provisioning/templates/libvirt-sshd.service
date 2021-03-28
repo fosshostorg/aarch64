@@ -3,7 +3,7 @@ Description=SSH daemon to interact with libvirt domain serial consoles
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/libvirt-sshd -k /root/.ssh/id_ed25519
+ExecStart=/usr/local/bin/libvirt-sshd -k /root/.ssh/id_ed25519
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=on-failure
