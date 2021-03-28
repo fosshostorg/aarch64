@@ -13,4 +13,6 @@
       script: audit.py
       args:
         executable: python3
-      changed_when: false
+      register: audit_script
+      changed_when: audit_script.rc == 2
+      failed_when: not (audit_script.rc == 2 or audit_script.rc == 0)
