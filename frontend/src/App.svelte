@@ -31,6 +31,9 @@
 
 	async function authenticate() {
 		let res = await getUserInfoAndProjects();
+		if (res.user == null) {
+			return false;
+		}
 		$User = res.user;
 		$Projects = res.projects;
 		return true;
