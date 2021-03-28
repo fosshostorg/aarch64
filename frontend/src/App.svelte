@@ -1,5 +1,5 @@
 <script>
-	import Router from "svelte-spa-router";
+	import Router, {location, push} from "svelte-spa-router";
 	import { wrap } from "svelte-spa-router/wrap";
 	import Index from "./pages/Index.svelte";
 	import Login from "./pages/Login.svelte";
@@ -31,6 +31,9 @@
 
 	async function authenticate() {
 		let res = await getUserInfoAndProjects();
+		if (res.user == null) {
+			return false;
+		}
 		$User = res.user;
 		$Projects = res.projects;
 		return true;
@@ -38,6 +41,7 @@
 
 	function conditionsFailed(event) {
 		console.log("conditions failed");
+		push("/login");
 	}
 
 	function routeLoaded(event) {
@@ -50,15 +54,20 @@
 </script>
 
 <MDPWrapper>
-	<main>
+	<main class:width-styles={!$location.includes("/docs")}>
 		<Router {routes} on:conditionsFailed={conditionsFailed} />
 	</main>
 </MDPWrapper>
 
 <style>
-	main {
+	main.width-styles {
 		width: 100%;
 		display: flex;
 		min-width: 1300px;
+		padding: 0px;
+	}
+
+	main {
+		padding: 1rem;
 	}
 </style>

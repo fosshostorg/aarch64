@@ -16,8 +16,8 @@ export const getUserInfo = async () => {
 		.then(async (res) => {
 			if (!res.ok) {
 				console.log("User not logged in, redirecting...");
-				push("/login");
-				body = null;
+				// push("/login");
+				// body = null;
 			} else {
 				body = await res.json();
 				body = body.data;
