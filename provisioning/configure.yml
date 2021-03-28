@@ -1,4 +1,5 @@
 - name: Provision hosts
   hosts: all
   roles:
+    - audit
     - vms
