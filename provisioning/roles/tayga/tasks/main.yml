@@ -9,3 +9,9 @@
     name: tayga
     state: restarted
   when: tayga_config.changed
+
+- name: Start and enable tayga
+  systemd:
+    name: tayga
+    state: started
+    enabled: true
