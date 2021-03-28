@@ -1,8 +1,8 @@
-<script>
-
+<script lang="ts">
+  export let style: string;
 </script>
 
-<div>
+<div {style}>
   <span></span>
   <span></span>
   <span></span>
@@ -10,21 +10,13 @@
   <span></span>
 </div>
 
-<h1>😉 not bad, eh</h1>
-
 <style>
   div {
     width: 4rem;
     height: 3rem;
     display: flex;
     align-items: center;
-
-
-    /* for display purposes */
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    transform: scale(80%, 80%);
   }
 
   span {
@@ -50,23 +42,4 @@
     from {height: 100%;}
     to {height: 30%;}
   }
-
-  h1 {
-    font-size: 24px;
-
-    /* for display purposes */
-    position: fixed;
-    left: 50%;
-    top: 60%;
-    opacity: 0;
-    transform: translate(-50%, -50%);
-    animation: text ease 2s forwards;
-    animation-delay: 3s;
-  }
-
-  @keyframes text {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-
 </style>
