@@ -32,7 +32,13 @@ db["config"].update_one({}, {"$set": {
         }
     },
     "oses": {
-        "debian": "https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2",
-        "ubuntu": "https://cloud-images.ubuntu.com/groovy/current/groovy-server-cloudimg-arm64.img"
+        "debian": {
+            "version": "10.8",
+            "url": "https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2"
+        },
+        "ubuntu": {
+            "version": "20.10",
+            "url": "https://cloud-images.ubuntu.com/groovy/current/groovy-server-cloudimg-arm64.img"
+        }
     }
 }})
