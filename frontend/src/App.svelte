@@ -10,7 +10,6 @@
 	import Dashboard from "./Dashboard.svelte";
 	import NotFound from "./pages/NotFound.svelte";
 	import MDPWrapper from "rollup-plugin-mdsvex-pages/src/components/MDPWrapper.svelte";
-	import Spinner from "./components/Spinner.svelte";
 
 	const dashboardWrap = wrap({
 		component: Dashboard,
@@ -27,7 +26,6 @@
 		"/signup": Signup,
 		"/dashboard": dashboardWrap,
 		"/dashboard/*": dashboardWrap,
-		"/spinner": Spinner,
 		"*": NotFound,
 	};
 
