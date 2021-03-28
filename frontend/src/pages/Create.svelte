@@ -22,7 +22,7 @@
 	let project = $Projects[0];
 	let location = null;
 
-	let showSpinner = true;
+	let showSpinner = false;
 
 	// // Debugging
 	// $: console.log(project)
