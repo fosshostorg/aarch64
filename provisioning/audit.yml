@@ -1,0 +1,16 @@
+- name: Audit running VMs
+  hosts: all
+  tasks:
+    - name: Copy authorized VMs file
+      copy:
+        content: |
+          {% for vm in vms %}
+          {{ vm['_id'] }}
+          {%- endfor %}
+        dest: /tmp/authorized-vms.txt
+
+    - name: Run audit script
+      script: audit.py
+      args:
+        executable: python3
+      changed_when: false
