@@ -48,7 +48,7 @@
 	</span>
 	<button class="material-icons icon" on:click={handleSettings}>
 		<span class="dropdown">
-			<Dropdown bind:open={listOpen} items={dropdownItems} />
+			<Dropdown bind:open={listOpen} items={dropdownItems(VM)} />
 		</span>
 		more_horiz
 	</button>

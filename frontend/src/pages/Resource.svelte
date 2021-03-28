@@ -43,8 +43,8 @@
                 <PageHeader>{toVM(vm).hostname}</PageHeader>
                 <div class="wrapper">
                     <div class="info">
-                        {#if vm.temp_password}
-                            <CopyField text={vm.temp_password}/>
+                        {#if vm.password}
+                            <CopyField text={vm.password}/>
                         {/if}
                         <span class="title">System:</span>
                         <span class="info-wrapper">

@@ -24,7 +24,8 @@
     div {
         display: flex;
         flex-direction: row;
-        align-items: baseline;
+        align-items: center;
+        height: 40px;
     }
 
     label {
@@ -36,21 +37,20 @@
 
     input {
         border: 1px solid #0e0d0d;
-        height: 40px;
+        height: 100%;
         color: #0e0d0d;
         padding: 0 0 0 10px;
         font-size: 18px;
-        margin: 0 0 18px 0;
+        box-sizing: border-box;
     }
 
     button {
-        height: 40px;
+        height: 100%;
         border: none;
         color: white;
         background-color: #0e0d0d;
         font-size: 15px;
         font-weight: 500;
         font-family: inherit;
-        margin: 0;
     }
 </style>

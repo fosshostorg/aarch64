@@ -28,7 +28,7 @@ type VM = {
 	vcpus: number;
 	memory: number;
 	disk: number;
-	temp_password: string;
+	password: string;
 };
 
 type System = {

@@ -1,18 +1,23 @@
-export let dropdownItems: DropdownItem[] = [
-    // {
-    //     label: "CONSOLE",
-    //     icon: "airplay",
-    //     action: (e) => {
-    //         alert(`ssh ${VM.id}@${VM.host}.rescue.aarch64.com`);
-    //     },
-    // },
-    // { label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },
-    // { label: "REBOOT", icon: "refresh", action: (e) => {} },
-    // { label: "STOP", icon: "stop", action: (e) => {} },
-    // { label: "RESET", icon: "sync_problem", action: (e) => {} },
-    // TODO: Have this call deleteVM(vm_id)
-    { label: "DELETE", icon: "delete", action: (e) => {} },
-]
+export function dropdownItems(vm: any): DropdownItem[] {
+    return [
+        // {
+        //     label: "CONSOLE",
+        //     icon: "airplay",
+        //     action: (e) => {
+        //         alert(`ssh ${VM.id}@${VM.host}.rescue.aarch64.com`);
+        //     },
+        // },
+        // { label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },
+        // { label: "REBOOT", icon: "refresh", action: (e) => {} },
+        // { label: "STOP", icon: "stop", action: (e) => {} },
+        // { label: "RESET", icon: "sync_problem", action: (e) => {} },
+        {
+            label: "DELETE", icon: "delete", action: (e) => {
+                deleteVM(vm._id).then((data) => {alert(data)});
+            }
+        },
+    ]
+}
 
 const checkMeta = (body: any): void => {
     // if (body !== null && !body.meta.success) {
@@ -126,6 +131,7 @@ export const getUserInfoAndProjects = async (): Promise<{
                             os: "debian",
                             host: 0,
                             prefix: "2001:db8:ffff::/64",
+                            password: "test123"
                         },
                     ],
                 },
@@ -139,20 +145,20 @@ export const getUserInfoAndProjects = async (): Promise<{
     return {user: user, projects};
 };
 
-export const deleteVM = (id: string) => {
+export async function deleteVM(id: string) {
     let body;
-    fetch("__apiRoute__/vms/delete", {
+    await fetch("__apiRoute__/vms/delete", {
         method: "DELETE",
         body: JSON.stringify({vm: id})
     })
         .then(resp => resp.json())
         .then(data => {
-            body = data;
+            body = data.data;
         })
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err));
 
     return body;
-};
+}
 
 export const consoleWelcomeMessage = () => {
     console.log(

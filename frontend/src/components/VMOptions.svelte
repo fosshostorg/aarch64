@@ -2,15 +2,17 @@
 	import {dropdownItems} from "../utils";
 
 	export let vm: VM;
+
+	let options = dropdownItems(vm);
 </script>
 
 <div class="action-options">
 	<div class="action-title">ACTIONS</div>
-	{#each dropdownItems as option}
-		<span class="action-option" on:click={option.action}>
-			<span class="material-icons">{option.icon}</span>
-			{option.label}
-		</span>
+	{#each options as option}
+	<span class="action-option" on:click={option.action}>
+		<span class="material-icons">{option.icon}</span>
+		{option.label}
+	</span>
 	{/each}
 </div>
 
