@@ -1,0 +1,4 @@
+- name: Provision hosts
+  hosts: all
+  roles:
+    - vms
