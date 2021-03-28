@@ -6,6 +6,6 @@ users:
 ssh_pwauth: true
 disable_root: false
 chpasswd:
-  list: root:{{ item.temp_password }}
+  list: root:{{ item.password }}
   expire: False
 final_message: "system up after $UPTIME seconds"

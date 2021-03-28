@@ -24,7 +24,6 @@ app = Flask(__name__)
 db = MongoClient("mongodb://localhost:27017")["aarch64"]
 db["users"].create_index([("email", ASCENDING)], background=True, unique=True)
 db["pops"].create_index([("name", ASCENDING)], background=True, unique=True)
-db["vms"].create_index([("temp_password", ASCENDING)], expireAfterSeconds=86400)  # 24 hours
 
 # Check for config doc
 config_doc = db["config"].find_one()
@@ -302,7 +301,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     json_body["host"] = next(iter(_host_usage))
 
     # Set temporary password
-    json_body["temp_password"] = token_hex(16)
+    json_body["password"] = token_hex(16)
 
     # Find taken prefixes
     taken_prefixes = []
