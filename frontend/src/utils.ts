@@ -2,13 +2,13 @@ import {push} from "svelte-spa-router";
 
 export function dropdownItems(vm: any): DropdownItem[] {
     return [
-        // {
-        //     label: "CONSOLE",
-        //     icon: "airplay",
-        //     action: (e) => {
-        //         alert(`ssh ${VM.id}@${VM.host}.rescue.aarch64.com`);
-        //     },
-        // },
+        {
+            label: "CONSOLE",
+            icon: "airplay",
+            action: (e) => {
+                alert(`ssh -p 2222 ${vm._id}@${vm.pop}${vm.host}.aarch64.com`);
+            },
+        },
         // { label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },
         // { label: "REBOOT", icon: "refresh", action: (e) => {} },
         // { label: "STOP", icon: "stop", action: (e) => {} },
