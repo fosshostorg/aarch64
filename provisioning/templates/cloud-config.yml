@@ -9,3 +9,10 @@ chpasswd:
   list: root:{{ item.password }}
   expire: False
 final_message: "system up after $UPTIME seconds"
+{% if item.os == "ubuntu" %}
+runcmd:
+  - ip link set dev enp1s0 down
+  - ip link set dev enp1s0 name eth0
+  - ip link set dev enp1s0 up
+  - netplan apply
+{% endif %}
