@@ -1,5 +1,5 @@
 <script>
-	import Router from "svelte-spa-router";
+	import Router, {location} from "svelte-spa-router";
 	import { wrap } from "svelte-spa-router/wrap";
 	import Index from "./pages/Index.svelte";
 	import Login from "./pages/Login.svelte";
@@ -50,15 +50,20 @@
 </script>
 
 <MDPWrapper>
-	<main>
+	<main class:width-styles={!$location.includes("/docs")}>
 		<Router {routes} on:conditionsFailed={conditionsFailed} />
 	</main>
 </MDPWrapper>
 
 <style>
-	main {
+	main.width-styles {
 		width: 100%;
 		display: flex;
 		min-width: 1300px;
+		padding: none;
+	}
+
+	main {
+		padding: 1rem;
 	}
 </style>
