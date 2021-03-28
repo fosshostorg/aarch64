@@ -441,6 +441,33 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Unable to add host")
 
 
+@app.route("/admin/bgp", methods=["POST"])
+@with_authentication(admin=True)
+@with_json("ip", "name", "asn", "neighbor")
+def add_bgp_session(json_body: dict, user_doc: dict) -> Response:
+    for pop in db["pops"].find():
+        if pop.get("hosts"):
+            for host_index, host in enumerate(pop.get("hosts")):
+                if host["ip"] == json_body["ip"]:
+                    print("Found host")
+                    if not host.get("peers"):
+                        host["peers"] = {}
+
+                    host["peers"][json_body["name"]] = {
+                        "asn": json_body["asn"],
+                        "type": "import-valid",
+                        "neighbors": [json_body["neighbor"]]
+                    }
+
+                    update = db["pops"].update_one({"_id": pop["_id"]}, {"$set": {"hosts." + str(host_index): host}})
+                    if update.modified_count == 1:
+                        return _resp(True, "Added BGP session")
+                    else:
+                        return _resp(False, "Unable to add BGP session")
+
+    return _resp(False, "Unable to find host with provided IP")
+
+
 @app.route("/admin/ansible", methods=["GET"])
 @with_authentication(admin=True)
 def get_ansible_hosts(user_doc: dict):
