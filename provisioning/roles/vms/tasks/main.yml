@@ -4,7 +4,7 @@
   changed_when: false
 
 - name: Create VM bridge
-  shell: ip link add br-{{ item["_id"] }} type bridge ; ip addr add dev br-{{ item["_id"] }} {{ item["gateway"] }}/64 ; ip link set dev br-{{ item["_id"] }} up
+  shell: ip link add vbr{{ item["index"] }} type bridge ; ip addr add dev vbr{{ item["index"] }} {{ item["gateway"] }}/64 ; ip link set dev vbr{{ item["index"] }} up
   loop: "{{ vms }}"
   when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
 
@@ -58,7 +58,7 @@
       --name "{{ item["_id"] }}" \
       --memory {{ item["memory"] * 1024 }} \
       --vcpus {{ item["vcpus"] }} \
-      --network bridge=br-{{ item["_id"] }},model=virtio \
+      --network bridge=vbr{{ item["index"] }},model=virtio \
       --import \
       --disk path=/opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2 \
       --disk path=/opt/aarch64/vms/{{ item["_id"]}}-cloudinit.iso,device=cdrom \
