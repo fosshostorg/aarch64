@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { push } from "svelte-spa-router";
 	import Dropdown from "./Dropdown.svelte";
+	import {dropdownItems} from "../utils";
 
 	export let VM: VM = {
 		hostname: "",
@@ -16,21 +17,6 @@
 	};
 
 	export let link: string = "";
-
-	let dropdownItems: DropdownItem[] = [
-		{
-			label: "CONSOLE",
-			icon: "airplay",
-			action: (e) => {
-				alert(`ssh ${VM.id}@${VM.host}.rescue.aarch64.com`);
-			},
-		},
-		{ label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },
-		{ label: "REBOOT", icon: "refresh", action: (e) => {} },
-		{ label: "STOP", icon: "stop", action: (e) => {} },
-		{ label: "RESET", icon: "sync_problem", action: (e) => {} },
-		{ label: "DELETE", icon: "delete", action: (e) => {} },
-	];
 
 	let listOpen = false;
 

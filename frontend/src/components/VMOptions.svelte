@@ -1,25 +1,12 @@
 <script lang="ts">
-	export let vm: VM;
+	import {dropdownItems} from "../utils";
 
-	let options: DropdownItem[] = [
-		{
-			label: "CONSOLE",
-			icon: "airplay",
-			action: (e) => {
-				alert(`ssh ${vm.hostname}@${vm.host}.rescue.arm-64.com`);
-			},
-		},
-		{ label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },
-		{ label: "REBOOT", icon: "refresh", action: (e) => {} },
-		{ label: "STOP", icon: "stop", action: (e) => {} },
-		{ label: "RESET", icon: "sync_problem", action: (e) => {} },
-		{ label: "DELETE", icon: "delete", action: (e) => {} },
-	];
+	export let vm: VM;
 </script>
 
 <div class="action-options">
 	<div class="action-title">ACTIONS</div>
-	{#each options as option}
+	{#each dropdownItems as option}
 		<span class="action-option" on:click={option.action}>
 			<span class="material-icons">{option.icon}</span>
 			{option.label}
