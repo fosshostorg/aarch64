@@ -57,7 +57,7 @@
 
 			await createVM(project._id, hostnames[0], plan, image, location.name)
 				.then((data) => {
-					if (data !== null && data.meta.success) {
+					if (data !== null) {
 						push("/dashboard/projects/" + project._id);
 					} else {
 						console.log(data)

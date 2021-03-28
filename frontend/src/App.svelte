@@ -40,7 +40,8 @@
 	}
 
 	function conditionsFailed(event) {
-		console.log("conditions failed");
+		// console.log("conditions failed");
+		// Authentication has failed.
 		push("/login");
 	}
 
