@@ -20,7 +20,7 @@
 
 	$: project = getProjectById(params.project_id, $Projects);
 
-	let views = ["RESOURCES", "SETTINGS"];
+	let views = ["RESOURCES"];  // TODO: Settings page
 	let currentView = "RESOURCES";
 
 	function toVM(vm: any): VM {
