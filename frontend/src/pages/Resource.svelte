@@ -43,15 +43,13 @@
                 <PageHeader>{toVM(vm).hostname}</PageHeader>
                 <div class="wrapper">
                     <div class="info">
-                        {#if vm.password}
-                            <CopyField text={vm.password}/>
-                        {/if}
                         <span class="title">System:</span>
                         <span class="info-wrapper">
 							<VMInfo vm={toVM(vm)}/>
 						</span>
                         <span class="title">Network:&nbsp;<span class="material-icons" on:click={() => {replace("/docs/networking")}}>help_outline</span></span>
                         <IPInfo vm={toVM(vm)}/>
+                        <CopyField text={vm.password}/>
                     </div>
                     <div class="actions">
                         <VMOptions vm={toVM(vm)}/>

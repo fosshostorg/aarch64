@@ -8,24 +8,29 @@
         copyText.select();
         copyText.setSelectionRange(0, 99999);
         document.execCommand("copy");
-        alert("Temporary password has been copied to clipboard")
+        alert("Password has been copied to clipboard")
     }
 </script>
 
 <main>
-    <label for="text-input">Temporary Password: &nbsp;<span class="material-icons" on:click={() => replace("/docs/quickstart")}>help_outline</span></label>
+    <label for="text-input">Password: &nbsp;<span class="material-icons" on:click={() => replace("/docs/quickstart")}>help_outline</span></label>
     <div>
         <input type="text" value="{text}" id="text-input">
-        <button on:click={copyHandler}>Copy</button>
+        <button on:click={copyHandler}>COPY</button>
     </div>
 </main>
 
 <style>
+    main {
+        margin-top: 1.5rem;
+    }
+
     div {
         display: flex;
         flex-direction: row;
         align-items: center;
         height: 40px;
+        width: 100%;
     }
 
     label {
@@ -33,6 +38,7 @@
         margin: 10px 0;
         display: flex;
         align-items: center;
+        opacity: 0.7;
     }
 
     input {
@@ -42,6 +48,7 @@
         padding: 0 0 0 10px;
         font-size: 18px;
         box-sizing: border-box;
+        flex-grow: 1;
     }
 
     button {
