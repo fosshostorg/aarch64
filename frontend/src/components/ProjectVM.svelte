@@ -22,7 +22,7 @@
 			label: "CONSOLE",
 			icon: "airplay",
 			action: (e) => {
-				alert(`ssh ${VM.uuid}@${VM.host}.rescue.aarch64.com`);
+				alert(`ssh ${VM.id}@${VM.host}.rescue.aarch64.com`);
 			},
 		},
 		{ label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },
