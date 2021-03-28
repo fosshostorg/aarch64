@@ -89,9 +89,6 @@
 
 						let data: System = body.data as System;
 						plans = data.plans;
-						data.oses.forEach(os => {
-							images[os] = {version: "latest"}
-						});
 						locations = data.pops;
 
 						image = Object.keys(images)[0];
@@ -101,9 +98,6 @@
 		} else {
 			let data: System = getMockSystemData() as System;
 			plans = data.plans;
-			data.oses.forEach(os => {
-				images[os] = {version: "latest"}
-			});
 			locations = data.pops;
 
 			image = Object.keys(images)[0];

@@ -34,8 +34,13 @@ type VM = {
 type System = {
 	pops: Pop[];
 	plans: { [key: string]: Plan };
-	oses: string[];
+	oses: { [key: string]: OS };
 };
+
+type OS = {
+	version: string;
+	url: string;
+}
 
 type Pop = {
 	_id: string;
