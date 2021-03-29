@@ -1,9 +1,13 @@
 import datetime
 import ipaddress
 import json
+import time
+from email.mime.text import MIMEText
 from functools import wraps
 from os import environ
 from secrets import token_hex
+from smtplib import SMTP_SSL as SMTP
+from typing import List
 
 # noinspection PyPackageRequirements
 from argon2 import PasswordHasher
@@ -45,6 +49,25 @@ if (not config_doc.get("oses")) or (len(config_doc.get("oses")) < 1):
 if (not config_doc.get("plans")) or (len(config_doc.get("plans")) < 1):
     console.log("Config must have at least one plan defined")
     exit(1)
+
+if not config_doc.get("email"):
+    console.log("Config must have an email account set up")
+
+
+def send_email(to: List[str], subject: str, body: str):
+    # Update config doc
+    config_doc = db["config"].find_one()
+
+    # Build the MIME email
+    msg = MIMEText(body, "plain")
+    msg["Subject"] = subject
+    msg["From"] = config_doc["email"]["address"]
+
+    # Connect and send the email
+    server = SMTP(config_doc["email"]["server"])
+    server.login(config_doc["email"]["address"], config_doc["email"]["password"])
+    server.sendmail(config_doc["email"]["address"], to + config_doc["email"]["admins"], msg.as_string())
+    server.quit()
 
 
 def to_object_id(object_id: str):
@@ -310,6 +333,10 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     json_body["password"] = token_hex(16)
 
     json_body["phoned_home"] = False
+    json_body["created"] = {
+        "by": user_doc["_id"],
+        "at": time.time()
+    }
 
     # Find taken prefixes
     taken_prefixes = []
@@ -547,9 +574,26 @@ def phone_home():
     if not vm_doc:
         return _resp(False, "Unable to find VM")
 
-    db["vms"].update_one({"address": client_ip + "/64"}, {"$set": {"phoned_home": True}})
+    if not vm_doc.get("phoned_home"):
+        db["vms"].update_one({"address": client_ip + "/64"}, {"$set": {"phoned_home": True}})
+        send_email(vm_doc["created"]["by"], "AARCH64: VM Created", f"""Hello,
+
+Your AARCH64 VM is ready to go!
+
+Address: {vm_doc["address"][:-3]}
+Password: {vm_doc["password"]}
+
+Remote "Out of Band" SSH console:
+ssh -p 2222 {vm_doc["_id"]}@{vm_doc["pop"]}{vm_doc["host"]}.aarch64.com
+
+If you have any questions, please reach out via one of our contact methods at https://fosshost.org as this is a no-reply email address.
+
+Best,
+Fosshost Team
+""")
     return _resp(True, "Phone home complete")
 
 
 if environ.get("AARCH64_DEBUG"):
+    print("Running API server in debug mode...")
     app.run(debug=True)
