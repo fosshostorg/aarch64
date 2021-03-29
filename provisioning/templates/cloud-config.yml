@@ -11,9 +11,9 @@ chpasswd:
 final_message: "system up after $UPTIME seconds"
 runcmd:
 {% if item.os == "ubuntu" %}
-- ip link set dev enp1s0 down
-- ip link set dev enp1s0 name eth0
-- ip link set dev enp1s0 up
-- netplan apply
-{% endif %}Q
+  - ip link set dev enp1s0 down
+  - ip link set dev enp1s0 name eth0
+  - ip link set dev enp1s0 up
+  - netplan apply
+{% endif %}
   - wget -O - https://console.aarch64.com/api/intra/phonehome
