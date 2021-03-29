@@ -15,7 +15,9 @@ export function dropdownItems(vm: any): DropdownItem[] {
         // { label: "RESET", icon: "sync_problem", action: (e) => {} },
         {
             label: "DELETE", icon: "delete", action: (e) => {
-                deleteVM(vm._id).then(() => {push("/")});
+                deleteVM(vm._id).then(() => {
+                    push("/")
+                });
             }
         },
     ]
@@ -157,16 +159,19 @@ export const getUserInfoAndProjects = async (): Promise<{
 
 export async function deleteVM(id: string) {
     let body;
-    await fetch("__apiRoute__/vms/delete", {
-        method: "DELETE",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({vm: id})
-    })
-        .then(resp => resp.json())
-        .then(data => {
-            body = data.data;
+
+    if (prompt("Are you sure you want to delete this VM?")) {
+        await fetch("__apiRoute__/vms/delete", {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({vm: id})
         })
-        .catch((err) => alert(err));
+            .then(resp => resp.json())
+            .then(data => {
+                body = data.data;
+            })
+            .catch((err) => alert(err));
+    }
 
     return body;
 }
