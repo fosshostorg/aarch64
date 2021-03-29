@@ -375,7 +375,7 @@ def get_system(user_doc: dict):
     return _resp(True, "Retrieved PoPs", data={
         "pops": pops,
         "plans": config_doc["plans"],
-        "oses": list(config_doc["oses"])
+        "oses": config_doc["oses"]
     })
 
 
