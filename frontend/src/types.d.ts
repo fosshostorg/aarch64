@@ -15,6 +15,7 @@ type Project = {
 	_id: string;
 	name: string;
 	vms: VM[];
+	users: string[];
 };
 
 type VM = {

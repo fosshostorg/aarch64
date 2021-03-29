@@ -76,6 +76,15 @@
 				<div>
 					<span class="title">Settings</span>
 					<div class="user-form-container">
+						<span class="user-form-subheader">Users:</span>
+						<ul>
+							{#each project.users as user}
+								<li>{user}</li>
+							{/each}
+						</ul>
+					</div>
+
+					<div class="user-form-container">
 						<span class="user-form-subheader">Add user to project:</span>
 						<span class="user-form-subtitle">Enter a user's email. Make sure they already have signed up for an account.</span>
 						<input bind:value={newUserEmail} autocomplete="off" type="text" class="user-input" placeholder="user@example.com"/>
