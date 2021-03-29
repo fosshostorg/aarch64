@@ -37,7 +37,8 @@
 		})
 			.then(resp => resp.json())
 			.then(data => {
-				alert(data.meta.message)
+				alert(data.meta.message);
+				location.reload();
 			})
 			.catch((err) => alert(err));
 	}
