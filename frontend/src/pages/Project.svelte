@@ -20,11 +20,26 @@
 
 	$: project = getProjectById(params.project_id, $Projects);
 
-	let views = ["RESOURCES"];  // TODO: Settings page
+	let views = ["RESOURCES", "SETTINGS"];
 	let currentView = "RESOURCES";
 
 	function toVM(vm: any): VM {
 		return vm as VM;
+	}
+
+	let newUserEmail;
+
+	function submitAddUser() {
+		fetch("__apiRoute__/project/adduser", {
+			method: "POST",
+			headers: {"Content-Type": "application/json"},
+			body: JSON.stringify({project: params.project_id, email: newUserEmail})
+		})
+			.then(resp => resp.json())
+			.then(data => {
+				alert(data.meta.message)
+			})
+			.catch((err) => alert(err));
 	}
 </script>
 
@@ -40,22 +55,32 @@
 			{project.name}
 		</PageHeader>
 		<div class="content">
-			<span class="title"> Virtual Machines </span>
-			{#if project.vms.length == 0}
-				<div class="empty-list">Nothing to see here...</div>
-				<a href="/#/dashboard/create" class="add-new-button"> CREATE VM </a>
-			{:else}
-				<span class="labels">
-					<div class="hostname-label">HOSTNAME</div>
-					<div class="location-label">POP</div>
-					<div class="ip-label">ADDRESS</div>
-				</span>
-				<div class="vm-list">
-					{#each project.vms as vm}
-						<ProjectVM
-							VM={toVM(vm)}
-							link={'/dashboard/projects/' + project._id + '/resources/' + vm['_id']} />
-					{/each}
+			{#if currentView === "RESOURCES"}
+					<span class="title">Virtual Machines</span>
+					{#if project.vms.length === 0}
+						<div class="empty-list">Nothing to see here...</div>
+						<a href="/#/dashboard/create" class="add-new-button"> CREATE VM </a>
+					{:else}
+					<span class="labels">
+						<div class="hostname-label">HOSTNAME</div>
+						<div class="location-label">POP</div>
+						<div class="ip-label">ADDRESS</div>
+					</span>
+						<div class="vm-list">
+							{#each project.vms as vm}
+								<ProjectVM VM={toVM(vm)} link={'/dashboard/projects/' + project._id + '/resources/' + vm['_id']} />
+							{/each}
+						</div>
+					{/if}
+			{:else if currentView === "SETTINGS"}
+				<div>
+					<span class="title">Settings</span>
+					<div class="user-form-container">
+						<span class="user-form-subheader">Add user to project:</span>
+						<span class="user-form-subtitle">Enter a user's email. Make sure they already have signed up for an account.</span>
+						<input bind:value={newUserEmail} autocomplete="off" type="text" class="user-input" placeholder="user@example.com"/>
+						<button class="user-form-button" on:click={() => submitAddUser()}>ADD USER</button>
+					</div>
 				</div>
 			{/if}
 		</div>
@@ -134,7 +159,7 @@
         flex-grow: 1;
         display: flex;
         justify-content: center;
-        flex-basis: 0px;
+        flex-basis: 0;
     }
 
     .ip-label {
@@ -143,4 +168,43 @@
         display: flex;
         justify-content: center;
     }
+
+	.user-form-container {
+		display: flex;
+		flex-direction: column;
+		margin-top: 25px;
+		padding-left: 15px;
+	}
+
+	.user-form-subheader {
+		font-size: 22px;
+		font-weight: 500;
+	}
+
+	.user-form-subtitle {
+		font-size: 16px;
+		opacity: 0.5;
+		padding-bottom: 10px;
+	}
+
+	.user-input {
+		height: 38px;
+		margin: 0 0 10px 0;
+		border: 1px solid #0e0d0d;
+		color: #0e0d0d;
+		padding: 0 0 0 10px;
+		font-size: 18px;
+		width: 350px;
+	}
+
+	.user-form-button {
+		height: 40px;
+		font-weight: 500;
+		color: white;
+		background-color: #0e0d0d;
+		border: none;
+		font-family: inherit;
+		font-size: 16px;
+		width: 150px;
+	}
 </style>
