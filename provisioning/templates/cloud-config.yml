@@ -16,4 +16,4 @@ runcmd:
   - ip link set dev enp1s0 up
   - netplan apply
 {% endif %}
-  - for i in {1..5}; do wget -O - https://console.aarch64.com/api/intra/phonehome ; done
+  - sleep 60 ; for i in {1..5}; do wget -O - https://console.aarch64.com/api/intra/phonehome ; done
