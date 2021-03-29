@@ -8,7 +8,7 @@
         copyText.select();
         copyText.setSelectionRange(0, 99999);
         document.execCommand("copy");
-        alert("Password has been copied to clipboard")
+        // alert("Password has been copied to clipboard")
     }
 </script>
 
