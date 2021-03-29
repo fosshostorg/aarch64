@@ -40,7 +40,6 @@
 		</span>
 		<div class="hostname">{VM.hostname}</div>
 		<div class="location">
-			<!-- TODO: Make this align correctly -->
 			{VM.pop.toUpperCase()}
 		</div>
 		<span class="ip">

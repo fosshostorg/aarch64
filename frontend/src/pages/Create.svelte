@@ -51,7 +51,7 @@
 					await createVM(project._id, hostname, plan, image, location.name)
 							.then((data) => {
 								console.log(data)
-							}) // TODO: Forward here somehow
+							})
 							.catch((err) => console.log(err));
 				}
 				await push("/dashboard/projects/" + project_id);
