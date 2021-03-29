@@ -44,7 +44,7 @@
 			{VM.pop.toUpperCase()}
 		</div>
 		<span class="ip">
-			{VM.prefix}
+			{VM.address}
 		</span>
 	</span>
 	<button class="material-icons icon" on:click={handleSettings}>

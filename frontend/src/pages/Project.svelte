@@ -48,7 +48,7 @@
 				<span class="labels">
 					<div class="hostname-label">HOSTNAME</div>
 					<div class="location-label">POP</div>
-					<div class="ip-label">PREFIX</div>
+					<div class="ip-label">ADDRESS</div>
 				</span>
 				<div class="vm-list">
 					{#each project.vms as vm}

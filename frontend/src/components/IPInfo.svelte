@@ -5,12 +5,14 @@
 <table>
 	<thead>
 		<tr>
-			<th>Prefix</th>
+			<th>Address</th>
+			<th>Gateway</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
-			<td>{vm.prefix}</td>
+			<td>{vm.address}</td>
+			<td>{vm.gateway}</td>
 		</tr>
 	</tbody>
 </table>

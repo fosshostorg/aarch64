@@ -30,6 +30,8 @@ type VM = {
 	disk: number;
 	password: string;
 	phoned_home: boolean;
+	address: string;
+	gateway: string;
 };
 
 type System = {
