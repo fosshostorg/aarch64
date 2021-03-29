@@ -90,15 +90,17 @@
 						let data: System = body.data as System;
 						plans = data.plans;
 						locations = data.pops;
+						images = data.oses;
 
 						image = Object.keys(images)[0];
 						plan = Object.keys(plans)[0];
 						location = locations[0];
 					});
-		} else {
+		} else { // !production
 			let data: System = getMockSystemData() as System;
 			plans = data.plans;
 			locations = data.pops;
+			images = data.oses;
 
 			image = Object.keys(images)[0];
 			plan = Object.keys(plans)[0];
@@ -109,7 +111,6 @@
 	onMount(() => {
 		loadData();
 	});
-
 </script>
 
 <PageTitle title="AARCH64 | Create VM" />

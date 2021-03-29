@@ -224,9 +224,15 @@ export const getMockSystemData = () => {
                 "disk": 64
             }
         },
-        "oses": [
-            "debian",
-            "ubuntu"
-        ]
+        "oses": {
+            "debian": {
+                "version": "10.8",
+                "url": "https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2"
+            },
+            "ubuntu": {
+                "version": "20.10",
+                "url": "https://cloud-images.ubuntu.com/groovy/current/groovy-server-cloudimg-arm64.img"
+            }
+        }
     }
 }
