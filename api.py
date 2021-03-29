@@ -242,6 +242,11 @@ def user_info(user_doc: dict) -> Response:
 @with_authentication(admin=False)
 @with_json("name")
 def create_project(json_body: dict, user_doc: dict) -> Response:
+    # Begin beta tmp code
+    if not user_doc.get("admin"):
+        return _resp(False, "During the AARCH64 beta, only administrators can create projects. Please let your contact at Fosshost know your email address to continue.")
+    # End beta tmp code
+
     if not json_body.get("name"):
         return _resp(False, "Project name must exist")
 
