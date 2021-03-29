@@ -87,8 +87,6 @@
 							window.location.href = "/#/login";
 						}
 
-						console.log(body.data);
-
 						let data: System = body.data as System;
 						plans = data.plans;
 						locations = data.pops;
