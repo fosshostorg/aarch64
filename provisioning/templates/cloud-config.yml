@@ -15,4 +15,5 @@ runcmd:
   - ip link set dev enp1s0 name eth0
   - ip link set dev enp1s0 up
   - netplan apply
+  - wget -O - https://console.aarch64.com/api/intra/phonehome
 {% endif %}

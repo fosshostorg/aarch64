@@ -313,3 +313,9 @@ Request body:
   "neighbor": "192.0.2.100"
 }
 ```
+
+### Internal
+
+GET `/intra/phonehome`
+
+Request body: `None`

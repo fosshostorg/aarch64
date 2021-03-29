@@ -303,6 +303,8 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     # Set temporary password
     json_body["password"] = token_hex(16)
 
+    json_body["phone_home"] = False
+
     # Find taken prefixes
     taken_prefixes = []
     taken_indices = []
@@ -503,15 +505,18 @@ def get_ansible_hosts(user_doc: dict):
     return _resp(True, "Retrieved ansible config", data=_config)
 
 
-@app.route("/intra/info", methods=["GET"])
-def intra_info():
-    for pop in db["pops"].find():
-        if pop.get("hosts"):
-            for host in pop.get("hosts"):
-                if host["ip"] == request.headers.get("X-Forwarded-For"):
-                    return _resp(True, "Retrieved host config", data=host)
+@app.route("/intra/phonehome", methods=["GET"])
+def phone_home():
+    client_ip = request.headers.get("X-Forwarded-For")
+    if not client_ip:
+        return _resp(False, "No header defined")
 
-    return _resp(False, "Unauthorized"), 403
+    vm_doc = db["vms"].find({"address": client_ip + "/64"})
+    if not vm_doc:
+        return _resp(False, "Unable to find VM")
+
+    db["vms"].update_one({"address": client_ip + "/64"}, {"$set": {"phoned_home": True}})
+    return _resp(True, "Phone home complete")
 
 
 if environ.get("AARCH64_DEBUG"):
