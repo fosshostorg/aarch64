@@ -576,7 +576,8 @@ def phone_home():
 
     if not vm_doc.get("phoned_home"):
         db["vms"].update_one({"address": client_ip + "/64"}, {"$set": {"phoned_home": True}})
-        send_email(vm_doc["created"]["by"], "AARCH64: VM Created", f"""Hello,
+        user_doc = db["users"].find_one({"_id": vm_doc["created"]["by"]})
+        send_email(user_doc["email"], "AARCH64: VM Created", f"""Hello,
 
 Your AARCH64 VM is ready to go!
 
