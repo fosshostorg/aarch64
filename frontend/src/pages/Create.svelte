@@ -237,7 +237,6 @@
 		{/if}
 	</div>
 </main>
-<!-- markup (zero or more items) goes here -->
 
 <style>
 	main {
@@ -271,11 +270,10 @@
 
 	.hostname-input {
 		height: 38px;
-		padding: 0px;
-		margin: 0px 0px 10px 0px;
+		margin: 0 0 10px 0;
 		border: 1px solid #0e0d0d;
 		color: #0e0d0d;
-		padding-left: 10px;
+		padding: 0 0 0 10px;
 		font-size: 18px;
 		width: 350px;
 	}
@@ -306,7 +304,7 @@
 	}
 
 	button.submit:active {
-		padding: 0px 8px;
+		padding: 0 8px;
 		background-color: #46b05d;
 	}
 
@@ -344,7 +342,7 @@
 	}
 
 	.batch-create-button button:active {
-		padding: 0px 8px;
+		padding: 0 8px;
 		opacity: 0.9;
 	}
 
@@ -384,7 +382,6 @@
 		font-size: 28px;
 		padding-left: 15px;
 		height: 55px;
-		display: inline-block;
 		display: flex;
 		align-items: center;
 	}
