@@ -10,10 +10,10 @@ chpasswd:
   expire: False
 final_message: "system up after $UPTIME seconds"
 runcmd:
-  - wget -O - https://console.aarch64.com/api/intra/phonehome
 {% if item.os == "ubuntu" %}
-  - ip link set dev enp1s0 down
-  - ip link set dev enp1s0 name eth0
-  - ip link set dev enp1s0 up
-  - netplan apply
-{% endif %}
+- ip link set dev enp1s0 down
+- ip link set dev enp1s0 name eth0
+- ip link set dev enp1s0 up
+- netplan apply
+{% endif %}Q
+  - wget -O - https://console.aarch64.com/api/intra/phonehome
