@@ -4,7 +4,7 @@
   changed_when: false
 
 - name: Create VM bridge
-  shell: ip link add vbr{{ item["index"] }} type bridge ; ip addr add dev vbr{{ item["index"] }} {{ item["gateway"] }}/64 ; ip link set dev vbr{{ item["index"] }} up
+  shell: ip link del vbr{{ item["index"] }} ; ip link add vbr{{ item["index"] }} type bridge ; ip addr add dev vbr{{ item["index"] }} {{ item["gateway"] }}/64 ; ip link set dev vbr{{ item["index"] }} up
   loop: "{{ vms }}"
   when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
 
