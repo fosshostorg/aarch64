@@ -11,7 +11,7 @@
 	</div>
 	<div class="icons">
 		<span class="hover-card">
-			<div class="version">latest</div>
+			<div class="version">{vm.os}</div>
 			<img
 				src={'./img/' + vm.os.toLowerCase() + '.svg'}
 				alt={vm.os + ' Logo'} />
