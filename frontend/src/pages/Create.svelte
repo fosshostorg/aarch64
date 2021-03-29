@@ -232,7 +232,7 @@
 		{:else}
 			<PageHeader>You don't have any projects yet</PageHeader>
 			<div class="create-form">
-				<button on:click={() => push("/dashboard/projects/create")}>CREATE PROJECT</button>
+				<button class="large" on:click={() => push("/dashboard/projects/create")}>CREATE PROJECT</button>
 			</div>
 		{/if}
 	</div>
@@ -245,7 +245,6 @@
 		display: flex;
 		flex-direction: column;
 	}
-
 	.select-wrapper {
 		--border: 1px solid #0e0d0d;
 		--borderHoverColor: 1px solid #0e0d0d;
@@ -262,12 +261,10 @@
 		display: flex;
 		flex-direction: column;
 	}
-
 	div.create-form-subheader {
 		margin-top: 15px;
 		padding-bottom: 5px;
 	}
-
 	.hostname-input {
 		height: 38px;
 		margin: 0 0 10px 0;
@@ -277,8 +274,7 @@
 		font-size: 18px;
 		width: 350px;
 	}
-
-	button {
+	button.large {
 		width: 250px;
 		margin-top: 40px;
 		height: 40px;
@@ -289,7 +285,6 @@
 		color: white;
 		background-color: black;
 	}
-
 	button.submit {
 		width: 250px;
 		margin-top: 40px;
@@ -302,19 +297,16 @@
 		background-color: #46b0a6;
 		transition: ease background-color 0.2s;
 	}
-
 	button.submit:active {
 		padding: 0 8px;
 		background-color: #46b05d;
 	}
-
 	.batch-create-button {
 		display: flex;
 		width: 250px;
 		align-items: center;
 		justify-content: space-between;
 	}
-
 	.batch-create-button div {
 		background-color: #0e0d0d;
 		flex-grow: 1;
@@ -328,54 +320,44 @@
 		font-size: 22px;
 		font-weight: 300;
 	}
-
 	.batch-create-button div b {
 		font-weight: bold;
 		padding-right: 5px;
 	}
-
 	.batch-create-button button {
 		background-color: #0e0d0d;
 		border: none;
 		height: 40px;
 		cursor: pointer;
 	}
-
 	.batch-create-button button:active {
 		padding: 0 8px;
 		opacity: 0.9;
 	}
-
 	.batch-create-button button span {
 		color: white;
 	}
-
 	.create-form-subheader {
 		font-size: 22px;
 		font-weight: 500;
 	}
-
 	.create-form-subtitle {
 		font-size: 16px;
 		opacity: 0.5;
 		padding-bottom: 10px;
 	}
-
 	.create-form-final-section {
 		display: flex;
 		flex-direction: column;
 		margin-right: 15px;
 	}
-
 	.create-form-final {
 		padding-left: 30px;
 		display: flex;
 	}
-
 	.create-form-select {
 		padding-left: 15px;
 	}
-
 	.form-header {
 		font-weight: 500;
 		opacity: 0.7;
@@ -385,12 +367,10 @@
 		display: flex;
 		align-items: center;
 	}
-
 	.create-form {
 		width: auto;
 		margin-left: 25px;
 	}
-
 	.content {
 		width: 100%;
 		display: flex;
