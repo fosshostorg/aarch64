@@ -56,6 +56,7 @@ if not config_doc.get("email"):
 
 def send_email(to: List[str], subject: str, body: str):
     # Update config doc
+    # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
     # Build the MIME email
@@ -291,6 +292,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "PoP doesn't exist")
 
     # Update config doc
+    # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
     if json_body["plan"] not in config_doc["plans"].keys():
@@ -577,7 +579,7 @@ def phone_home():
     if not vm_doc.get("phoned_home"):
         db["vms"].update_one({"address": client_ip + "/64"}, {"$set": {"phoned_home": True}})
         user_doc = db["users"].find_one({"_id": vm_doc["created"]["by"]})
-        send_email(user_doc["email"], "AARCH64: VM Created", f"""Hello,
+        send_email([user_doc["email"]], "AARCH64: VM Created", f"""Hello,
 
 Your AARCH64 VM is ready to go!
 
