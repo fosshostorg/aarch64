@@ -108,19 +108,20 @@ Response body:
       "name": "Test Project",
       "vms": [
         {
-          "_id": "605d1fea3c05da2790ea3dbb",
           "hostname": "testvm1",
           "vcpus": 4,
           "memory": 8,
           "disk": 16,
           "pop": "dfw",
           "project": "605d1fbc361f9e55eec97986",
-          "os": "debian",
           "host": 0,
           "index": 0,
           "prefix": "2001:db8:ffff::/64",
           "gateway": "2001:db8:ffff::1",
-          "address": "2001:db8:ffff::2/64"
+          "address": "2001:db8:ffff::2/64",
+          "_id": "605d1fea3c05da2790ea3dbb",
+          "password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
+          "phoned_home": true
         }
       ]
     }
@@ -167,7 +168,8 @@ Response body:
     "gateway": "2001:db8:ffff::1",
     "address": "2001:db8:ffff::2/64",
     "_id": "605d1fea3c05da2790ea3dbb",
-    "password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d"
+    "password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
+    "phoned_home": false
   }
 }
 ```

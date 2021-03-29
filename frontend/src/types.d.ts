@@ -29,6 +29,7 @@ type VM = {
 	memory: number;
 	disk: number;
 	password: string;
+	phoned_home: boolean;
 };
 
 type System = {

@@ -14,6 +14,7 @@
 		memory: 0,
 		disk: 0,
 		enabled: false,
+		phoned_home: false
 	};
 
 	export let link: string = "";
@@ -35,7 +36,7 @@
 			<img
 				src={'./img/' + VM.os.toLowerCase() + '.svg'}
 				alt={VM.os + ' Logo'} />
-			<span class="status" class:online={VM.enabled} />
+			<span class="status" class:online={VM.phoned_home} />
 		</span>
 		<div class="hostname">{VM.hostname}</div>
 		<div class="location">

@@ -303,7 +303,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     # Set temporary password
     json_body["password"] = token_hex(16)
 
-    json_body["phone_home"] = False
+    json_body["phoned_home"] = False
 
     # Find taken prefixes
     taken_prefixes = []
