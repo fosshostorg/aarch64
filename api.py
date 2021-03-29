@@ -337,6 +337,32 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     raise _resp(False, "Unable to create VM")
 
 
+@app.route("/project/adduser", methods=["POST"])
+@with_authentication(admin=False)
+@with_json("project", "email")
+def project_add_user(json_body: dict, user_doc: dict) -> Response:
+    project_doc = db["projects"].find_one({
+        "_id": to_object_id(json_body["project"]),
+        "users": {
+            "$in": [user_doc["_id"]]
+        }
+    })
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    user_doc = db["users"].find_one({"email": json_body["email"]})
+    if not user_doc:
+        return _resp(False, "User doesn't exist")
+
+    if user_doc["_id"] in project_doc["users"]:
+        return _resp(True, "User is already a member of that project")
+
+    project_update = db["projects"].update_one({"_id": to_object_id(json_body["project"])}, {"$push": {"users": user_doc["_id"]}})
+    if project_update.modified_count == 1:
+        return _resp(True, "User added to project")
+    return _resp(False, "Unable to add user to project")
+
+
 @app.route("/vms/delete", methods=["DELETE"])
 @with_authentication(admin=False)
 @with_json("vm")

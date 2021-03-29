@@ -129,6 +129,19 @@ Response body:
 }
 ```
 
+POST `/project/adduser`
+
+Authentication required
+
+Request body:
+
+```json
+{
+	"project": "605fdf474177ba62253eed4a",
+	"email": "user2@example.com"
+}
+```
+
 ### VMs
 
 POST `/vms/create`
