@@ -130,6 +130,7 @@ export const getUserInfoAndProjects = async (): Promise<{
                             "pop": "dfw",
                             "project": "605d1fbc361f9e55eec97986",
                             "host": 0,
+                            "os": "debian",
                             "index": 0,
                             "prefix": "2001:db8:ffff::/64",
                             "gateway": "2001:db8:ffff::1",

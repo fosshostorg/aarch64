@@ -1,4 +1,4 @@
-# aarch64 Control Plane
+# aarch64
 
 ## API Reference
 
@@ -119,6 +119,7 @@ Response body:
           "prefix": "2001:db8:ffff::/64",
           "gateway": "2001:db8:ffff::1",
           "address": "2001:db8:ffff::2/64",
+          "os": "debian",
           "_id": "605d1fea3c05da2790ea3dbb",
           "password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
           "phoned_home": true
@@ -177,6 +178,7 @@ Response body:
     "project": "605d1fbc361f9e55eec97986",
     "host": 0,
     "index": 0,
+    "os": "debian",
     "prefix": "2001:db8:ffff::/64",
     "gateway": "2001:db8:ffff::1",
     "address": "2001:db8:ffff::2/64",
