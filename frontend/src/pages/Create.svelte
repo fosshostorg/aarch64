@@ -92,6 +92,8 @@
 						locations = data.pops;
 						images = data.oses;
 
+						console.log(images);
+
 						image = Object.keys(images)[0];
 						plan = Object.keys(plans)[0];
 						location = locations[0];
