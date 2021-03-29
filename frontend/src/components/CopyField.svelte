@@ -13,7 +13,7 @@
 </script>
 
 <main>
-    <label for="text-input">Password: &nbsp;<span class="material-icons" on:click={() => push("/docs/quickstart")}>help_outline</span></label>
+    <label for="text-input">Password: &nbsp;<span class="material-icons" on:click={() => push("/docs")}>help_outline</span></label>
     <div>
         <input type="text" value="{text}" id="text-input">
         <button on:click={copyHandler}>COPY</button>
