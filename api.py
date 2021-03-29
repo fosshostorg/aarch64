@@ -570,7 +570,7 @@ def phone_home():
     if not client_ip:
         return _resp(False, "No header defined")
 
-    vm_doc = db["vms"].find({"address": client_ip + "/64"})
+    vm_doc = db["vms"].find_one({"address": client_ip + "/64"})
     if not vm_doc:
         return _resp(False, "Unable to find VM")
 
