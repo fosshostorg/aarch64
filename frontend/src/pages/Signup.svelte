@@ -32,7 +32,7 @@
 
 <main>
 	<div>
-		<img alt="AARCH64 Logo" src="./img/AARCH64B.png" />
+		<img alt="AARCH64 Logo" src="./img/Fosshost_Light.png" />
 		<form on:submit|preventDefault={handleSubmit}>
 			<input
 				autocomplete="email"
@@ -71,12 +71,12 @@
         font-size: 22px;
         font-weight: 500;
         font-family: inherit;
-        margin: 0px;
+        margin: 0;
     }
 
     button:active {
         margin: 0px;
-        padding: 0px 8px;
+        padding: 0 8px;
         opacity: 0.85;
     }
 

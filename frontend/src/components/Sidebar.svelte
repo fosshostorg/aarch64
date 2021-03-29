@@ -25,7 +25,7 @@
 </script>
 
 <nav>
-	<img class="logo" src="./img/AARCH64.png" alt="AARCH64 Logo" />
+	<img class="logo" src="./img/Fosshost_Transparent.png" alt="Fosshost Logo" />
 	<ul class="sidebar-categories">
 		{#each sidebar as category}
 			<divider />
@@ -106,7 +106,7 @@
 	}
 
 	.logo {
-		width: calc(var(--sidebar-width) - 100px);
+		width: calc(var(--sidebar-width) - 22px);
 		margin: 25px 0px;
 	}
 

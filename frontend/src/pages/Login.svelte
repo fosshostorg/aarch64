@@ -43,7 +43,7 @@
 
 <main>
 	<div>
-		<img alt="AARCH64 Logo" src="./img/AARCH64B.png" />
+		<img alt="AARCH64 Logo" src="./img/Fosshost_Light.png" />
 		<form on:submit|preventDefault={handleSubmit}>
 			<input
 				autocomplete="email"
