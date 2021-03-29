@@ -12,7 +12,7 @@
             await fetch("__apiRoute__/project", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(data),
+                body: JSON.stringify({name}),
             })
                 .then(resp => resp.json())
                 .then((data) => {
