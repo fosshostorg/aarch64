@@ -144,7 +144,7 @@ export const getUserInfoAndProjects = async (): Promise<{
 export async function deleteVM(id: string) {
     let body;
 
-    if (prompt("Are you sure you want to delete this VM?")) {
+    if (confirm("Are you sure you want to delete this VM?")) {
         await fetch("__apiRoute__/vms/delete", {
             method: "DELETE",
             headers: {"Content-Type": "application/json"},
