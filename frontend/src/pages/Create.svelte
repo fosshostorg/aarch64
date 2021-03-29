@@ -87,12 +87,12 @@
 							window.location.href = "/#/login";
 						}
 
+						console.log(body.data);
+
 						let data: System = body.data as System;
 						plans = data.plans;
 						locations = data.pops;
 						images = data.oses;
-
-						console.log(images);
 
 						image = Object.keys(images)[0];
 						plan = Object.keys(plans)[0];
