@@ -71,22 +71,6 @@ export const updateUserInfo = async (user: { email: string }) => {
     );
 };
 
-export const addNewProject = async (data: { name: string }) => {
-    let body: any = null;
-    await fetch("__apiRoute__/project", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data),
-    })
-        .then(async (res) => {
-            body = await res.json();
-            body = body.data;
-        })
-        .catch((err) => console.log(err));
-
-    return body;
-};
-
 export const createVM = async (
     project: string,
     hostname: string,
