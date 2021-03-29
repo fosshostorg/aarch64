@@ -121,111 +121,118 @@
 		{label: 'Create New VM', path:'/dashboard/create'},
 		]} />
 	<div class="content">
-		{#if showSpinner}
-			<div style="display: flex; justify-content: center;">
-				<Spinner/>
-			</div>
-		{:else}
-			<PageHeader>Create VM</PageHeader>
-			<div class="create-form">
-				<form on:submit|preventDefault={createFormSubmit}>
-					<span class="form-header"> Choose an image: </span>
-					<div class="create-form-select">
-						<VMSelect bind:current={image} data={images} />
-					</div>
-					<span class="form-header"> Choose a plan: </span>
-					<div class="create-form-select">
-						<VMSelect bind:current={plan} data={plans} isOS={false} />
-					</div>
-					<span class="form-header"> Finalize and create: </span>
-					<div class="create-form-final">
-						<div class="create-form-final-section">
+		{#if $Projects.length > 0}
+			{#if showSpinner}
+				<div style="display: flex; justify-content: center;">
+					<Spinner/>
+				</div>
+			{:else}
+				<PageHeader>Create VM</PageHeader>
+				<div class="create-form">
+					<form on:submit|preventDefault={createFormSubmit}>
+						<span class="form-header"> Choose an image: </span>
+						<div class="create-form-select">
+							<VMSelect bind:current={image} data={images} />
+						</div>
+						<span class="form-header"> Choose a plan: </span>
+						<div class="create-form-select">
+							<VMSelect bind:current={plan} data={plans} isOS={false} />
+						</div>
+						<span class="form-header"> Finalize and create: </span>
+						<div class="create-form-final">
+							<div class="create-form-final-section">
 						<span class="create-form-subheader">
 							Batch creation:
 						</span>
-							<span class="create-form-subtitle">
+								<span class="create-form-subtitle">
 							Deploy multiple machines at the same time.
 						</span>
-							<div class="batch-create-button">
-								<button
-										class="batch-create-add"
-										on:click={(e) => {
+								<div class="batch-create-button">
+									<button
+											class="batch-create-add"
+											on:click={(e) => {
 									e.preventDefault();
 									if (batch < 5) {
 										batch++;
 										addHost(e);
 									}
 								}}>
-									<span class="material-icons"> add </span>
-								</button>
-								<div class="batch-label">
-									<b>{batch}</b>VM{batch > 1 ? 's' : ''}
-								</div>
-								<button
-										class="batch-create-remove"
-										on:click={(e) => {
+										<span class="material-icons"> add </span>
+									</button>
+									<div class="batch-label">
+										<b>{batch}</b>VM{batch > 1 ? 's' : ''}
+									</div>
+									<button
+											class="batch-create-remove"
+											on:click={(e) => {
 									e.preventDefault();
 									if (batch > 1) {
 										batch--, removeHost(e);
 									}
 								}}>
-									<span class="material-icons"> remove </span>
-								</button>
-							</div>
-							<div class="create-form-subheader">Project:</div>
-							<div class="select-wrapper">
-								<Select
-										isClearable={false}
-										isSearchable={false}
-										items={$Projects}
-										optionIdentifier="_id"
-										selectedValue={project}
-										getOptionLabel={(option, filterText) => {
-									return option.isCreator ? `Create \"${filterText}\"` : option.name;
-								}}
-										getSelectionLabel={(option) => {
-									if (option) return option.name;
-								}}
-								/>
-								<!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
-							</div>
-							<div class="create-form-subheader">Location:</div>
-							<div class="select-wrapper">
-								{#if location !== null}
+										<span class="material-icons"> remove </span>
+									</button>
+								</div>
+								<div class="create-form-subheader">Project:</div>
+								<div class="select-wrapper">
 									<Select
 											isClearable={false}
 											isSearchable={false}
-											items={locations}
-											optionIdentifier="location"
+											items={$Projects}
+											optionIdentifier="_id"
+											selectedValue={project}
 											getOptionLabel={(option, filterText) => {
+									return option.isCreator ? `Create \"${filterText}\"` : option.name;
+								}}
+											getSelectionLabel={(option) => {
+									if (option) return option.name;
+								}}
+									/>
+									<!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
+								</div>
+								<div class="create-form-subheader">Location:</div>
+								<div class="select-wrapper">
+									{#if location !== null}
+										<Select
+												isClearable={false}
+												isSearchable={false}
+												items={locations}
+												optionIdentifier="location"
+												getOptionLabel={(option, filterText) => {
 										return option.isCreator ? `Create \"${filterText}\"` : option.location;
 									}}
-											getSelectionLabel={(option) => {
+												getSelectionLabel={(option) => {
 										if (option) return option.location;
 									}}
-											bind:selectedValue={location} />
-								{/if}
+												bind:selectedValue={location} />
+									{/if}
+								</div>
+								<button class="submit" type="submit"> CREATE </button>
 							</div>
-							<button class="submit" type="submit"> CREATE </button>
-						</div>
-						<div class="create-form-final-section">
+							<div class="create-form-final-section">
 						<span class="create-form-subheader">
 							Choose a hostname:
 						</span>
-							<span class="create-form-subtitle">
+								<span class="create-form-subtitle">
 							Give your machines a name.
 						</span>
-							{#each hostnames as hostname, index}
-								<input
-										autocomplete="off"
-										type="text"
-										class="hostname-input"
-										name={'hostname-' + index}
-										bind:value={hostname} />
-							{/each}
+								{#each hostnames as hostname, index}
+									<input
+											autocomplete="off"
+											type="text"
+											class="hostname-input"
+											name={'hostname-' + index}
+											bind:value={hostname} />
+								{/each}
+							</div>
 						</div>
-					</div>
-				</form>
+					</form>
+				</div>
+			{/if}
+		{:else}
+			<PageHeader>You don't have any projects yet</PageHeader>
+			<div class="create-form">
+				<button on:click={() => push("/dashboard/projects/create")}>CREATE PROJECT</button>
 			</div>
 		{/if}
 	</div>
@@ -271,6 +278,18 @@
 		padding-left: 10px;
 		font-size: 18px;
 		width: 350px;
+	}
+
+	button {
+		width: 250px;
+		margin-top: 40px;
+		height: 40px;
+		border: none;
+		font-size: 22px;
+		font-weight: bold;
+		font-family: inherit;
+		color: white;
+		background-color: black;
 	}
 
 	button.submit {
