@@ -2,8 +2,11 @@
 id: networking
 ---
 
-# VM Networking
+# Networking
 
-Our network infrastructure is a bit different from a traditional hosting provider. VMs have static addresses, but have no static gateway. Instead, each VM selects the "best fit" gateway for itself, using ICMP echo broadcasts.
+The virtualization network is IPv6 only with translation technologies to enable backwards-compatibility with IPv4 hosts.
 
-To learn more, check out our [blog post](https://arm-64.com/post/infrastructure-overview) for an overview of the infrastructure architecture.
+VM templates have [Cloudflare's DNS64 servers](https://developers.cloudflare.com/1.1.1.1/support-nat64) configured by default, and our hypervisor fleet all run stateless NAT64 routers onboard that route the 64:ff9b::/96 block for IPv6 to IPv4 translation.
+
+In short, this allows our IPv6-only VMs to access IPv4 only sites. They aren't, however, able to access IPv4 addresses directly, so please use DNS names where possible.
+
