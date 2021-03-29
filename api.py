@@ -240,8 +240,6 @@ def projects_list(user_doc: dict) -> Response:
         "users": {
             "$in": [user_doc["_id"]]
         }
-    }, {  # Ignore these keys
-        "users": 0
     }))
 
     for project in projects:
@@ -249,6 +247,14 @@ def projects_list(user_doc: dict) -> Response:
             project["vms"] = []
         for vm in db["vms"].find({"project": project["_id"]}):
             project["vms"].append(vm)
+
+        # Convert user IDs to email addresses
+        project_users = []
+        for user in project["users"]:
+            project_user_doc = db["users"].find_one({"_id": user})
+            if project_user_doc:
+                project_users.append(project_user_doc["email"])
+        project["users"] = project_users
 
     return _resp(True, "Retrieved project list", data=projects)
 

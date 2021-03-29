@@ -106,6 +106,10 @@ Response body:
     {
       "_id": "605d1fbc361f9e55eec97986",
       "name": "Test Project",
+      "users": [
+        "user1@example.com",
+        "user2@example.com"
+      ],
       "vms": [
         {
           "hostname": "testvm1",
