@@ -3,7 +3,7 @@
     content: |
       {% for vm in vms %}
       {{ vm['_id'] }}
-      {%- endfor %}
+      {% endfor %}
     dest: /tmp/authorized-vms.txt
 
 - name: Run audit script
