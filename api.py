@@ -20,6 +20,7 @@ from pymongo.errors import DuplicateKeyError, InvalidId
 from rich.console import Console
 
 VERSION = "0.0.1"
+DEBUG = environ.get("AARCH64_DEBUG")
 
 console = Console()
 argon = PasswordHasher()
@@ -50,25 +51,28 @@ if (not config_doc.get("plans")) or (len(config_doc.get("plans")) < 1):
     console.log("Config must have at least one plan defined")
     exit(1)
 
-if not config_doc.get("email"):
+if not DEBUG and not config_doc.get("email"):
     console.log("Config must have an email account set up")
 
 
 def send_email(to: List[str], subject: str, body: str):
-    # Update config doc
-    # noinspection PyShadowingNames
-    config_doc = db["config"].find_one()
+    if not DEBUG:
+        # Update config doc
+        # noinspection PyShadowingNames
+        config_doc = db["config"].find_one()
 
-    # Build the MIME email
-    msg = MIMEText(body, "plain")
-    msg["Subject"] = subject
-    msg["From"] = config_doc["email"]["address"]
+        # Build the MIME email
+        msg = MIMEText(body, "plain")
+        msg["Subject"] = subject
+        msg["From"] = config_doc["email"]["address"]
 
-    # Connect and send the email
-    server = SMTP(config_doc["email"]["server"])
-    server.login(config_doc["email"]["address"], config_doc["email"]["password"])
-    server.sendmail(config_doc["email"]["address"], to + config_doc["email"]["admins"], msg.as_string())
-    server.quit()
+        # Connect and send the email
+        server = SMTP(config_doc["email"]["server"])
+        server.login(config_doc["email"]["address"], config_doc["email"]["password"])
+        server.sendmail(config_doc["email"]["address"], to + config_doc["email"]["admins"], msg.as_string())
+        server.quit()
+    else:
+        print(f"Debug mode set, would send email to {to} subject {subject}")
 
 
 def to_object_id(object_id: str):
@@ -602,6 +606,6 @@ Fosshost Team
     return _resp(True, "Phone home complete")
 
 
-if environ.get("AARCH64_DEBUG"):
+if DEBUG:
     print("Running API server in debug mode...")
     app.run(debug=True)
