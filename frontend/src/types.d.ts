@@ -44,7 +44,7 @@ type System = {
 type OS = {
 	version: string;
 	url: string;
-}
+};
 
 type Pop = {
 	_id: string;
