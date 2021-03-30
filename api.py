@@ -52,6 +52,7 @@ if (not config_doc.get("plans")) or (len(config_doc.get("plans")) < 1):
 
 if not config_doc.get("email"):
     console.log("Config must have an email account set up")
+    exit(1)
 
 
 def send_email(to: List[str], subject: str, body: str):
