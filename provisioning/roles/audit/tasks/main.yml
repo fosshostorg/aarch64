@@ -4,7 +4,15 @@
       {% for vm in vms %}
       {{ vm['_id'] }}
       {% endfor %}
-    dest: /tmp/authorized-vms.txt
+    dest: /tmp/authorized-vms.txt\
+
+- name: Copy authorized interfaces file
+  copy:
+    content: |
+      {% for vm in vms %}
+      vbr{{ vm['index'] }}
+      {% endfor %}
+    dest: /tmp/authorized-ifaces.txt
 
 - name: Run audit script
   script: audit.py
