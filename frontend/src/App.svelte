@@ -6,10 +6,11 @@
 	import Signup from "./pages/Signup.svelte";
 	import { onMount } from "svelte";
 	import { consoleWelcomeMessage, getUserInfoAndProjects } from "./utils";
-	import { Projects, User } from "./stores";
+	import { Projects, User, Snackbars } from "./stores";
 	import Dashboard from "./Dashboard.svelte";
 	import NotFound from "./pages/NotFound.svelte";
 	import MDPWrapper from "rollup-plugin-mdsvex-pages/src/components/MDPWrapper.svelte";
+import Snackbar from "./components/Snackbar.svelte";
 
 	const dashboardWrap = wrap({
 		component: Dashboard,
@@ -60,6 +61,12 @@
 	</main>
 </MDPWrapper>
 
+<div>
+	{#each $Snackbars as sb}
+	<Snackbar {...sb} />
+	{/each} 
+</div>
+
 <style>
 	main.width-styles {
 		width: 100%;
@@ -70,5 +77,12 @@
 
 	main {
 		padding: 1rem;
+	}
+
+	div {
+		position: fixed;
+		bottom: 1rem;
+		left: 50%;
+		transform: translate(-50%, 0%);
 	}
 </style>
