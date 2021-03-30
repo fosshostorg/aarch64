@@ -51,7 +51,7 @@
 								class="sidebar-category-item"
 								href={'/dashboard/projects/' + project._id}
 								use:link
-								use:active={{ path: new RegExp('/dashboard/projects/' + project._id + '/*'), className: 'sidebar-item-active' }}>
+								use:active={{ path:  new RegExp(`\/dashboard\/projects\/${project._id}`), className: 'sidebar-item-active' }}>
 								<span> {project.name} </span>
 							</a>
 						{/each}
