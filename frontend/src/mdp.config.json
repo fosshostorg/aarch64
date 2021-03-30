@@ -3,7 +3,8 @@
 		"docs": {
 			"Documentation": [
 				{ "route": "", "label": "Home" },
-				{ "route": "networking", "label": "Networking" }
+				{ "route": "networking", "label": "Networking" },
+				{ "route": "api", "label": "API" }
 			],
 			"default-open": ["Documentation"]
 		}
