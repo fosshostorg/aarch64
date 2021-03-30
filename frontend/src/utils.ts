@@ -1,4 +1,5 @@
 import {push} from "svelte-spa-router";
+import { Snackbars } from "./stores";
 
 export function dropdownItems(vm: any): DropdownItem[] {
     return [
@@ -24,11 +25,20 @@ export function dropdownItems(vm: any): DropdownItem[] {
 }
 
 const checkMeta = (body: any): void => {
-    // if (body !== null && !body.meta.success) {
-    // 	console.warn(
-    // 		"Failed request: " + body.meta.message,
-    // 	)
-    // }
+    if (body !== null && !body.meta.success) {
+    	console.error(
+    		"Failed request: " + body.meta.message,
+    	)
+        Snackbars.update(s => [...s, 
+                {
+                    color: "red",
+                    status: "error",
+                    message: body.meta.message,
+                    grouped: true,
+                }
+            ]
+        )
+    }
 };
 
 export const getUserInfo = async () => {
@@ -39,8 +49,6 @@ export const getUserInfo = async () => {
         .then(async (res) => {
             if (!res.ok) {
                 console.log("User not logged in, redirecting...");
-                // push("/login");
-                // body = null;
             } else {
                 body = await res.json();
                 body = body.data;
@@ -86,6 +94,7 @@ export const createVM = async (
     })
         .then(async (res) => {
             body = await res.json();
+            checkMeta(body);
             body = body.data;
         })
         .catch((err) => console.log(err));

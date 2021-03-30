@@ -63,7 +63,7 @@
                     if (data !== null) {
                         push("/dashboard/projects/" + project._id);
                     } else {
-                        console.log(data)
+                        showSpinner = false;
                     }
                 })
                 .catch((err) => console.log(err));
