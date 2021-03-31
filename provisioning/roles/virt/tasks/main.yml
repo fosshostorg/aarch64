@@ -35,6 +35,6 @@
 
 - name: Get images
   get_url:
-    url: "{{ oses[item] }}"
+    url: "{{ oses[item].url }}"
     dest: "/opt/aarch64/images/{{ item }}.qcow2"
   with_items: "{{ oses }}"
