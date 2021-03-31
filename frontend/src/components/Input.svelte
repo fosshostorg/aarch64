@@ -6,7 +6,6 @@
   export let label: string = "";
   export let error: string = null;
   export let disabled: boolean = false;
-  export let size: string = "default";
   export let icon: string = null;
   export let value: string = "";
   export let fixErrorHeight: boolean = false;
@@ -101,5 +100,3 @@
   }
 
 </style>
-
-<!-- markup (zero or more items) goes here -->
