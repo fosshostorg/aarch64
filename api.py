@@ -469,6 +469,17 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Unable to add proxy")
 
 
+@app.route("/proxies", methods=["GET"])
+@with_authentication(admin=False)
+@with_json("project")
+def get_proxies(json_body: dict, user_doc: dict) -> Response:
+    project_doc = db["projects"].find_one({"_id": json_body["project"], "users": {"$in": [user_doc["_id"]]}})
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    return _resp(True, "Retrieved proxies", list(db["proxies"].find({"project": project_doc["_id"]})))
+
+
 @app.route("/system", methods=["GET"])
 @with_authentication(admin=False)
 def get_system(user_doc: dict):
