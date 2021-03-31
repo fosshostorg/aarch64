@@ -4,6 +4,7 @@
     import {push} from "svelte-spa-router";
     import {Projects} from "../stores";
     import PageTitle from "../components/PageTitle.svelte";
+    import Input from "../components/Input.svelte";
 
     let name = "";
 
@@ -43,14 +44,18 @@
     <PageHeader>Add New Project</PageHeader>
     <div class="content">
         <form on:submit|preventDefault={handleSubmit}>
-            <label for="name">Name your project:</label>
-            <input
-                    autocomplete="off"
-                    bind:value={name}
-                    name="name"
-                    placeholder="Name..."
-                    type="text"/>
+            <Input
+                label="Name your project:"
+                labelClasses="name-label"
+                class="name-input"
+                autocomplete="off"
+                bind:value={name}
+                name="name"
+                placeholder="Name..."
+                type="text"
+            />
             <button type="submit">CREATE</button>
+            
         </form>
     </div>
 </main>
@@ -80,10 +85,10 @@
         background-color: #0e0d0dcc;
     }
 
-    label {
+    form :global(.name-label) {
         font-weight: 500;
         padding: 10px 0px;
-        opacity: 0.7;
+        color: rgba(0, 0, 0, 0.7);
         font-size: 20px;
     }
 
@@ -93,11 +98,8 @@
         width: 400px;
     }
 
-    input {
-        height: 40px;
-        padding: 0px;
-        margin: 0px;
-        padding-left: 15px;
-        font-size: 18px;
+    form :global(.name-input) {
+        margin-top: 0.5rem;
+        width: 100%;
     }
 </style>

@@ -10,6 +10,7 @@
     import {push} from "svelte-spa-router";
     import PageTitle from "../components/PageTitle.svelte";
     import Spinner from "../components/Spinner.svelte";
+    import Input from "../components/Input.svelte";
 
     let images = {};
     let plans = {};
@@ -214,7 +215,8 @@
                                 <span class="create-form-subheader">Choose a hostname:</span>
                                 <span class="create-form-subtitle">Give your machines a name.</span>
                                 {#each hostnames as hostname, index}
-                                    <input autocomplete="off" type="text" class="hostname-input" name={'hostname-' + index} bind:value={hostname}/>
+                                    <!-- <input autocomplete="off" type="text" class="hostname-input" name={'hostname-' + index} bind:value={hostname}/> -->
+                                    <Input autocomplete="off" type="text" class="hostname-input" name={'hostname-' + index} bind:value={hostname}/>
                                 {/each}
                             </div>
                         </div>
@@ -260,14 +262,9 @@
         padding-bottom: 5px;
     }
 
-    .hostname-input {
-        height: 38px;
-        margin: 0 0 10px 0;
-        border: 1px solid #0e0d0d;
-        color: #0e0d0d;
-        padding: 0 0 0 10px;
-        font-size: 18px;
-        width: 350px;
+    div :global(.hostname-input) {
+        width: 360px;
+        margin-bottom: 1rem;
     }
 
     button.large {
