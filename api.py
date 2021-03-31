@@ -438,7 +438,7 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
     return _resp(False, "Unable to delete VM")
 
 
-@app.route("/proxy/add", methods=["POST"])
+@app.route("/proxy", methods=["POST"])
 @with_authentication(admin=False)
 @with_json("label", "vm")
 def add_proxy(json_body: dict, user_doc: dict) -> Response:
@@ -469,11 +469,11 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Unable to add proxy")
 
 
-@app.route("/proxies", methods=["GET"])
+@app.route("/proxy", methods=["GET"])
 @with_authentication(admin=False)
 @with_json("project")
 def get_proxies(json_body: dict, user_doc: dict) -> Response:
-    project_doc = db["projects"].find_one({"_id": json_body["project"], "users": {"$in": [user_doc["_id"]]}})
+    project_doc = db["projects"].find_one({"_id": to_object_id(json_body["project"]), "users": {"$in": [user_doc["_id"]]}})
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
