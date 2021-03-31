@@ -1,0 +1,19 @@
+- name: Provision proxies
+  hosts: proxies
+  tasks:
+    - name: Install packages
+      apt:
+        pkg:
+          - haproxy
+
+    - name: Copy haproxy.cfg
+      template:
+        src: haproxy.cfg
+        dest: /etc/haproxy/haproxy.cfg
+      register: haproxy_config
+
+    - name: Restart haproxy
+      systemd:
+        name: haproxy
+        state: restarted
+      when: haproxy_config.changed
