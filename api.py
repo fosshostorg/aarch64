@@ -554,14 +554,17 @@ def get_ansible_hosts(user_doc: dict):
                 "ansible_ssh_private_key_file": config_doc["key"],
                 "oses": config_doc["oses"]
             },
-            "hosts": {}
+            "children": {
+                "hypervisors": {"hosts": {}},
+                "proxies": {"hosts": {}}
+            }
         }
     }
 
     for pop in db["pops"].find():
         if pop.get("hosts"):
             for idx, host in enumerate(pop.get("hosts")):
-                _config["all"]["hosts"][pop["name"] + str(idx)] = {
+                _config["all"]["children"]["hypervisors"]["hosts"][pop["name"] + str(idx)] = {
                     "ansible_host": host["ip"],
                     "bcg": {
                         "asn": config_doc["asn"],
@@ -571,7 +574,12 @@ def get_ansible_hosts(user_doc: dict):
                 }
 
                 if host.get("peers"):
-                    _config["all"]["hosts"][pop["name"] + str(idx)]["bcg"]["peers"] = host.get("peers")
+                    _config["all"]["children"]["hypervisors"]["hosts"][pop["name"] + str(idx)]["bcg"]["peers"] = host.get("peers")
+
+    for idx, proxy in enumerate(config_doc["proxies"]):
+        _config["all"]["children"]["proxies"]["hosts"][proxy["pop"] + str(idx)] = {
+            "ansible_host": proxy["ip"],
+        }
 
     return _resp(True, "Retrieved ansible config", data=_config)
 

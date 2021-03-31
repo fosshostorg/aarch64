@@ -1,5 +1,5 @@
 - name: Provision hosts
-  hosts: all
+  hosts: hypervisors
   roles:
     - audit
     - vms
