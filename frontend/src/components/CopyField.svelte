@@ -1,13 +1,16 @@
 <script lang="ts">
     import {push} from "svelte-spa-router";
+    import Input from './Input.svelte';
 
     export let text: string = "";
 
     function copyHandler() {
-        let copyText = document.getElementById("text-input");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        document.execCommand("copy");
+        console.log('done')
+        navigator.clipboard.writeText(text).then(function() {
+            console.log('Async: Copying to clipboard was successful!');
+        }, function(err) {
+            console.error('Async: Could not copy text: ', err);
+        });
         // alert("Password has been copied to clipboard")
     }
 </script>
@@ -15,7 +18,7 @@
 <main>
     <label for="text-input">Password: &nbsp;<span class="material-icons" on:click={() => push("/docs")}>help_outline</span></label>
     <div>
-        <input type="text" value="{text}" id="text-input">
+        <Input type="text" value={text} id="text-input" class="input-field" disabled />
         <button on:click={copyHandler}>COPY</button>
     </div>
 </main>
@@ -41,13 +44,7 @@
         opacity: 0.7;
     }
 
-    input {
-        border: 1px solid #0e0d0d;
-        height: 100%;
-        color: #0e0d0d;
-        padding: 0 0 0 10px;
-        font-size: 18px;
-        box-sizing: border-box;
+    div :global(.input-field) {
         flex-grow: 1;
     }
 
@@ -59,5 +56,6 @@
         font-size: 15px;
         font-weight: 500;
         font-family: inherit;
+        cursor: pointer;
     }
 </style>

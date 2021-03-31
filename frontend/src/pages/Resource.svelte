@@ -24,9 +24,11 @@
 
     $: project = getProjectById(params.project_id, $Projects);
 
+    // Dumb typescript stuff I should probably remove
     function toVM(vm: any): VM {
         return vm as VM;
     }
+
 </script>
 
 <PageTitle title="AARCH64 | VMs"/>
