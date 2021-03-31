@@ -4,6 +4,7 @@
 	import ProjectVM from "../components/ProjectVM.svelte";
 	import { Projects } from "../stores";
 	import PageTitle from "../components/PageTitle.svelte";
+	import Input from "../components/Input.svelte";
 
 	export let params: any = {};
 
@@ -88,7 +89,7 @@
 					<div class="user-form-container">
 						<span class="user-form-subheader">Add user to project:</span>
 						<span class="user-form-subtitle">Enter a user's email. Make sure they already have signed up for an account.</span>
-						<input bind:value={newUserEmail} autocomplete="off" type="text" class="user-input" placeholder="user@example.com"/>
+						<Input bind:value={newUserEmail} autocomplete="off" type="text" class="user-input" placeholder="user@example.com"/>
 						<button class="user-form-button" on:click={() => submitAddUser()}>ADD USER</button>
 					</div>
 				</div>
@@ -197,13 +198,8 @@
 		padding-bottom: 10px;
 	}
 
-	.user-input {
-		height: 38px;
+	div :global(.user-input) {
 		margin: 0 0 10px 0;
-		border: 1px solid #0e0d0d;
-		color: #0e0d0d;
-		padding: 0 0 0 10px;
-		font-size: 18px;
 		width: 350px;
 	}
 
