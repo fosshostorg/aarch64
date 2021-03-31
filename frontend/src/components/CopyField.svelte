@@ -1,15 +1,28 @@
 <script lang="ts">
     import {push} from "svelte-spa-router";
     import Input from './Input.svelte';
+    import {Snackbars} from '../stores';
 
     export let text: string = "";
 
     function copyHandler() {
         console.log('done')
         navigator.clipboard.writeText(text).then(function() {
-            console.log('Async: Copying to clipboard was successful!');
+            $Snackbars.push({
+				color: "green",
+				status: "OK",
+				message: "password copied",
+				grouped: true,
+			})
+            $Snackbars = $Snackbars;
         }, function(err) {
-            console.error('Async: Could not copy text: ', err);
+            $Snackbars.push({
+				color: "red",
+				status: "ERROR",
+				message: "password copy failed",
+				grouped: true,
+			})
+            $Snackbars = $Snackbars;
         });
         // alert("Password has been copied to clipboard")
     }
