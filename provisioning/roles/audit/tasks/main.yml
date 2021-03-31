@@ -4,7 +4,7 @@
       {% for vm in vms %}
       {{ vm['_id'] }}
       {% endfor %}
-    dest: /tmp/authorized-vms.txt\
+    dest: /tmp/authorized-vms.txt
 
 - name: Copy authorized interfaces file
   copy:
