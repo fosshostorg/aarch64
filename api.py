@@ -576,8 +576,8 @@ def get_ansible_hosts(user_doc: dict):
                 if host.get("peers"):
                     _config["all"]["children"]["hypervisors"]["hosts"][pop["name"] + str(idx)]["bcg"]["peers"] = host.get("peers")
 
-    for idx, proxy in enumerate(config_doc["proxies"]):
-        _config["all"]["children"]["proxies"]["hosts"][proxy["pop"] + str(idx)] = {
+    for proxy in config_doc["proxies"]:
+        _config["all"]["children"]["proxies"]["hosts"]["proxy." + proxy["pop"]] = {
             "ansible_host": proxy["ip"],
         }
 
