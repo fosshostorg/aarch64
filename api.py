@@ -458,7 +458,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         new_proxy = db["proxies"].insert_one({
             "project": project_doc["_id"],
             "label": json_body["label"],
-            "address": vm_doc["address"][:-3]
+            "vm": vm_doc["_id"]
         })
     except DuplicateKeyError:
         return _resp(False, "Proxy already exists")
@@ -467,6 +467,17 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         return _resp(True, "Added proxy")
     else:
         return _resp(False, "Unable to add proxy")
+
+
+@app.route("/proxies", methods=["GET"])
+@with_authentication(admin=False)
+@with_json("project")
+def get_proxies(json_body: dict, user_doc: dict) -> Response:
+    project_doc = db["projects"].find_one({"_id": json_body["project"], "users": {"$in": [user_doc["_id"]]}})
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    return _resp(True, "Retrieved proxies", list(db["proxies"].find({"project": project_doc["_id"]})))
 
 
 @app.route("/system", methods=["GET"])
@@ -584,6 +595,17 @@ def get_ansible_hosts(user_doc: dict):
     # Update config doc
     config_doc = db["config"].find_one()
 
+    proxies = []
+    for proxy in db["proxies"].find():
+        vm_doc = db["vms"].find_one(proxy["vm"])
+        if vm_doc:
+            proxies.append({
+                "label": proxy["label"],
+                "address": vm_doc["address"][:-3]
+            })
+        else:  # If proxy doesn't have a VM anymore, delete it
+            db["proxies"].delete_one({"_id": proxy["_id"]})
+
     _config = {
         "all": {
             "vars": {
@@ -591,7 +613,7 @@ def get_ansible_hosts(user_doc: dict):
                 "ansible_port": config_doc["port"],
                 "ansible_ssh_private_key_file": config_doc["key"],
                 "oses": config_doc["oses"],
-                "proxies": list(db["proxies"].find())
+                "proxies": proxies
             },
             "children": {
                 "hypervisors": {"hosts": {}},
