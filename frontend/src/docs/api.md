@@ -299,7 +299,7 @@ Response body:
 
 ### Proxy
 
-POST `/proxies/add`
+POST `/proxy`
 
 Authentication required
 
@@ -309,6 +309,29 @@ Request body:
 {
   "vm": "60641b57f50d8e43cfc9dfb7",
   "label": "test.example.com"
+}
+```
+
+GET `/proxy`
+
+Authentication required
+
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "Retrieved proxies"
+  },
+  "data": [
+    {
+      "_id": "f9e55eec9605d1fbd1fbc361",
+      "project": "605d1fbc361f9e55eec97986",
+      "label": "example.com",
+      "vm": "d1fbc361f9e5e55361f9e5e55e"
+    }
+  ]
 }
 ```
 
