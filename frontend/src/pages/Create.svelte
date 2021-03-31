@@ -149,6 +149,19 @@
 						</span>
                                 <div class="batch-create-button">
                                     <button
+                                            class="batch-create-remove"
+                                            on:click={(e) => {
+									e.preventDefault();
+									if (batch > 1) {
+										batch--, removeHost(e);
+									}
+								}}>
+                                        <span class="material-icons"> remove </span>
+                                    </button>
+                                    <div class="batch-label">
+                                        <b>{batch}</b>VM{batch > 1 ? 's' : ''}
+                                    </div>
+                                    <button
                                             class="batch-create-add"
                                             on:click={(e) => {
 									e.preventDefault();
@@ -159,19 +172,7 @@
 								}}>
                                         <span class="material-icons"> add </span>
                                     </button>
-                                    <div class="batch-label">
-                                        <b>{batch}</b>VM{batch > 1 ? 's' : ''}
-                                    </div>
-                                    <button
-                                            class="batch-create-remove"
-                                            on:click={(e) => {
-									e.preventDefault();
-									if (batch > 1) {
-										batch--, removeHost(e);
-									}
-								}}>
-                                        <span class="material-icons"> remove </span>
-                                    </button>
+
                                 </div>
                                 <div class="create-form-subheader">Project:</div>
                                 <div class="select-wrapper">
