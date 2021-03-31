@@ -590,7 +590,8 @@ def get_ansible_hosts(user_doc: dict):
                 "ansible_user": config_doc["user"],
                 "ansible_port": config_doc["port"],
                 "ansible_ssh_private_key_file": config_doc["key"],
-                "oses": config_doc["oses"]
+                "oses": config_doc["oses"],
+                "proxies": list(db["proxies"].find())
             },
             "children": {
                 "hypervisors": {"hosts": {}},
