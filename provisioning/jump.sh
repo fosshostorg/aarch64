@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-ip=$(yq -r .all.hosts."$1".ansible_host hosts.yml)
+ip=$(yq -r .all.children.hypervisors.hosts."$1".ansible_host hosts.yml)
 port=$(yq .all.vars.ansible_port hosts.yml)
 key=$(yq -r .all.vars.ansible_ssh_private_key_file hosts.yml)
 
