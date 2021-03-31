@@ -1,6 +1,7 @@
 import datetime
 import ipaddress
 import json
+import re
 import time
 from email.mime.text import MIMEText
 from functools import wraps
@@ -29,6 +30,7 @@ app = Flask(__name__)
 db = MongoClient("mongodb://localhost:27017")["aarch64"]
 db["users"].create_index([("email", ASCENDING)], background=True, unique=True)
 db["pops"].create_index([("name", ASCENDING)], background=True, unique=True)
+db["proxies"].create_index([("label", ASCENDING)], background=True, unique=True)
 
 # Check for config doc
 config_doc = db["config"].find_one()
@@ -54,6 +56,11 @@ if (not config_doc.get("plans")) or (len(config_doc.get("plans")) < 1):
 if not DEBUG and not config_doc.get("email"):
     console.log("Config must have an email account set up")
     exit(1)
+
+
+def valid_label(label) -> bool:
+    # Validates a DNS zone label
+    return label and (re.match(r"^(?![0-9]+$)(?!-)[a-zA-Z0-9-]{,63}(?<!-)$", label) is None) and (not label.startswith(".")) and (" " not in label)
 
 
 def send_email(to: List[str], subject: str, body: str):
@@ -429,6 +436,37 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
     if deleted_vm.deleted_count == 1:
         return _resp(True, "VM deleted")
     return _resp(False, "Unable to delete VM")
+
+
+@app.route("/proxy/add", methods=["POST"])
+@with_authentication(admin=False)
+@with_json("label", "vm")
+def add_proxy(json_body: dict, user_doc: dict) -> Response:
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+
+    project_doc = db["projects"].find_one({"_id": vm_doc["project"], "users": {"$in": [user_doc["_id"]]}})
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    # Validate DNS zone label
+    if not valid_label(json_body["label"]):
+        return _resp(False, "Invalid label")
+
+    try:
+        new_proxy = db["proxies"].insert_one({
+            "project": project_doc["_id"],
+            "label": json_body["label"],
+            "address": vm_doc["address"][:-3]
+        })
+    except DuplicateKeyError:
+        return _resp(False, "Proxy already exists")
+
+    if new_proxy.inserted_id:
+        return _resp(True, "Added proxy")
+    else:
+        return _resp(False, "Unable to add proxy")
 
 
 @app.route("/system", methods=["GET"])
