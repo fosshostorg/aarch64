@@ -42,7 +42,7 @@
 				{label: project.name, path: `/dashboard/projects/${project._id}`},
 				{label: 'Resource', path: `/dashboard/projects/${project._id}/resources/${vm._id}`}
 				]}/>
-                <PageHeader>{toVM(vm).hostname}</PageHeader>
+                <PageHeader isResource enabled={vm.phoned_home}>{toVM(vm).hostname}</PageHeader>
                 <div class="wrapper">
                     <div class="info">
                         <span class="title">System:</span>

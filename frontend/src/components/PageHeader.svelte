@@ -2,11 +2,21 @@
 	export let options: boolean = false;
 	export let current: string = "";
 	export let labels: string[] = [];
+	export let isResource: boolean = false;
+	export let enabled: boolean = false;
 </script>
 
-<span>
+<span class="wrapper">
 	<div class="header">
-		<slot />
+		<span class="title-text-wrap">
+			<slot />
+			{#if isResource}
+				<div class="enabled-tag">
+					<span class:enabled class="enabled-tag-color"></span>
+					{enabled ? "READY" : "PROVISIONING"}
+				</div>
+			{/if}
+		</span>
 		{#if options}
 			<div class="button-wrapper">
 				{#each labels as label}
@@ -23,7 +33,36 @@
 </span>
 
 <style>
-	span {
+	span.title-text-wrap {
+		display: flex;
+	}
+
+	div.enabled-tag {
+		display: flex;
+		background-color: #0e0d0d;
+		color: white;
+		font-weight: bold;
+		font-size: 12px;
+		height: 24px;
+		align-items: center;
+		justify-content: center;
+		align-self: center;
+		margin-left: 1rem;
+		padding: 0px 6px;
+	}
+
+	span.enabled-tag-color {
+		width: 12px;
+		height: 12px;
+		margin-right: 6px;
+		background-color: #AA1717;
+	}
+
+	span.enabled {
+		background-color: #74AA17;
+	}
+
+	span.wrapper {
 		font-weight: bold;
 		font-size: 30px;
 		margin-left: 25px;
