@@ -5,7 +5,7 @@
 	import { Projects } from "../stores";
 	import PageTitle from "../components/PageTitle.svelte";
 	import Input from "../components/Input.svelte";
-import Button from "../components/Button.svelte";
+	import Button from "../components/Button.svelte";
 
 	export let params: any = {};
 
@@ -40,7 +40,7 @@ import Button from "../components/Button.svelte";
 			.then(resp => resp.json())
 			.then(data => {
 				alert(data.meta.message);
-				location.reload();
+				location.reload(); // FIXME: This probably not the best solution, you should make it call correct functions from utils.
 			})
 			.catch((err) => alert(err));
 	}
@@ -71,7 +71,7 @@ import Button from "../components/Button.svelte";
 					</span>
 						<div class="vm-list">
 							{#each project.vms as vm}
-								<ProjectVM VM={toVM(vm)} link={'/dashboard/projects/' + project._id + '/resources/' + vm['_id']} />
+								<ProjectVM VM={toVM(vm)} project_id={params.project_id} link={'/dashboard/projects/' + project._id + '/resources/' + vm['_id']} />
 							{/each}
 						</div>
 					{/if}
