@@ -25,7 +25,7 @@
 			<img src="./img/ramICON.svg" alt={'ram icon'} /> 
 		</span>
 		<span class="hover-card">
-			<div class="version">Micron 5200</div>
+			<div>Micron 5200</div>
 			<img src="./img/hddICON.svg" alt={'disk icon'} />
 		</span>
 	</div>
