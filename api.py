@@ -302,6 +302,8 @@ def projects_list(user_doc: dict) -> Response:
         if not project.get("vms"):
             project["vms"] = []
         for vm in db["vms"].find({"project": project["_id"]}):
+            vm_creator = db["users"].find_one({"_id": vm["created"]["by"]})
+            vm["creator"] = vm_creator["email"]
             project["vms"].append(vm)
 
         # Convert user IDs to email addresses
