@@ -1,0 +1,7 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A OUTPUT -p udp -m owner --uid-owner 1001 -j DROP
+-A OUTPUT -p tcp -m owner --uid-owner 1001 -j DROP
+COMMIT

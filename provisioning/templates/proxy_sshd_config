@@ -1,0 +1,47 @@
+Port 22
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+#LoginGraceTime 2m
+PermitRootLogin yes
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+
+#PubkeyAuthentication yes
+
+# Expect .ssh/authorized_keys2 to be disregarded by default in future.
+#AuthorizedKeysFile	.ssh/authorized_keys .ssh/authorized_keys2
+
+#AuthorizedPrincipalsFile none
+
+#AuthorizedKeysCommand none
+#AuthorizedKeysCommandUser nobody
+
+# Change to yes to enable challenge-response passwords (beware issues with
+# some PAM modules and threads)
+ChallengeResponseAuthentication no
+
+UsePAM yes
+
+X11Forwarding no
+PrintMotd no
+
+# no default banner path
+#Banner none
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_*
+
+# override default of no subsystems
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+
+Match User jump
+    AllowAgentForwarding no
+    AllowTcpForwarding yes
+    X11Forwarding no
+    PermitTunnel no
+    GatewayPorts no
+    ForceCommand echo 'This account can only be used for ProxyJump (ssh -J)'
+    PermitEmptyPasswords yes
