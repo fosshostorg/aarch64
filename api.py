@@ -94,6 +94,18 @@ def to_object_id(object_id: str):
         return ""
 
 
+def get_project(user_doc: dict, project_id):
+    if not user_doc.get("admin"):
+        return db["projects"].find_one({
+            "_id": to_object_id(project_id),
+            "users": {
+                "$in": [user_doc["_id"]]
+            }
+        })
+    else:  # If admin
+        return db["projects"].find_one({"_id": to_object_id(project_id)})
+
+
 class JSONResponseEncoder(json.JSONEncoder):
     """
     BSON ObjectId-safe JSON response encoder
@@ -277,11 +289,14 @@ def projects_list(user_doc: dict) -> Response:
     Get all projects that a user is part of
     """
 
-    projects = list(db["projects"].find({
-        "users": {
-            "$in": [user_doc["_id"]]
-        }
-    }))
+    if not user_doc.get("admin"):
+        projects = list(db["projects"].find({
+            "users": {
+                "$in": [user_doc["_id"]]
+            }
+        }))
+    else:  # Get all projects if admin
+        projects = list(db["projects"].find({}))
 
     for project in projects:
         if not project.get("vms"):
@@ -323,12 +338,15 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     if json_body["os"] not in config_doc["oses"].keys():
         return _resp(False, "OS doesn't exist")
 
-    project_doc = db["projects"].find_one({
-        "_id": to_object_id(json_body["project"]),
-        "users": {
-            "$in": [user_doc["_id"]]
-        }
-    })
+    if not user_doc.get("admin"):
+        project_doc = db["projects"].find_one({
+            "_id": to_object_id(json_body["project"]),
+            "users": {
+                "$in": [user_doc["_id"]]
+            }
+        })
+    else:  # Get project if admin
+        project_doc = db["projects"].find_one({"_id": to_object_id(json_body["project"])})
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
     json_body["project"] = to_object_id(json_body["project"])
@@ -393,12 +411,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 @with_authentication(admin=False)
 @with_json("project", "email")
 def project_add_user(json_body: dict, user_doc: dict) -> Response:
-    project_doc = db["projects"].find_one({
-        "_id": to_object_id(json_body["project"]),
-        "users": {
-            "$in": [user_doc["_id"]]
-        }
-    })
+    project_doc = get_project(user_doc, json_body["project"])
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
@@ -419,12 +432,7 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
 @with_authentication(admin=False)
 @with_json("project")
 def delete_project(json_body: dict, user_doc: dict) -> Response:
-    project_doc = db["projects"].find_one({
-        "_id": to_object_id(json_body["project"]),
-        "users": {
-            "$in": [user_doc["_id"]]
-        }
-    })
+    project_doc = get_project(user_doc, json_body["project"])
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
@@ -445,12 +453,7 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
     if not vm_doc:
         return _resp(False, "VM doesn't exist")
 
-    project_doc = db["projects"].find_one({
-        "_id": vm_doc["project"],
-        "users": {
-            "$in": [user_doc["_id"]]
-        }
-    })
+    project_doc = get_project(user_doc, json_body["project"])
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
@@ -468,7 +471,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
     if not vm_doc:
         return _resp(False, "VM doesn't exist")
 
-    project_doc = db["projects"].find_one({"_id": vm_doc["project"], "users": {"$in": [user_doc["_id"]]}})
+    project_doc = get_project(user_doc, vm_doc["project"])
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
@@ -495,7 +498,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
 @with_authentication(admin=False)
 @with_json("project")
 def get_proxies(json_body: dict, user_doc: dict) -> Response:
-    project_doc = db["projects"].find_one({"_id": to_object_id(json_body["project"]), "users": {"$in": [user_doc["_id"]]}})
+    project_doc = db["projects"].find_one({"_id": json_body["project"], "users": {"$in": [user_doc["_id"]]}})
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
