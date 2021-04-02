@@ -63,7 +63,7 @@ def valid_label(label) -> bool:
     return label and (re.match(r"^(?![0-9]+$)(?!-)[a-zA-Z0-9-]{,63}(?<!-)$", label) is None) and (not label.startswith(".")) and (" " not in label)
 
 
-def send_email(to: List[str], subject: str, body: str):
+def send_email(to: str, subject: str, body: str):
     if not DEBUG:
         # Update config doc
         # noinspection PyShadowingNames
