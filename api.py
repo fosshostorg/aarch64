@@ -631,7 +631,8 @@ def get_ansible_hosts(user_doc: dict):
                         "asn": config_doc["asn"],
                         "prefixes": [host["prefix"]],
                     },
-                    "vms": list(db["vms"].find({"pop": pop["name"], "host": idx}))
+                    "vms": list(db["vms"].find({"pop": pop["name"], "host": idx})),
+                    "parent_prefix": config_doc["prefix"]
                 }
 
                 if host.get("peers"):
