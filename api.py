@@ -77,7 +77,7 @@ def send_email(to: List[str], subject: str, body: str):
         # Connect and send the email
         server = SMTP(config_doc["email"]["server"])
         server.login(config_doc["email"]["address"], config_doc["email"]["password"])
-        server.sendmail(config_doc["email"]["address"], to + config_doc["email"]["admins"], msg.as_string())
+        server.sendmail(config_doc["email"]["address"], [to], msg.as_string())
         server.quit()
     else:
         print(f"Debug mode set, would send email to {to} subject {subject}")
@@ -682,7 +682,7 @@ def phone_home():
     if not vm_doc.get("phoned_home"):
         db["vms"].update_one({"address": client_ip + "/64"}, {"$set": {"phoned_home": True}})
         user_doc = db["users"].find_one({"_id": vm_doc["created"]["by"]})
-        send_email([user_doc["email"]], "AARCH64: VM Created", f"""Hello,
+        send_email(user_doc["email"], "AARCH64: VM Created", f"""Hello,
 
 Your AARCH64 VM is ready to go!
 
