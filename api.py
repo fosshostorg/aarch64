@@ -4,6 +4,7 @@ import json
 import re
 import time
 from email.mime.text import MIMEText
+from email.utils import formatdate
 from functools import wraps
 from os import environ
 from secrets import token_hex
@@ -75,6 +76,7 @@ def send_email(to: str, subject: str, body: str):
         msg["To"] = to
         msg["From"] = config_doc["email"]["address"]
         msg["reply-to"] = "support@fosshost.org"
+        msg["Date"] = formatdate(localtime=True)
 
         # Connect and send the email
         server = SMTP(config_doc["email"]["server"])
