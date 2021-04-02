@@ -453,7 +453,7 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
     if not vm_doc:
         return _resp(False, "VM doesn't exist")
 
-    project_doc = get_project(user_doc, json_body["project"])
+    project_doc = get_project(user_doc, vm_doc["project"])
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
