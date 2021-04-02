@@ -101,6 +101,18 @@ Response body:
 }
 ```
 
+DELETE `/project`
+
+Authentication required
+
+Request body:
+
+```json
+{
+	"project": "605fdf474177beeb253eed4a"
+}
+```
+
 GET `/projects`
 
 Authentication required

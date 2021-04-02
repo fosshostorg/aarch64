@@ -415,6 +415,28 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
     return _resp(False, "Unable to add user to project")
 
 
+@app.route("/project", methods=["DELETE"])
+@with_authentication(admin=False)
+@with_json("project")
+def delete_project(json_body: dict, user_doc: dict) -> Response:
+    project_doc = db["projects"].find_one({
+        "_id": to_object_id(json_body["project"]),
+        "users": {
+            "$in": [user_doc["_id"]]
+        }
+    })
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    for vm in db["vms"].find({"project": project_doc["_id"]}):
+        db["vms"].delete_one({"_id": vm["_id"]})
+
+    deleted_project = db["projects"].delete_one({"_id": project_doc["_id"]})
+    if deleted_project.deleted_count == 1:
+        return _resp(True, "Project deleted")
+    return _resp(False, "Unable to delete project")
+
+
 @app.route("/vms/delete", methods=["DELETE"])
 @with_authentication(admin=False)
 @with_json("vm")
