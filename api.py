@@ -639,6 +639,7 @@ def get_ansible_hosts(user_doc: dict):
 
     for proxy in config_doc["proxies"]:
         _config["all"]["children"]["proxies"]["hosts"]["proxy." + proxy["pop"]] = {
+            "ansible_port": 22,
             "ansible_host": proxy["ip"],
         }
 
