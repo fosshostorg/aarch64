@@ -14,7 +14,7 @@
 		host: 0,
 		vcpus: 0,
 		memory: 0,
-		disk: 0,
+		ssd: 0,
 		password: "",
 		phoned_home: false,
 		address: "",

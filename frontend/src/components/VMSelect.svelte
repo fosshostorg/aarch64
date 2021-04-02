@@ -34,7 +34,7 @@
 							RAM
 						</span>
 						<span class="SSD">
-							<b>{data[option].disk}GB</b>
+							<b>{data[option].ssd}GB</b>
 							SSD
 						</span>
 					</span>

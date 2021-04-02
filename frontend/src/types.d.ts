@@ -28,7 +28,7 @@ type VM = {
 	host: number;
 	vcpus: number;
 	memory: number;
-	disk: number;
+	ssd: number;
 	password: string;
 	phoned_home: boolean;
 	address: string;
@@ -59,5 +59,5 @@ type Pop = {
 type Plan = {
 	vcpus: number;
 	memory: number;
-	disk: number;
+	ssd: number;
 };

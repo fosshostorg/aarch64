@@ -8,27 +8,27 @@ db["config"].update_one({}, {"$set": {
         "v1.xsmall": {
             "vcpus": 1,
             "memory": 1,
-            "disk": 4
+            "ssd": 4
         },
         "v1.small": {
             "vcpus": 2,
             "memory": 4,
-            "disk": 8
+            "ssd": 8
         },
         "v1.medium": {
             "vcpus": 4,
             "memory": 8,
-            "disk": 16
+            "ssd": 16
         },
         "v1.large": {
             "vcpus": 8,
             "memory": 16,
-            "disk": 32
+            "ssd": 32
         },
         "v1.xlarge": {
             "vcpus": 16,
             "memory": 32,
-            "disk": 64
+            "ssd": 64
         }
     },
     "oses": {

@@ -334,7 +334,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     json_body["vcpus"] = config_doc["plans"][json_body["plan"]]["vcpus"]
     json_body["memory"] = config_doc["plans"][json_body["plan"]]["memory"]
-    json_body["disk"] = config_doc["plans"][json_body["plan"]]["disk"]
+    json_body["ssd"] = config_doc["plans"][json_body["plan"]]["ssd"]
     del json_body["plan"]
 
     if json_body["os"] not in config_doc["oses"].keys():

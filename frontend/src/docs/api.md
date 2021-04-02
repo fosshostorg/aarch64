@@ -140,7 +140,7 @@ Response body:
           "hostname": "testvm1",
           "vcpus": 4,
           "memory": 8,
-          "disk": 16,
+          "ssd": 16,
           "pop": "dfw",
           "project": "605d1fbc361f9e55eec97986",
           "host": 0,
@@ -202,7 +202,7 @@ Response body:
     "hostname": "testvm1",
     "vcpus": 4,
     "memory": 8,
-    "disk": 16,
+    "ssd": 16,
     "pop": "dfw",
     "project": "605d1fbc361f9e55eec97986",
     "host": 0,
@@ -272,27 +272,27 @@ Response body:
       "v1.xsmall.aarch64": {
         "vcpus": 1,
         "memory": 1,
-        "disk": 4
+        "ssd": 4
       },
       "v1.small.aarch64": {
         "vcpus": 2,
         "memory": 4,
-        "disk": 8
+        "ssd": 8
       },
       "v1.medium.aarch64": {
         "vcpus": 4,
         "memory": 8,
-        "disk": 16
+        "ssd": 16
       },
       "v1.large.aarch64": {
         "vcpus": 8,
         "memory": 16,
-        "disk": 32
+        "ssd": 32
       },
       "v1.xlarge.aarch64": {
         "vcpus": 16,
         "memory": 32,
-        "disk": 64
+        "ssd": 64
       }
     },
     "oses": {

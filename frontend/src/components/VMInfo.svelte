@@ -7,7 +7,7 @@
 		<span class="os"> <b>{vm.os}</b> OS</span>
 		<span class="vCPU"> <b>{vm.vcpus}</b> vCPU </span>
 		<span class="RAM"> <b>{vm.memory}GB</b> RAM </span>
-		<span class="SSD"> <b>{vm.disk}GB</b> SSD </span>
+		<span class="SSD"> <b>{vm.ssd}GB</b> SSD </span>
 	</div>
 	<div class="icons">
 		<span class="hover-card">
@@ -26,7 +26,7 @@
 		</span>
 		<span class="hover-card">
 			<div>Micron 5200</div>
-			<img src="./img/hddICON.svg" alt={'disk icon'} />
+			<img src="./img/hddICON.svg" alt={'ssd icon'} />
 		</span>
 	</div>
 </main>

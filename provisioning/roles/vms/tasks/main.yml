@@ -38,7 +38,7 @@
   register: vm_disk_create
 
 - name: Resize disk
-  shell: qemu-img resize /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2 +{{ (item["disk"])-2 }}G
+  shell: qemu-img resize /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2 +{{ (item["ssd"])-2 }}G
   loop: "{{ vms }}"
   when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname) and (vm_disk_create.changed)
 
