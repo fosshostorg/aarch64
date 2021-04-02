@@ -8,7 +8,6 @@ from functools import wraps
 from os import environ
 from secrets import token_hex
 from smtplib import SMTP_SSL as SMTP
-from typing import List
 
 # noinspection PyPackageRequirements
 from argon2 import PasswordHasher
@@ -693,6 +692,11 @@ Your AARCH64 VM is ready to go!
 
 Address: {vm_doc["address"][:-3]}
 Password: {vm_doc["password"]}
+
+SSH is enabled on port 22 with root access, please secure your VM accordingly.
+
+If you don't have IPv6 you can use our dualstack jumpbox:
+ssh -J jump@proxy.dfw.aarch64.com root@{vm_doc["address"][:-3]}
 
 Remote "Out of Band" SSH console:
 ssh -p 2222 {vm_doc["_id"]}@{vm_doc["pop"]}{vm_doc["host"]}.aarch64.com
