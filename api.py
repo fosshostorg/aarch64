@@ -613,7 +613,8 @@ def get_ansible_hosts(user_doc: dict):
                 "ansible_port": config_doc["port"],
                 "ansible_ssh_private_key_file": config_doc["key"],
                 "oses": config_doc["oses"],
-                "proxies": proxies
+                "proxies": proxies,
+                "parent_prefix": config_doc["prefix"]
             },
             "children": {
                 "hypervisors": {"hosts": {}},
@@ -631,8 +632,7 @@ def get_ansible_hosts(user_doc: dict):
                         "asn": config_doc["asn"],
                         "prefixes": [host["prefix"]],
                     },
-                    "vms": list(db["vms"].find({"pop": pop["name"], "host": idx})),
-                    "parent_prefix": config_doc["prefix"]
+                    "vms": list(db["vms"].find({"pop": pop["name"], "host": idx}))
                 }
 
                 if host.get("peers"):
