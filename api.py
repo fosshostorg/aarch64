@@ -159,9 +159,10 @@ def with_json(*outer_args):
     return decorator
 
 
-def with_authentication(admin: bool):
+def with_authentication(admin: bool, pass_user: bool):
     """
     Require a user to be authenticated and pass user_doc to function
+    :param pass_user: Should the decorator pass the user doc to the following function?
     :param admin: Does the user have to be an administrator?
     :return:
     """
@@ -182,7 +183,10 @@ def with_authentication(admin: bool):
             if admin and not user_doc.get("admin"):
                 return _resp(False, "Unauthorized"), 403
 
-            return func(*args, **kwargs, user_doc=user_doc)
+            if pass_user:
+                return func(*args, **kwargs, user_doc=user_doc)
+            else:
+                return func(*args, **kwargs)
 
         return wrapper
 
@@ -252,7 +256,7 @@ def user_logout() -> Response:
 
 
 @app.route("/auth/user", methods=["GET"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 def user_info(user_doc: dict) -> Response:
     """
     Get user info doc
@@ -263,7 +267,7 @@ def user_info(user_doc: dict) -> Response:
 
 
 @app.route("/project", methods=["POST"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 @with_json("name")
 def create_project(json_body: dict, user_doc: dict) -> Response:
     # Begin beta tmp code
@@ -283,7 +287,7 @@ def create_project(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/projects", methods=["GET"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 def projects_list(user_doc: dict) -> Response:
     """
     Get all projects that a user is part of
@@ -318,7 +322,7 @@ def projects_list(user_doc: dict) -> Response:
 
 
 @app.route("/vms/create", methods=["POST"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 @with_json("hostname", "plan", "pop", "project", "os")
 def create_vm(json_body: dict, user_doc: dict) -> Response:
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})
@@ -410,7 +414,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/project/adduser", methods=["POST"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 @with_json("project", "email")
 def project_add_user(json_body: dict, user_doc: dict) -> Response:
     project_doc = get_project(user_doc, json_body["project"])
@@ -431,7 +435,7 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/project", methods=["DELETE"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 @with_json("project")
 def delete_project(json_body: dict, user_doc: dict) -> Response:
     project_doc = get_project(user_doc, json_body["project"])
@@ -448,7 +452,7 @@ def delete_project(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/vms/delete", methods=["DELETE"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 @with_json("vm")
 def delete_vm(json_body: dict, user_doc: dict) -> Response:
     vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
@@ -466,7 +470,7 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/proxy", methods=["POST"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 @with_json("label", "vm")
 def add_proxy(json_body: dict, user_doc: dict) -> Response:
     vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
@@ -497,7 +501,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/proxy", methods=["GET"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 @with_json("project")
 def get_proxies(json_body: dict, user_doc: dict) -> Response:
     project_doc = db["projects"].find_one({"_id": json_body["project"], "users": {"$in": [user_doc["_id"]]}})
@@ -508,7 +512,7 @@ def get_proxies(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/system", methods=["GET"])
-@with_authentication(admin=False)
+@with_authentication(admin=False, pass_user=True)
 def get_system(user_doc: dict):
     # Update config doc
     config_doc = db["config"].find_one()
@@ -529,9 +533,9 @@ def get_system(user_doc: dict):
 
 
 @app.route("/admin/pop", methods=["POST"])
-@with_authentication(admin=True)
+@with_authentication(admin=True, pass_user=False)
 @with_json("name", "provider", "peeringdb_id")
-def add_pop(json_body: dict, user_doc: dict) -> Response:
+def add_pop(json_body: dict) -> Response:
     try:
         new_pop = db["pops"].insert_one({
             "name": json_body["name"],
@@ -546,9 +550,9 @@ def add_pop(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/admin/host", methods=["POST"])
-@with_authentication(admin=True)
+@with_authentication(admin=True, pass_user=False)
 @with_json("ip", "pop")
-def add_host(json_body: dict, user_doc: dict) -> Response:
+def add_host(json_body: dict) -> Response:
     try:
         ipaddress.ip_address(json_body["ip"])
     except ValueError:
@@ -590,9 +594,9 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/admin/bgp", methods=["POST"])
-@with_authentication(admin=True)
+@with_authentication(admin=True, pass_user=False)
 @with_json("ip", "name", "asn", "neighbor")
-def add_bgp_session(json_body: dict, user_doc: dict) -> Response:
+def add_bgp_session(json_body: dict) -> Response:
     for pop in db["pops"].find():
         if pop.get("hosts"):
             for host_index, host in enumerate(pop.get("hosts")):
@@ -617,8 +621,8 @@ def add_bgp_session(json_body: dict, user_doc: dict) -> Response:
 
 
 @app.route("/admin/ansible", methods=["GET"])
-@with_authentication(admin=True)
-def get_ansible_hosts(user_doc: dict):
+@with_authentication(admin=True, pass_user=False)
+def get_ansible_hosts():
     # Update config doc
     config_doc = db["config"].find_one()
 
