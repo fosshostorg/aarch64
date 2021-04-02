@@ -71,6 +71,7 @@ def send_email(to: str, subject: str, body: str):
         # Build the MIME email
         msg = MIMEText(body, "plain")
         msg["Subject"] = subject
+        msg["To"] = to
         msg["From"] = config_doc["email"]["address"]
 
         # Connect and send the email
