@@ -9,6 +9,7 @@ from os import environ
 from secrets import token_hex
 from smtplib import SMTP_SSL as SMTP
 
+# argon2 is provided by the argon2-cffi package
 # noinspection PyPackageRequirements
 from argon2 import PasswordHasher
 # noinspection PyPackageRequirements
@@ -515,6 +516,7 @@ def get_proxies(json_body: dict, user_doc: dict) -> Response:
 @with_authentication(admin=False, pass_user=True)
 def get_system(user_doc: dict):
     # Update config doc
+    # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
     # Get PoPs
@@ -577,6 +579,7 @@ def add_host(json_body: dict) -> Response:
                 taken_prefixes.append(host["prefix"])
 
     # Find next available prefix
+    # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
     parent_prefix = ipaddress.ip_network(config_doc["prefix"], False)
     for slash48 in list(parent_prefix.subnets(new_prefix=48)):
@@ -624,6 +627,7 @@ def add_bgp_session(json_body: dict) -> Response:
 @with_authentication(admin=True, pass_user=False)
 def get_ansible_hosts():
     # Update config doc
+    # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
     proxies = []
