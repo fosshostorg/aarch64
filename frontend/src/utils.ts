@@ -1,4 +1,4 @@
-import { push } from "svelte-spa-router";
+import {replace} from "svelte-spa-router";
 import { Snackbars, Projects } from "./stores";
 
 export function dropdownItems(vm: any, project_id: string): DropdownItem[] {
@@ -27,6 +27,7 @@ export function dropdownItems(vm: any, project_id: string): DropdownItem[] {
 							return p;
 						})
 					})
+					replace("/dashboard/projects/" + project_id)
 				});
 			},
 		},
