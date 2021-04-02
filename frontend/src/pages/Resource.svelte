@@ -8,6 +8,7 @@
     import {Projects} from "../stores";
     import {push} from "svelte-spa-router";
     import CopyField from "../components/CopyField.svelte";
+    import CreationInfo from "../components/CreationInfo.svelte";
 
     export let params: any = {};
 
@@ -51,6 +52,7 @@
 						</span>
                         <span class="title">Network:&nbsp;<span class="material-icons" on:click={() => {push("/docs/networking")}}>help_outline</span></span>
                         <IPInfo vm={toVM(vm)}/>
+                        <CreationInfo vm={toVM(vm)}/>
                         <CopyField text={vm.password}/>
                     </div>
                     <div class="actions">

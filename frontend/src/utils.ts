@@ -141,6 +141,11 @@ export const getUserInfoAndProjects = async (): Promise<{
 							_id: "605d1fea3c05da2790ea3dbb",
 							password: "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
 							phoned_home: true,
+							creator: "user@example.com",
+							created: {
+								by: "605d1fea3c05da2790ea3fff",
+								at: 1617394497
+							}
 						},
 					],
 				}, {
@@ -164,6 +169,11 @@ export const getUserInfoAndProjects = async (): Promise<{
 							_id: "605d1fea3c05da2790ea3dbc",
 							password: "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
 							phoned_home: true,
+							creator: "user@example.com",
+							created: {
+								by: "605d1fea3c05da2790ea3fff",
+								at: 1617394497
+							}
 						},
 					],
 				},

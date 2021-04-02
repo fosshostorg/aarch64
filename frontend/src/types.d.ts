@@ -33,6 +33,8 @@ type VM = {
 	phoned_home: boolean;
 	address: string;
 	gateway: string;
+	creator: string;
+	created: { by: string; at: number };
 };
 
 type System = {
