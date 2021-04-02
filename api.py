@@ -74,6 +74,7 @@ def send_email(to: str, subject: str, body: str):
         msg["Subject"] = subject
         msg["To"] = to
         msg["From"] = config_doc["email"]["address"]
+        msg["reply-to"] = "support@fosshost.org"
 
         # Connect and send the email
         server = SMTP(config_doc["email"]["server"])
@@ -710,7 +711,7 @@ ssh -J jump@proxy.dfw.aarch64.com root@{vm_doc["address"][:-3]}
 Remote "Out of Band" SSH console:
 ssh -p 2222 {vm_doc["_id"]}@{vm_doc["pop"]}{vm_doc["host"]}.aarch64.com
 
-If you have any questions, please reach out via one of our contact methods at https://fosshost.org as this is a no-reply email address.
+If you have any questions please reach out to support@fosshost.org
 
 Best,
 Fosshost Team
