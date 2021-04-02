@@ -22,6 +22,7 @@
 			open: true,
 		},
 	];
+
 </script>
 
 <nav>
@@ -46,6 +47,7 @@
 					class="sidebar-category-items"
 					class:closed={!category.open}>
 					{#if category.header == 'Projects'}
+					{#if $Projects}
 						{#each $Projects as project}
 							<a
 								class="sidebar-category-item"
@@ -55,6 +57,7 @@
 								<span> {project.name} </span>
 							</a>
 						{/each}
+					{/if}
 						<a
 							class="sidebar-category-item"
 							href={'/dashboard/projects/create'}

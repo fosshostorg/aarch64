@@ -18,8 +18,7 @@
                 .then(resp => resp.json())
                 .then((data) => {
                     if (data.meta.success) {
-                        $Projects = data.data;
-                        push("/dashboard/projects/" + data);
+                        push("/dashboard/projects/" + data.data);
                     } else {
                         alert(data.meta.message);
                     }
