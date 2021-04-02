@@ -1,7 +1,7 @@
 import {replace} from "svelte-spa-router";
 import { Snackbars, Projects } from "./stores";
 
-export function dropdownItems(vm: any, project_id: string): DropdownItem[] {
+export function dropdownItems(vm: any): DropdownItem[] {
 	return [
 		{
 			label: "CONSOLE",
@@ -21,13 +21,13 @@ export function dropdownItems(vm: any, project_id: string): DropdownItem[] {
 				deleteVM(vm._id).then(() => {
 					Projects.update((projects: Project[]) => {
 						return projects.map((p: Project) => {
-							if (p._id == project_id) {
+							if (p._id == vm.project) {
 								p.vms = p.vms.filter(v => v._id !== vm._id)
 							}
 							return p;
 						})
 					})
-					replace("/dashboard/projects/" + project_id)
+					replace("/dashboard/projects/" + vm.project)
 				});
 			},
 		},

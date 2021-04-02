@@ -3,7 +3,6 @@
 	import Dropdown from "./Dropdown.svelte";
 	import {dropdownItems} from "../utils";
 
-	export let project_id: string = "";
 	export let VM: VM = {
 		_id: "",
 		hostname: "",
@@ -52,7 +51,7 @@
 	</span>
 	<button class="material-icons icon" on:click={handleSettings}>
 		<span class="dropdown">
-			<Dropdown bind:open={listOpen} items={dropdownItems(VM, project_id)} />
+			<Dropdown bind:open={listOpen} items={dropdownItems(VM)} />
 		</span>
 		more_horiz
 	</button>

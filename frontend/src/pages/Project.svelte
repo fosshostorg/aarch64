@@ -71,7 +71,7 @@
 					</span>
 						<div class="vm-list">
 							{#each project.vms as vm}
-								<ProjectVM VM={toVM(vm)} project_id={params.project_id} link={'/dashboard/projects/' + project._id + '/resources/' + vm['_id']} />
+								<ProjectVM VM={toVM(vm)} link={'/dashboard/projects/' + project._id + '/resources/' + vm['_id']} />
 							{/each}
 						</div>
 					{/if}
