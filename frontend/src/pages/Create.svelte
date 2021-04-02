@@ -23,7 +23,7 @@
 	let hostnames = [uuidv4()];
 	let project = $Projects[0];
 	let location = null;
-
+	
 	let showSpinner = false;
 
 	// // Debugging
@@ -181,15 +181,13 @@
 										isSearchable={false}
 										items={$Projects}
 										optionIdentifier="_id"
-										selectedValue={project}
 										getOptionLabel={(option, filterText) => {
-											return option.isCreator
-												? `Create \"${filterText}\"`
-												: option.name;
+											return option.name;
 										}}
 										getSelectionLabel={(option) => {
 											if (option) return option.name;
 										}}
+										bind:selectedValue={project}
 									/>
 									<!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
 								</div>
@@ -202,9 +200,7 @@
 											items={locations}
 											optionIdentifier="location"
 											getOptionLabel={(option, filterText) => {
-												return option.isCreator
-													? `Create \"${filterText}\"`
-													: option.location;
+												return option.location;
 											}}
 											getSelectionLabel={(option) => {
 												if (option) return option.location;
