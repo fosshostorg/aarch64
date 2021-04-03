@@ -21,10 +21,12 @@
 		return returnProject;
 	};
 
-	$: project = getProjectById(params.project_id, $Projects);
-
 	let views = ["RESOURCES", "SETTINGS"];
 	let currentView = "RESOURCES";
+
+	// TODO: Set view to resources when switching to new project.
+
+	$: project = getProjectById(params.project_id, $Projects);
 
 	function toVM(vm: any): VM {
 		return vm as VM;
