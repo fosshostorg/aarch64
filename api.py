@@ -534,11 +534,29 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
 @with_authentication(admin=False, pass_user=True)
 @with_json("project")
 def get_proxies(json_body: dict, user_doc: dict) -> Response:
-    project_doc = db["projects"].find_one({"_id": json_body["project"], "users": {"$in": [user_doc["_id"]]}})
+    project_doc = get_project(user_doc, json_body["project"])
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
     return _resp(True, "Retrieved proxies", list(db["proxies"].find({"project": project_doc["_id"]})))
+
+
+@app.route("/proxy", methods=["DELETE"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("proxy")
+def delete_proxy(json_body: dict, user_doc: dict) -> Response:
+    proxy_doc = db["proxies"].find_one({"_id": json_body["proxy"]})
+    if not proxy_doc:
+        return _resp(False, "Proxy doesn't exist")
+
+    project_doc = get_project(user_doc, proxy_doc["_id"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    deleted_proxy = db["proxies"].delete_one({"_id": json_body["proxy"]})
+    if deleted_proxy.deleted_count == 1:
+        return _resp(True, "Proxy deleted")
+    return _resp(False, "Unable to delete proxy")
 
 
 @app.route("/system", methods=["GET"])

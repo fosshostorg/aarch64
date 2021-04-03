@@ -109,7 +109,7 @@ Request body:
 
 ```json
 {
-	"project": "605fdf474177beeb253eed4a"
+  "project": "605fdf474177beeb253eed4a"
 }
 ```
 
@@ -344,6 +344,18 @@ Response body:
       "vm": "d1fbc361f9e5e55361f9e5e55e"
     }
   ]
+}
+```
+
+DELETE `/proxy`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "proxy": "f9e55eec9605d1fbd1fbc361"
 }
 ```
 
