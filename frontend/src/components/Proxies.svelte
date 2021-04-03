@@ -53,7 +53,10 @@
                         return {
                             hostname: rec.label,
                             vm: {hostname: findVMName(rec.vm), _id: rec.vm,},
-                            icon: 'delete_outline',
+                            icon: {
+                                value: 'delete_outline',
+                                id: rec._id
+                            },
                         }
                     })
                 } else {
@@ -99,12 +102,12 @@
             .catch((err) => alert(err));
     }
 
-    function deleteProxy() {
-        console.log("deleting proxy", currentVM)
+    function deleteProxy(proxy_id: string) {
+        console.log("deleting proxy", proxy_id)
         fetch("__apiRoute__/proxy", {
             method: "DELETE",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({vm: currentVM.value._id})
+            body: JSON.stringify({vm: proxy_id})
         })
             .then(resp => resp.json())
             .then(() => getProxies())
@@ -120,47 +123,45 @@
     {:else}
         <div>
             <Table {headers} {rows}>
-      <span class="cell-slot" slot="cell" let:row let:cell>
-        {#if cell.key !== 'icon'}
-        <span class="cell">
-          {#if cell.key === 'vm'}
-          {cell.value.hostname}
-              <a class="material-icons vm-link" use:link href={`/dashboard/projects/${project._id}/resources/${cell.value._id}`}>
-            open_in_new
-          </a>
-          {:else}
-          {cell.value}
-          {/if}
-        </span>
-        {:else}
-        <span class="material-icons icon-cell" on:click={() => deleteProxy()}>
-          {cell.value}
-        </span>
-        {/if}
-      </span>
+                <span class="cell-slot" slot="cell" let:row let:cell>
+                {#if cell.key !== 'icon'}
+                    <span class="cell">
+                    {#if cell.key === 'vm'}
+                        {cell.value.hostname}
+                        <a class="material-icons vm-link" use:link href={`/dashboard/projects/${project._id}/resources/${cell.value._id}`}>
+                        open_in_new
+                        </a>
+                    {:else}
+                        {cell.value}
+                    {/if}
+                    </span>
+                {:else}
+                    <span class="material-icons icon-cell" on:click={() => deleteProxy(cell.value.id)}>
+                        {cell.value.value}
+                    </span>
+                {/if}
+                </span>
             </Table>
         </div>
         <span class="form-header">Add a new proxy:</span>
         <span class="form-wrapper">
-    <span class="form-inputs">
-      <Input class="hostname-input" labelClasses="hostname-input-label" type="text" bind:value={hostname} placeholder="Hostname"/>
-      <span class="select-wrapper">
-        <Select
-                isClearable={false}
-                isSearchable={false}
-                items={vms}
-                bind:selectedValue={currentVM}
-                inputStyles="width: 100%;"
-                placeholder="Choose VM"
-        />
-      </span>
-    </span>
-    <Button style="margin-top: 1rem;" on:click={() => addProxy()}>CREATE</Button>
-  </span>
+            <span class="form-inputs">
+                <Input class="hostname-input" labelClasses="hostname-input-label" type="text" bind:value={hostname} placeholder="Hostname"/>
+                <span class="select-wrapper">
+                    <Select
+                            isClearable={false}
+                            isSearchable={false}
+                            items={vms}
+                            bind:selectedValue={currentVM}
+                            inputStyles="width: 100%;"
+                            placeholder="Choose VM"
+                    />
+            </span>
+        </span>
+        <Button style="margin-top: 1rem;" on:click={() => addProxy()}>CREATE</Button>
+        </span>
     {/if}
-
 </main>
-
 
 <style>
     main {
