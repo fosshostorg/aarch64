@@ -1,14 +1,14 @@
 <script lang="ts">
-    // @ts-nocheck
-    import Table from '../components/Table.svelte';
-    import {link} from 'svelte-spa-router';
-    import Input from "../components/Input.svelte";
-    import Button from "../components/Button.svelte";
-    import Select from "svelte-select";
-    import {Snackbars} from '../stores';
-    import Spinner from "./Spinner.svelte";
+  // @ts-nocheck
+  import Table from '../components/Table.svelte';
+  import {link} from 'svelte-spa-router';
+  import Input from "../components/Input.svelte";
+  import Button from "../components/Button.svelte";
+  import Select from "svelte-select";
+  import {Snackbars} from '../stores';
+  import Spinner from "./Spinner.svelte";
 
-    export let project = null;
+  export let project = null;
 
     let headers = [
         {value: 'HOSTNAME', key: 'hostname'},
@@ -101,6 +101,16 @@
             .catch((err) => console.error(err));
     }
 
+    function deleteProxy() {
+        fetch("__apiRoute__/proxy", {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({vm: currentVM.value._id})
+        })
+            .then(resp => resp.json())
+            .then(() => getProxies())
+            .catch((err) => console.error(err));
+    }
 </script>
 
 <main>
@@ -124,7 +134,7 @@
           {/if}
         </span>
         {:else}
-        <span class="material-icons icon-cell">
+        <span class="material-icons icon-cell" on:click={() => deleteProxy()}>
           {cell.value}
         </span>
         {/if}
