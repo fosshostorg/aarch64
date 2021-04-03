@@ -9,10 +9,9 @@
   import Button from "../components/Button.svelte";
   import Select from "svelte-select";
   import { Projects, Snackbars } from '../stores';
-  import { onMount } from "svelte";
-import Spinner from "./Spinner.svelte";
+  import Spinner from "./Spinner.svelte";
 
-  export let project;
+  export let project = null;
 
   let headers = [
     {value: 'HOSTNAME', key: 'hostname'},
@@ -21,10 +20,21 @@ import Spinner from "./Spinner.svelte";
   ]
 
   let rows = null;
-
   let hostname = "";
-  let currentVM;
-  let vms = [];
+  let currentVM = null;
+
+  function setVMS(project) {
+    getProxies();
+    currentVM = null;
+    return project.vms.map(vm => {
+              return {
+                  value: vm,
+                  label: vm.hostname,
+                }
+              })
+  }
+
+  $: vms = setVMS(project);
 
   function findVMName(id: string): string {
     for (const vm of project.vms) {
@@ -62,18 +72,9 @@ import Spinner from "./Spinner.svelte";
 			.catch((err) => alert(err));
   }
 
-  $: if (project) {
-    getProxies();
-    vms = project.vms.map(vm => {
-      return {
-        value: vm,
-        label: vm.hostname,
-      }
-    })
-  }
-
   function addProxy() {
-    console.log(JSON.stringify({vm: currentVM.value._id, label: hostname}));
+    console.log(currentVM);
+    console.log(JSON.stringify({vm: vms[0].value._id, label: hostname}));
 		fetch("__apiRoute__/proxy", {
 			method: "POST",
 			headers: {"Content-Type": "application/json"},
@@ -103,9 +104,6 @@ import Spinner from "./Spinner.svelte";
 			.catch((err) => console.error(err));
 	}
 
-  onMount(() => {
-    getProxies();
-  })
 </script>
 
 <main>
