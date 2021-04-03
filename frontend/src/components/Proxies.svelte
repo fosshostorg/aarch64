@@ -111,7 +111,6 @@
         })
             .then(resp => resp.json())
             .then((data) => {
-                console.log(data);
                 if (!data.meta.success) {
                     $Snackbars.push({
                         color: "red",
