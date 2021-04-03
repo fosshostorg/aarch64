@@ -1,0 +1,21 @@
+- name: Backup VMs
+  hosts: hypervisors
+  tasks:
+    - name: Set time variable
+      set_fact:
+        backup_time: "{{ ansible_date_time.epoch }}"
+
+    - name: Snapshot VM
+      shell: "virsh snapshot-create-as --domain {{ item['_id'] }} BACKUP_{{ backup_time }} --diskspec sda,file=/tmp/backup-{{ item['_id'] }}-{{ backup_time }}.qcow2 --disk-only --atomic"
+      loop: "{{ vms }}"
+      when: (item["pop"] + item["host"]|string) == inventory_hostname
+
+    - name: Copy backup
+      fetch:
+        src: "/tmp/backup-{{ item['_id'] }}-{{ backup_time }}.qcow2"
+        dest: "/tmp/"
+      loop: "{{ vms }}"
+      when: (item["pop"] + item["host"]|string) == inventory_hostname
+
+    - name: Cleanup backups
+      shell: "rm -rf /tmp/backup*.qcow2"
