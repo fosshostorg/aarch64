@@ -548,7 +548,7 @@ def delete_proxy(json_body: dict, user_doc: dict) -> Response:
     if not proxy_doc:
         return _resp(False, "Proxy doesn't exist")
 
-    project_doc = get_project(user_doc, proxy_doc["_id"])
+    project_doc = get_project(user_doc, proxy_doc["project"])
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
