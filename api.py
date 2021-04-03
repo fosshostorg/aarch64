@@ -555,6 +555,7 @@ def delete_proxy(json_body: dict, user_doc: dict) -> Response:
 
     deleted_proxy = db["proxies"].delete_one({"_id": json_body["proxy"]})
     if deleted_proxy.deleted_count == 1:
+        add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], {})
         return _resp(True, "Proxy deleted")
     return _resp(False, "Unable to delete proxy")
 
