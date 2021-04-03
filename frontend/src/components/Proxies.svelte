@@ -110,7 +110,27 @@
             body: JSON.stringify({proxy: proxy_id})
         })
             .then(resp => resp.json())
-            .then(() => getProxies())
+            .then((data) => {
+                console.log(data);
+                if (!data.meta.success) {
+                    $Snackbars.push({
+                        color: "red",
+                        status: "ERROR",
+                        message: data.meta.message,
+                        grouped: true,
+                    })
+                    $Snackbars = $Snackbars;
+                } else {
+                    $Snackbars.push({
+                        color: "green",
+                        status: 200,
+                        message: data.meta.message,
+                        grouped: true,
+                    })
+                    $Snackbars = $Snackbars;
+                    getProxies();
+                }
+            })
             .catch((err) => alert(err));
     }
 </script>
