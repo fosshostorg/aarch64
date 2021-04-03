@@ -530,11 +530,10 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Unable to add proxy")
 
 
-@app.route("/proxy", methods=["GET"])
+@app.route("/proxies/<project_id>", methods=["GET"])
 @with_authentication(admin=False, pass_user=True)
-@with_json("project")
-def get_proxies(json_body: dict, user_doc: dict) -> Response:
-    project_doc = get_project(user_doc, json_body["project"])
+def get_proxies(project_id: str, user_doc: dict) -> Response:
+    project_doc = get_project(user_doc, project_id)
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 

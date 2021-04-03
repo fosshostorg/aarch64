@@ -324,7 +324,7 @@ Request body:
 }
 ```
 
-GET `/proxy`
+GET `/proxies/<project_id>`
 
 Authentication required
 
