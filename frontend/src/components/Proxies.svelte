@@ -1,14 +1,14 @@
 <script lang="ts">
-  // @ts-nocheck
-  import Table from '../components/Table.svelte';
-  import {link} from 'svelte-spa-router';
-  import Input from "../components/Input.svelte";
-  import Button from "../components/Button.svelte";
-  import Select from "svelte-select";
-  import {Snackbars} from '../stores';
-  import Spinner from "./Spinner.svelte";
+    // @ts-nocheck
+    import Table from '../components/Table.svelte';
+    import {link} from 'svelte-spa-router';
+    import Input from "../components/Input.svelte";
+    import Button from "../components/Button.svelte";
+    import Select from "svelte-select";
+    import {Snackbars} from '../stores';
+    import Spinner from "./Spinner.svelte";
 
-  export let project = null;
+    export let project = null;
 
     let headers = [
         {value: 'HOSTNAME', key: 'hostname'},
@@ -70,8 +70,6 @@
     }
 
     function addProxy() {
-        console.log(currentVM);
-        console.log(JSON.stringify({vm: vms[0].value._id, label: hostname}));
         fetch("__apiRoute__/proxy", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -98,10 +96,11 @@
                     $Snackbars = $Snackbars;
                 }
             })
-            .catch((err) => console.error(err));
+            .catch((err) => alert(err));
     }
 
     function deleteProxy() {
+        console.log("deleting proxy", vm)
         fetch("__apiRoute__/proxy", {
             method: "DELETE",
             headers: {"Content-Type": "application/json"},
@@ -109,7 +108,7 @@
         })
             .then(resp => resp.json())
             .then(() => getProxies())
-            .catch((err) => console.error(err));
+            .catch((err) => alert(err));
     }
 </script>
 
