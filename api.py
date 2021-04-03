@@ -544,7 +544,7 @@ def get_proxies(project_id: str, user_doc: dict) -> Response:
 @with_authentication(admin=False, pass_user=True)
 @with_json("proxy")
 def delete_proxy(json_body: dict, user_doc: dict) -> Response:
-    proxy_doc = db["proxies"].find_one({"_id": json_body["proxy"]})
+    proxy_doc = db["proxies"].find_one({"_id": to_object_id(json_body["proxy"])})
     if not proxy_doc:
         return _resp(False, "Proxy doesn't exist")
 
@@ -552,7 +552,7 @@ def delete_proxy(json_body: dict, user_doc: dict) -> Response:
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
-    deleted_proxy = db["proxies"].delete_one({"_id": json_body["proxy"]})
+    deleted_proxy = db["proxies"].delete_one({"_id": to_object_id(json_body["proxy"])})
     if deleted_proxy.deleted_count == 1:
         add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], {})
         return _resp(True, "Proxy deleted")
