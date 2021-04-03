@@ -197,6 +197,24 @@ def with_authentication(admin: bool, pass_user: bool):
     return decorator
 
 
+def add_audit_entry(title: str, project: str, user: str, detail: dict):
+    """
+    Add an entry to the audit log
+    :param detail: Custom information about this entry
+    :param title: Short string of what this entry is
+    :param project: Project ID if applicable
+    :param user: User ID if applicable
+    :return:
+    """
+    db["audit"].insert_one({
+        "time": time.time(),
+        "title": title,
+        "user": to_object_id(user),
+        "project": to_object_id(project),
+        "detail": detail
+    })
+
+
 @app.route("/auth/signup", methods=["POST"])
 @with_json("email", "password")
 def signup(json_body: dict) -> Response:
@@ -287,6 +305,7 @@ def create_project(json_body: dict, user_doc: dict) -> Response:
         "users": [user_doc["_id"]]
     })
 
+    add_audit_entry("project.create", project.inserted_id, user_doc["_id"], {})
     return _resp(True, "Project created", str(project.inserted_id))
 
 
@@ -414,6 +433,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     if new_vm.inserted_id:
         return _resp(True, "VM created", data=json_body)
 
+    add_audit_entry("vm.create", project_doc["_id"], user_doc["_id"], {"vm_id": new_vm.inserted_id})
     raise _resp(False, "Unable to create VM")
 
 
@@ -452,6 +472,8 @@ def delete_project(json_body: dict, user_doc: dict) -> Response:
     deleted_project = db["projects"].delete_one({"_id": project_doc["_id"]})
     if deleted_project.deleted_count == 1:
         return _resp(True, "Project deleted")
+
+    add_audit_entry("project.delete", project_doc["_id"], user_doc["_id"], {})
     return _resp(False, "Unable to delete project")
 
 
@@ -470,6 +492,8 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
     deleted_vm = db["vms"].delete_one({"_id": to_object_id(json_body["vm"])})
     if deleted_vm.deleted_count == 1:
         return _resp(True, "VM deleted")
+
+    add_audit_entry("vm.delete", project_doc["_id"], user_doc["_id"], {"vm_id": vm_doc["_id"]})
     return _resp(False, "Unable to delete VM")
 
 
@@ -499,6 +523,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Proxy already exists")
 
     if new_proxy.inserted_id:
+        add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], {})
         return _resp(True, "Added proxy")
     else:
         return _resp(False, "Unable to add proxy")
@@ -718,6 +743,7 @@ If you have any questions please reach out to support@fosshost.org
 Best,
 Fosshost Team
 """)
+    add_audit_entry("vm.phonehome", vm_doc["project"], "N/A", {})
     return _resp(True, "Phone home complete")
 
 
