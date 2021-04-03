@@ -2,10 +2,11 @@
 	import Navbar from "../components/Navbar.svelte";
 	import PageHeader from "../components/PageHeader.svelte";
 	import ProjectVM from "../components/ProjectVM.svelte";
-	import { Projects } from "../stores";
+	import { Projects, Snackbars, User } from "../stores";
 	import PageTitle from "../components/PageTitle.svelte";
 	import Input from "../components/Input.svelte";
 	import Button from "../components/Button.svelte";
+	import { push } from "svelte-spa-router";
 
 	export let params: any = {};
 
@@ -44,6 +45,39 @@
 			})
 			.catch((err) => alert(err));
 	}
+
+	function deleteProject() {
+		if (confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+				fetch("__apiRoute__/project", {
+					method: "DELETE",
+					headers: {"Content-Type": "application/json"},
+					body: JSON.stringify({project: params.project_id})
+				})
+				.then(resp => resp.json())
+				.then(data => {
+					if (data.meta.success) {
+						$Snackbars.push({
+								color: "green",
+								status: 200,
+								message: data.meta.message,
+								grouped: true,        	
+						})
+						$Snackbars = $Snackbars;
+						push("/dashboard");
+					} else {
+						$Snackbars.push({
+								color: "red",
+								status: "ERROR",
+								message: data.meta.message,
+								grouped: true,        	
+						})
+						$Snackbars = $Snackbars;
+					}
+				})
+				.catch((err) => alert(err));
+		}
+	}
+
 </script>
 
 <PageTitle title={project ? project.name : 'Project page'} />
@@ -93,6 +127,8 @@
 						<Input bind:value={newUserEmail} autocomplete="off" type="text" class="user-input" placeholder="user@example.com"/>
 						<Button width="150px" on:click={() => submitAddUser()}>ADD USER</Button>
 						<!-- <button class="user-form-button" on:click={() => submitAddUser()}>ADD USER</button> -->
+						<!-- TODO: THIS SHOULD ONLY SHOW FOR PROJECT CREATOR (OR OWNER?) -->
+						<Button width="250px" color="#aa1717" style="margin-top: 5rem;" on:click={deleteProject}>DELETE PROJECT</Button>
 					</div>
 				</div>
 			{/if}
