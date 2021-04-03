@@ -7,6 +7,7 @@
 	import Input from "../components/Input.svelte";
 	import Button from "../components/Button.svelte";
 	import { push } from "svelte-spa-router";
+	import Proxies from "../components/Proxies.svelte";
 
 	export let params: any = {};
 
@@ -21,7 +22,7 @@
 		return returnProject;
 	};
 
-	let views = ["RESOURCES", "SETTINGS"];
+	let views = ["RESOURCES", "SETTINGS", "PROXIES"];
 	let currentView = "RESOURCES";
 
 	// TODO: Set view to resources when switching to new project.
@@ -133,6 +134,8 @@
 						<Button width="250px" color="#aa1717" style="margin-top: 5rem;" on:click={deleteProject}>DELETE PROJECT</Button>
 					</div>
 				</div>
+			{:else if currentView === "PROXIES"}
+				<Proxies {project} />
 			{/if}
 		</div>
 	{/if}
