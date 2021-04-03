@@ -431,9 +431,9 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     new_vm = db["vms"].insert_one(json_body)
     if new_vm.inserted_id:
+        add_audit_entry("vm.create", project_doc["_id"], user_doc["_id"], {"vm_id": new_vm.inserted_id})
         return _resp(True, "VM created", data=json_body)
 
-    add_audit_entry("vm.create", project_doc["_id"], user_doc["_id"], {"vm_id": new_vm.inserted_id})
     raise _resp(False, "Unable to create VM")
 
 
@@ -454,6 +454,7 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
 
     project_update = db["projects"].update_one({"_id": to_object_id(json_body["project"])}, {"$push": {"users": user_doc["_id"]}})
     if project_update.modified_count == 1:
+        add_audit_entry("project.adduser", project_doc["_id"], user_doc["_id"], {"user_id": user_doc["_id"]})
         return _resp(True, "User added to project")
     return _resp(False, "Unable to add user to project")
 
@@ -491,9 +492,9 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
 
     deleted_vm = db["vms"].delete_one({"_id": to_object_id(json_body["vm"])})
     if deleted_vm.deleted_count == 1:
+        add_audit_entry("vm.delete", project_doc["_id"], user_doc["_id"], {"vm_id": vm_doc["_id"]})
         return _resp(True, "VM deleted")
 
-    add_audit_entry("vm.delete", project_doc["_id"], user_doc["_id"], {"vm_id": vm_doc["_id"]})
     return _resp(False, "Unable to delete VM")
 
 
