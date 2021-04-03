@@ -100,7 +100,7 @@
     }
 
     function deleteProxy() {
-        console.log("deleting proxy", vm)
+        console.log("deleting proxy", currentVM)
         fetch("__apiRoute__/proxy", {
             method: "DELETE",
             headers: {"Content-Type": "application/json"},
