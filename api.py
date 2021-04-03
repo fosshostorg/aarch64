@@ -472,9 +472,9 @@ def delete_project(json_body: dict, user_doc: dict) -> Response:
 
     deleted_project = db["projects"].delete_one({"_id": project_doc["_id"]})
     if deleted_project.deleted_count == 1:
+        add_audit_entry("project.delete", project_doc["_id"], user_doc["_id"], {})
         return _resp(True, "Project deleted")
 
-    add_audit_entry("project.delete", project_doc["_id"], user_doc["_id"], {})
     return _resp(False, "Unable to delete project")
 
 
