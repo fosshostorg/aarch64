@@ -2,8 +2,10 @@
 	export let options: boolean = false;
 	export let current: string = "";
 	export let labels: string[] = [];
+	export let baseHref: string = "";
 	export let isResource: boolean = false;
 	export let enabled: boolean = false;
+	export let params: any;
 </script>
 
 <span class="wrapper">
@@ -19,11 +21,11 @@
 		</span>
 		{#if options}
 			<div class="button-wrapper">
-				{#each labels as label}
+				{#each labels as label, i}
 					<button
-						class:current={current == label}
+						class:current={params.page == label.toLowerCase() || (i == 0 && params.page == null)}
 						on:click={() => {
-							current = label;
+							window.location.href = baseHref + "/" + label.toLowerCase();
 						}}>{label}</button>
 				{/each}
 			</div>

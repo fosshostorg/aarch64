@@ -12,7 +12,7 @@
 	const routes = {
 		"/create": Create,
 		"/projects/create": NewProject,
-		"/projects/:project_id": Project,
+		"/projects/:project_id/:page?": Project,
 		"/projects/:project_id/resources/:resource_id": Resource
 	};
 
