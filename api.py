@@ -495,6 +495,9 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
         add_audit_entry("vm.delete", project_doc["_id"], user_doc["_id"], {"vm_id": vm_doc["_id"]})
         return _resp(True, "VM deleted")
 
+    # Delete all proxies associated with this VM
+    db["proxies"].delete_many({"vm": vm_doc["_id"]})
+
     return _resp(False, "Unable to delete VM")
 
 
