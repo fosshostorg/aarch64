@@ -91,11 +91,11 @@
 			{label: 'Dashboard', path: '/dashboard'},
 			{label: project.name, path: `/dashboard/projects/${project._id}`},
 			]} />
-		<PageHeader options bind:current={currentView} labels={views}>
+		<PageHeader options bind:current={currentView} labels={views} baseHref={"/#/dashboard/projects/" + params.project_id} {params}>
 			{project.name}
 		</PageHeader>
 		<div class="content">
-			{#if currentView === "RESOURCES"}
+			{#if params.page === null || params.page === "resources"}
 					<span class="title">Virtual Machines</span>
 					{#if project.vms.length === 0}
 						<div class="empty-list">Nothing to see here...</div>
@@ -112,7 +112,7 @@
 							{/each}
 						</div>
 					{/if}
-			{:else if currentView === "SETTINGS"}
+			{:else if params.page === "settings"}
 				<div>
 					<span class="title">Settings</span>
 					<div class="user-form-container">
@@ -134,7 +134,7 @@
 						<Button width="250px" color="#aa1717" style="margin-top: 5rem;" on:click={deleteProject}>DELETE PROJECT</Button>
 					</div>
 				</div>
-			{:else if currentView === "PROXIES"}
+			{:else if params.page === "proxies"}
 				<Proxies {project} />
 			{/if}
 		</div>
