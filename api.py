@@ -616,8 +616,8 @@ def add_host(json_body: dict) -> Response:
         return _resp(False, "PoP doesn't exist")
 
     if pop_doc.get("hosts"):
-        for host in pop_doc.get("hosts"):
-            if host["ip"] == json_body["ip"]:
+        for existing_host in pop_doc.get("hosts"):
+            if existing_host["ip"] == json_body["ip"]:
                 return _resp(False, f"Host with IP {json_body['ip']} already exists")
 
     host = {"ip": json_body["ip"]}
@@ -626,8 +626,8 @@ def add_host(json_body: dict) -> Response:
     taken_prefixes = []
     for pop in db["pops"].find():
         if pop.get("hosts"):
-            for host in pop.get("hosts"):
-                taken_prefixes.append(host["prefix"])
+            for existing_host_pfx in pop.get("hosts"):
+                taken_prefixes.append(existing_host_pfx["prefix"])
 
     # Find next available prefix
     # noinspection PyShadowingNames
