@@ -586,13 +586,14 @@ def get_system(user_doc: dict):
 
 @app.route("/admin/pop", methods=["POST"])
 @with_authentication(admin=True, pass_user=False)
-@with_json("name", "provider", "peeringdb_id")
+@with_json("name", "location", "provider", "peeringdb_id")
 def add_pop(json_body: dict) -> Response:
     try:
         new_pop = db["pops"].insert_one({
             "name": json_body["name"],
+            "location": json_body["location"],
             "provider": json_body["provider"],
-            "peeringdb_id": json_body["peeringdb_id"],
+            "peeringdb_id": json_body["peeringdb_id"]
         })
     except DuplicateKeyError:
         return _resp(False, "PoP already exists")
