@@ -20,4 +20,4 @@ runcmd:
 {% if item.os == "ubuntu" or item.os == "debian" %}
   - systemctl restart sshd
 {% endif %}
-  - sleep 60 ; for i in {1..5}; do wget -O - https://console.aarch64.com/api/intra/phonehome ; done 
+  - sleep 60 ; for i in {1..5}; do wget -O - wget https://console.aarch64.com/api/intra/phonehome 2>/dev/null || curl https://console.aarch64.com/api/intra/phonehome ; done
