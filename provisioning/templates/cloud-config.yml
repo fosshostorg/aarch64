@@ -10,7 +10,7 @@ chpasswd:
   expire: False
 final_message: "system up after $UPTIME seconds"
 runcmd:
-{% if item.os == "ubuntu" %}
+{% if item.os == "ubuntu" or item.os == "rocky" %}
   - ip link set dev enp1s0 down
   - ip link set dev enp1s0 name eth0
   - ip link set dev enp1s0 up
