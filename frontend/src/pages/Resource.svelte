@@ -50,7 +50,7 @@
 							<VMInfo vm={toVM(vm)}/>
 						</span>
                         <CreationInfo vm={toVM(vm)}/>
-                        <CopyField label="Address" text={vm.address}/>
+                        <CopyField label="Address" text={vm.address.slice(0, -3)}/>
                         <CopyField text={vm.password}/>
                     </div>
                     <div class="actions">
