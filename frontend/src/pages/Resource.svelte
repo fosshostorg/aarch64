@@ -3,7 +3,6 @@
     import PageHeader from "../components/PageHeader.svelte";
     import PageTitle from "../components/PageTitle.svelte";
     import VMInfo from "../components/VMInfo.svelte";
-    import IPInfo from "../components/IPInfo.svelte";
     import VMOptions from "../components/VMOptions.svelte";
     import {Projects} from "../stores";
     import {push} from "svelte-spa-router";
@@ -50,9 +49,8 @@
                         <span class="info-wrapper">
 							<VMInfo vm={toVM(vm)}/>
 						</span>
-                        <span class="title">Network:&nbsp;<span class="material-icons" on:click={() => {push("/docs/networking")}}>help_outline</span></span>
-                        <IPInfo vm={toVM(vm)}/>
                         <CreationInfo vm={toVM(vm)}/>
+                        <CopyField label="Address" text={vm.address}/>
                         <CopyField text={vm.password}/>
                     </div>
                     <div class="actions">

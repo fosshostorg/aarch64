@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {push} from "svelte-spa-router";
     import Input from './Input.svelte';
     import {Snackbars} from '../stores';
 
     export let text: string = "";
+    export let label: string = "Password";
 
     function copyHandler() {
         console.log('done')
@@ -29,7 +29,7 @@
 </script>
 
 <main>
-    <label for="text-input">Password: &nbsp;<span class="material-icons" on:click={() => push("/docs")}>help_outline</span></label>
+    <label for="text-input">{label}:</label>
     <div>
         <Input type="text" value={text} id="text-input" class="input-field" disabled />
         <button on:click={copyHandler}>COPY</button>
