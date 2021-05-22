@@ -18,6 +18,7 @@
     name: libvirt-sshd
     state: restarted
     daemon_reload: true
+  when: libvirt_service_file.changed
 
 - name: Start and enable libvirt-sshd
   systemd:
