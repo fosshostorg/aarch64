@@ -110,6 +110,41 @@ def get_project(user_doc: dict, project_id):
         return db["projects"].find_one({"_id": to_object_id(project_id)})
 
 
+def find_audit_entries(query=None):
+    """
+    Get a list of audit log entries with a given filter
+    :param query: MongoDB query filter
+    :return: List of audit entry objects
+    """
+    # Cover mutable argument
+    if query is None:
+        query = {}
+
+    _entries = []
+    for entry in db["audit"].find(query):
+        # Set project_name
+        project_id = entry.get("project")
+        if project_id:
+            project = db["projects"].find_one({"_id": to_object_id(project_id)})
+            if project:
+                entry["project_name"] = project["name"]
+            else:
+                entry["project_name"] = "[Not Found]"
+
+        # Set user email
+        user_id = entry.get("user")
+        if user_id:
+            user = db["users"].find_one({"_id": to_object_id(user_id)})
+            if user:
+                entry["user_email"] = user["email"]
+            else:
+                entry["user_email"] = "[Not Found]"
+
+        _entries.append(entry)
+
+    return _entries
+
+
 class JSONResponseEncoder(json.JSONEncoder):
     """
     BSON ObjectId-safe JSON response encoder
@@ -731,6 +766,12 @@ def get_ansible_hosts():
         }
 
     return _resp(True, "Retrieved ansible config", data=_config)
+
+
+@app.route("/admin/audit", methods=["GET"])
+@with_authentication(admin=True, pass_user=False)
+def get_admin_audit_log():
+    return _resp(True, "Retrieved audit log", data=find_audit_entries({}))
 
 
 @app.route("/intra/phonehome", methods=["GET"])
