@@ -1,10 +1,11 @@
 <script lang="ts">
   import AuditLogCard from '../components/AuditLogCard.svelte';
-  import {location} from "svelte-spa-router";
+  import {location, push} from "svelte-spa-router";
   import { onMount } from 'svelte';
   import Spinner from '../components/Spinner.svelte';
   import PageHeader from '../components/PageHeader.svelte';
   import Navbar from '../components/Navbar.svelte';
+  import { User } from '../stores';
 
   export let admin: boolean;
   export let params: any;
@@ -30,8 +31,12 @@
   }
 
   onMount(() => {
-    getLogs();
-    
+    // @ts-ignore
+    if (admin && !$User.admin) {
+        push("/dashboard");
+    } else {
+      getLogs();
+    }
   })
 </script>
 
