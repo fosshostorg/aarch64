@@ -1,16 +1,16 @@
  ---
-- name: Add debian unstable repo
+- name: Add debian backports repo
   copy:
-    src: templates/unstable.list
-    dest: /etc/apt/sources.list.d/unstable.list
+    src: backports.list
+    dest: /etc/apt/sources.list.d/backports.list
     owner: root
     group: root
     mode: '0644'
 
-- name: Pin unstable repo
+- name: Pin backports repo
   copy:
-    src: templates/limit-unstable
-    dest: /etc/apt/preferences.d/limit-unstable
+    src: limit-backports
+    dest: /etc/apt/preferences.d/limit-backports
     owner: root
     group: root
     mode: '0644'
@@ -69,25 +69,25 @@
     regexp: '^fd0d'
     state: absent
   check_mode: yes
-  register: presence
+  register: ipv6_vpn_hosts_present
 
 - name: Get Hostname
   tags: hosts
-  when: presence is not changed
+  when: ipv6_vpn_hosts_present is not changed
   shell:
     cmd: hostname --short
   register: hostname
 
 - name: Get fqdn
   tags: hosts
-  when: presence is not changed
+  when: ipv6_vpn_hosts_present is not changed
   shell:
     cmd: hostname --fqdn
   register: fqdn
 
 - name: Add to hosts file
   tags: hosts
-  when: presence is not changed
+  when: ipv6_vpn_hosts_present is not changed
   lineinfile:
     path: /etc/hosts
     line: "{{ wgip | regex_replace('.{3}$','') }} {{ fqdn.stdout }} {{ hostname.stdout }}"
