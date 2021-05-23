@@ -1,7 +1,7 @@
 <script>
 	import { link } from "svelte-spa-router";
 	import active from "svelte-spa-router/active";
-	import { Projects } from "../stores";
+	import { Projects, User } from "../stores";
 
 	// let projects = [{name: "vela's Project", route: '/projects/1'}, {name: "nqdrt1's Long Project Name", route: '/projects/2'}]
 
@@ -9,7 +9,10 @@
 		{ header: "Projects", items: [], open: true },
 		{
 			header: "Manage",
-			items: [{ name: "Create New VM", route: "/dashboard/create" }],
+			items: [
+				{ name: "Create New VM", route: "/dashboard/create" },
+				{ name: "Global Audit Log", route: "/dashboard/auditlog", admin: true },
+			],
 			open: true,
 		},
 		{
@@ -22,7 +25,6 @@
 			open: true,
 		},
 	];
-
 </script>
 
 <nav>
@@ -35,57 +37,62 @@
 					class="sidebar-category-header noselect"
 					on:click={() => {
 						category.open = !category.open;
-					}}>
+					}}
+				>
 					{category.header.toUpperCase()}
-					<span
-						class="material-icons dropdown"
-						class:rotate={!category.open}>
+					<span class="material-icons dropdown" class:rotate={!category.open}>
 						expand_more
 					</span>
 				</span>
-				<ul
-					class="sidebar-category-items"
-					class:closed={!category.open}>
-					{#if category.header == 'Projects'}
-					{#if $Projects}
-						{#each $Projects as project}
-							<a
-								class="sidebar-category-item"
-								href={'/dashboard/projects/' + project._id}
-								use:link
-								use:active={{ path:  new RegExp(`\/dashboard\/projects\/${project._id}`), className: 'sidebar-item-active' }}>
-								<span> {project.name} </span>
-							</a>
-						{/each}
-					{/if}
+				<ul class="sidebar-category-items" class:closed={!category.open}>
+					{#if category.header == "Projects"}
+						{#if $Projects}
+							{#each $Projects as project}
+								<a
+									class="sidebar-category-item"
+									href={"/dashboard/projects/" + project._id}
+									use:link
+									use:active={{
+										path: new RegExp(`\/dashboard\/projects\/${project._id}`),
+										className: "sidebar-item-active",
+									}}
+								>
+									<span> {project.name} </span>
+								</a>
+							{/each}
+						{/if}
 						<a
 							class="sidebar-category-item"
-							href={'/dashboard/projects/create'}
+							href={"/dashboard/projects/create"}
 							use:link
-							use:active={{ path: '/dashboard/projects/create', className: 'sidebar-item-active' }}>
-							<span
-								class="material-icons project-add-button">add</span>
-							<span class="project-add-button">
-								New Project
-							</span>
+							use:active={{
+								path: "/dashboard/projects/create",
+								className: "sidebar-item-active",
+							}}
+						>
+							<span class="material-icons project-add-button">add</span>
+							<span class="project-add-button"> New Project </span>
 						</a>
 					{:else}
 						{#each category.items as item}
-							{#if item.isGlobal}
-							<a
-								class="sidebar-category-item"
-								href={item.route}
-								>
-								<span> {item.name} </span>
-							</a>
-							{:else}
-							<a
-								class="sidebar-category-item"
-								href={item.route}
-								use:link
-								use:active={{ path: item.route + '*', className: 'sidebar-item-active' }}>
-								<span> {item.name} </span>
-							</a>
+							{#if !item.admin || $User.admin}
+								{#if item.isGlobal}
+									<a class="sidebar-category-item" href={item.route}>
+										<span> {item.name} </span>
+									</a>
+								{:else}
+									<a
+										class="sidebar-category-item"
+										href={item.route}
+										use:link
+										use:active={{
+											path: item.route + "*",
+											className: "sidebar-item-active",
+										}}
+									>
+										<span> {item.name} </span>
+									</a>
+								{/if}
 							{/if}
 						{/each}
 					{/if}

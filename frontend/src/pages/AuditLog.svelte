@@ -1,8 +1,8 @@
 <script lang="ts">
   import AuditLogCard from '../components/AuditLogCard.svelte';
   import {location} from "svelte-spa-router";
-import { onMount } from 'svelte';
-import Spinner from '../components/Spinner.svelte';
+  import { onMount } from 'svelte';
+  import Spinner from '../components/Spinner.svelte';
 
   export let admin: boolean;
   export let params: any;
