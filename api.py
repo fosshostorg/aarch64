@@ -502,7 +502,7 @@ def project_get_audit_log(json_body: dict, user_doc: dict) -> Response:
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
-    return _resp(True, "Retrieved project audit log", get_admin_audit_log({"project": project_doc["_id"]}))
+    return _resp(True, "Retrieved project audit log", find_audit_entries(query={"project": project_doc["_id"]}))
 
 
 @app.route("/project", methods=["DELETE"])
