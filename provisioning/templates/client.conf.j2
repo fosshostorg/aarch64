@@ -1,0 +1,9 @@
+[Interface]
+Address = {{ wgip }}
+PrivateKey = {{ privkey.content | b64decode | trim }}
+
+[Peer]
+PublicKey = k0yM5GbSjrxf/KaybTw5XRA3F0dH5Dj49kelNQaXVCk=
+AllowedIPs = fd0d:944c:1337::/48
+Endpoint = 134.209.172.87:77
+PersistentKeepalive = 25
