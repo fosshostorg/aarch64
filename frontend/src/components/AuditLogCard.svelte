@@ -2,7 +2,7 @@
   export let log: Log;
   export let isProjectLevel: boolean;
 
-  let time = new Date(log.time);
+  let time = new Date(log.time * 1000);
   let parts = time.toLocaleString("en-US");
   let timeString = parts.split(',').join(' at ');
 </script>
