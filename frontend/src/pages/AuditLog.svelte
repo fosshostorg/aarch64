@@ -3,6 +3,8 @@
   import {location} from "svelte-spa-router";
   import { onMount } from 'svelte';
   import Spinner from '../components/Spinner.svelte';
+  import PageHeader from '../components/PageHeader.svelte';
+  import Navbar from '../components/Navbar.svelte';
 
   export let admin: boolean;
   export let params: any;
@@ -12,7 +14,10 @@
   let isProjectLevel = $location.includes("project");
 
   const getLogs = async () => {
-    fetch(`__apiRoute__/project/${params.project_id}/audit`)
+
+    const route = admin ? `/admin/audit` : `/project/${params.project_id}/audit`;
+
+    fetch(`__apiRoute__${route}`)
     .then(res => res.json())
     .then(data => {
       if (data.meta.success) {
@@ -26,9 +31,17 @@
 
   onMount(() => {
     getLogs();
+    
   })
 </script>
 
+{#if admin}
+<Navbar breadcrumbs={[
+  {label: 'Dashboard', path: '/dashboard'},
+  {label: 'Audit Log', path: `/dashboard/auditlog`},
+  ]} />
+  <PageHeader>Global Audit Log</PageHeader>
+{/if}
 <main>
   {#if logs == null}
     <div>

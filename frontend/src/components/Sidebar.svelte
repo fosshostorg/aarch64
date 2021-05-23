@@ -107,7 +107,7 @@
 		background-color: #0e0d0d;
 		width: var(--sidebar-width);
 		min-height: 100vh;
-		position: sticky;
+		position: fixed;
 		top: 0;
 		left: 0;
 		display: flex;

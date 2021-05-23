@@ -7,10 +7,18 @@
 	import { Projects, User } from "./stores";
 	import { onMount } from "svelte";
 	import Resource from "./pages/Resource.svelte";
+	import AuditLog from "./pages/AuditLog.svelte";
+	import {wrap} from 'svelte-spa-router/wrap'
 
 	const prefix = "/dashboard";
 	const routes = {
 		"/create": Create,
+		"/auditlog": wrap({
+			component: AuditLog,
+			props: {
+				admin: true,
+			}
+		}),
 		"/projects/create": NewProject,
 		"/projects/:project_id/:page?": Project,
 		"/projects/:project_id/resources/:resource_id": Resource
@@ -42,5 +50,6 @@
 <style>
     div {
         width: calc(100% - var(--sidebar-width));
+				margin-left: var(--sidebar-width);
     }
 </style>
