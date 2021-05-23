@@ -45,10 +45,6 @@
     src: "/etc/wireguard/pubkey"
   register: pubkey
 
-- name: show pubkey
-  debug:
-    var: pubkey
-
 - name: Generate configs
   tags: genConfig
   template:
@@ -91,3 +87,7 @@
   lineinfile:
     path: /etc/hosts
     line: "{{ wgip | regex_replace('.{3}$','') }} {{ fqdn.stdout }} {{ hostname.stdout }}"
+
+- name: show pubkey
+  debug:
+    var: pubkey
