@@ -160,7 +160,7 @@ def find_audit_entries(query=None):
 
         _entries.append(entry)
 
-    return _entries
+    return _entries[::-1]
 
 
 class JSONResponseEncoder(json.JSONEncoder):
