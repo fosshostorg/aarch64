@@ -1,0 +1,9 @@
+- name: Enable wg
+  service:
+    name: wg-quick@wg0
+    enabled: yes
+
+- name: Restart wg
+  service:
+    name: wg-quick@wg0
+    state: restarted
