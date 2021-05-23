@@ -359,17 +359,11 @@ Request body:
 }
 ```
 
-GET `/project/audit`
+GET `/project/<project_id>/audit`
 
 Authentication required
 
-Request body:
-
-```json
-{
-  "project": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6"
-}
-```
+Request body: None
 
 Response: List of audit entries
 

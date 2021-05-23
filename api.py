@@ -495,11 +495,10 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
     return _resp(False, "Unable to add user to project")
 
 
-@app.route("/project/audit", methods=["GET"])
+@app.route("/project/<project_id>/audit", methods=["GET"])
 @with_authentication(admin=False, pass_user=True)
-@with_json("project")
-def project_get_audit_log(json_body: dict, user_doc: dict) -> Response:
-    project_doc = get_project(user_doc, json_body["project"])
+def project_get_audit_log(user_doc: dict, project_id: str) -> Response:
+    project_doc = get_project(user_doc, project_id)
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
