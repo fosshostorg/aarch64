@@ -593,7 +593,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Proxy already exists")
 
     if new_proxy.inserted_id:
-        add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], "", new_proxy.inserted_id)
+        add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], vm_doc["_id"], new_proxy.inserted_id)
         return _resp(True, "Added proxy")
     else:
         return _resp(False, "Unable to add proxy")
@@ -623,7 +623,7 @@ def delete_proxy(json_body: dict, user_doc: dict) -> Response:
 
     deleted_proxy = db["proxies"].delete_one({"_id": to_object_id(json_body["proxy"])})
     if deleted_proxy.deleted_count == 1:
-        add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], "", proxy_doc["_id"])
+        add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], proxy_doc["vm"], proxy_doc["_id"])
         return _resp(True, "Proxy deleted")
     return _resp(False, "Unable to delete proxy")
 
