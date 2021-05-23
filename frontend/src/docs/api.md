@@ -359,6 +359,54 @@ Request body:
 }
 ```
 
+GET `/project/audit`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "project": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6"
+}
+```
+
+Response: List of audit entries
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "Retrieved audit log"
+  },
+  "data": [
+    {
+      "_id": "M9GLKcDhV0cKVM67wG8G5UGQW",
+      "time": 1621454880.3627973,
+      "title": "project.create",
+      "user": "QGVfv/UlkuIGTQXkNLSzkBM",
+      "project": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
+      "detail": {},
+      "project_name": "Fosshost",
+      "user_email": "nate@fosshost.org"
+    },
+    {
+      "_id": "6ilwo3pufTwFtkK/Ws32tdje880OWQ5",
+      "time": 1621724859.4778383,
+      "title": "vm.delete",
+      "user": "QGVfv/UlkuIGTQXkNLSzkBM",
+      "project": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
+      "detail": {
+        "vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z"
+      },
+      "project_name": "Fosshost",
+      "user_email": "nate@fosshost.org"
+    }
+  ]
+}
+```
+
+
 ### Admin
 
 POST `/admin/pop`

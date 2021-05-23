@@ -494,6 +494,17 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
     return _resp(False, "Unable to add user to project")
 
 
+@app.route("/project/audit", methods=["GET"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("project")
+def project_get_audit_log(json_body: dict, user_doc: dict) -> Response:
+    project_doc = get_project(user_doc, json_body["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    return _resp(True, "Retrieved project audit log", get_admin_audit_log({"project": project_doc["_id"]}))
+
+
 @app.route("/project", methods=["DELETE"])
 @with_authentication(admin=False, pass_user=True)
 @with_json("project")
