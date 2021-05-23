@@ -156,7 +156,7 @@ def find_audit_entries(query=None):
             if proxy:
                 entry["proxy_name"] = proxy["label"]
             else:
-                entry["proxy_name"] = "[Not Found]"
+                entry["proxy_name"] = ""
 
         _entries.append(entry)
 
