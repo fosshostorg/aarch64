@@ -8,6 +8,7 @@
 	import Button from "../components/Button.svelte";
 	import { push } from "svelte-spa-router";
 	import Proxies from "../components/Proxies.svelte";
+	import AuditLog from "./AuditLog.svelte";
 
 	export let params: any = {};
 
@@ -22,10 +23,8 @@
 		return returnProject;
 	};
 
-	let views = ["RESOURCES", "SETTINGS", "PROXIES"];
+	let views = ["RESOURCES", "SETTINGS", "PROXIES", "AUDIT LOG"];
 	let currentView = "RESOURCES";
-
-	// TODO: Set view to resources when switching to new project.
 
 	$: project = getProjectById(params.project_id, $Projects);
 
@@ -136,6 +135,8 @@
 				</div>
 			{:else if params.page === "proxies"}
 				<Proxies {project} />
+			{:else if params.page === "auditlog"}
+				<AuditLog admin={false} {params} />
 			{/if}
 		</div>
 	{/if}

@@ -61,3 +61,14 @@ type Plan = {
 	memory: number;
 	ssd: number;
 };
+
+type Log = {
+	_id: string,
+	time: number,
+	title: string,
+	user: string,
+	user_email: string,
+	project_id: string,
+	project_name: string,
+	detail: any,
+}
