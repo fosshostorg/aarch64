@@ -232,13 +232,13 @@ def with_authentication(admin: bool, pass_user: bool):
     return decorator
 
 
-def add_audit_entry(title: str, project: str, user: str, detail: dict):
+def add_audit_entry(title: str, project: str, user: str, vm: str):
     """
     Add an entry to the audit log
-    :param detail: Custom information about this entry
     :param title: Short string of what this entry is
     :param project: Project ID if applicable
     :param user: User ID if applicable
+    :param vm: VM ID if applicable
     :return:
     """
     db["audit"].insert_one({
@@ -246,7 +246,7 @@ def add_audit_entry(title: str, project: str, user: str, detail: dict):
         "title": title,
         "user": to_object_id(user),
         "project": to_object_id(project),
-        "detail": detail
+        "vm": to_object_id(vm)
     })
 
 
@@ -272,7 +272,7 @@ def signup(json_body: dict) -> Response:
     except DuplicateKeyError:
         return _resp(False, "User with this email already exists")
 
-    add_audit_entry("user.signup", "", user_doc["_id"], {})
+    add_audit_entry("user.signup", "", user_doc["_id"], "")
     return _resp(True, "User created")
 
 
@@ -341,7 +341,7 @@ def create_project(json_body: dict, user_doc: dict) -> Response:
         "users": [user_doc["_id"]]
     })
 
-    add_audit_entry("project.create", project.inserted_id, user_doc["_id"], {})
+    add_audit_entry("project.create", project.inserted_id, user_doc["_id"], "")
     return _resp(True, "Project created", str(project.inserted_id))
 
 
@@ -467,7 +467,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     new_vm = db["vms"].insert_one(json_body)
     if new_vm.inserted_id:
-        add_audit_entry("vm.create", project_doc["_id"], user_doc["_id"], {"vm_id": new_vm.inserted_id})
+        add_audit_entry("vm.create", project_doc["_id"], user_doc["_id"], new_vm.inserted_id)
         return _resp(True, "VM created", data=json_body)
 
     raise _resp(False, "Unable to create VM")
@@ -490,7 +490,7 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
 
     project_update = db["projects"].update_one({"_id": to_object_id(json_body["project"])}, {"$push": {"users": user_doc["_id"]}})
     if project_update.modified_count == 1:
-        add_audit_entry("project.adduser", project_doc["_id"], user_doc["_id"], {"user_id": user_doc["_id"]})
+        add_audit_entry("project.adduser", project_doc["_id"], user_doc["_id"], "")
         return _resp(True, "User added to project")
     return _resp(False, "Unable to add user to project")
 
@@ -518,7 +518,7 @@ def delete_project(json_body: dict, user_doc: dict) -> Response:
 
     deleted_project = db["projects"].delete_one({"_id": project_doc["_id"]})
     if deleted_project.deleted_count == 1:
-        add_audit_entry("project.delete", project_doc["_id"], user_doc["_id"], {})
+        add_audit_entry("project.delete", project_doc["_id"], user_doc["_id"], "")
         return _resp(True, "Project deleted")
 
     return _resp(False, "Unable to delete project")
@@ -538,7 +538,7 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
 
     deleted_vm = db["vms"].delete_one({"_id": to_object_id(json_body["vm"])})
     if deleted_vm.deleted_count == 1:
-        add_audit_entry("vm.delete", project_doc["_id"], user_doc["_id"], {"vm_id": vm_doc["_id"]})
+        add_audit_entry("vm.delete", project_doc["_id"], user_doc["_id"], vm_doc["_id"])
         return _resp(True, "VM deleted")
 
     # Delete all proxies associated with this VM
@@ -573,7 +573,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Proxy already exists")
 
     if new_proxy.inserted_id:
-        add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], {})
+        add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], "")
         return _resp(True, "Added proxy")
     else:
         return _resp(False, "Unable to add proxy")
@@ -603,7 +603,7 @@ def delete_proxy(json_body: dict, user_doc: dict) -> Response:
 
     deleted_proxy = db["proxies"].delete_one({"_id": to_object_id(json_body["proxy"])})
     if deleted_proxy.deleted_count == 1:
-        add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], {})
+        add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], "")
         return _resp(True, "Proxy deleted")
     return _resp(False, "Unable to delete proxy")
 
@@ -631,9 +631,9 @@ def get_system(user_doc: dict):
 
 
 @app.route("/admin/pop", methods=["POST"])
-@with_authentication(admin=True, pass_user=True)
+@with_authentication(admin=True, pass_user=False)
 @with_json("name", "location", "provider", "peeringdb_id")
-def add_pop(json_body: dict, user_doc: dict) -> Response:
+def add_pop(json_body: dict) -> Response:
     try:
         new_pop = db["pops"].insert_one({
             "name": json_body["name"],
@@ -644,15 +644,14 @@ def add_pop(json_body: dict, user_doc: dict) -> Response:
     except DuplicateKeyError:
         return _resp(False, "PoP already exists")
     if new_pop.inserted_id:
-        add_audit_entry("pop.create", "", user_doc["_id"], {"pop_name": json_body["name"]})
         return _resp(True, f"PoP {json_body['name']} added")
     raise _resp(False, "Unable to create PoP")
 
 
 @app.route("/admin/host", methods=["POST"])
-@with_authentication(admin=True, pass_user=True)
+@with_authentication(admin=True, pass_user=False)
 @with_json("ip", "pop")
-def add_host(json_body: dict, user_doc: dict) -> Response:
+def add_host(json_body: dict) -> Response:
     try:
         ipaddress.ip_address(json_body["ip"])
     except ValueError:
@@ -689,16 +688,15 @@ def add_host(json_body: dict, user_doc: dict) -> Response:
 
     new_host = db["pops"].update_one({"_id": pop_doc["_id"]}, {"$push": {"hosts": host}})
     if new_host.modified_count == 1:
-        add_audit_entry("host.create", "", user_doc["_id"], {"pop": json_body["pop"], "ip": json_body["ip"]})
         return _resp(True, "Host added")
     else:
         return _resp(False, "Unable to add host")
 
 
 @app.route("/admin/bgp", methods=["POST"])
-@with_authentication(admin=True, pass_user=True)
+@with_authentication(admin=True, pass_user=False)
 @with_json("ip", "name", "asn", "neighbor")
-def add_bgp_session(json_body: dict, user_doc: dict) -> Response:
+def add_bgp_session(json_body: dict) -> Response:
     for pop in db["pops"].find():
         if pop.get("hosts"):
             for host_index, host in enumerate(pop.get("hosts")):
@@ -715,7 +713,6 @@ def add_bgp_session(json_body: dict, user_doc: dict) -> Response:
 
                     update = db["pops"].update_one({"_id": pop["_id"]}, {"$set": {"hosts." + str(host_index): host}})
                     if update.modified_count == 1:
-                        add_audit_entry("bgp.session.create", "", user_doc["_id"], {"attributes": json_body})
                         return _resp(True, "Added BGP session")
                     else:
                         return _resp(False, "Unable to add BGP session")
@@ -821,7 +818,7 @@ If you have any questions please reach out to support@fosshost.org
 Best,
 Fosshost Team
 """)
-    add_audit_entry("vm.phonehome", vm_doc["project"], "", {})
+    add_audit_entry("vm.phonehome", vm_doc["project"], "", vm_doc["_id"])
     return _resp(True, "Phone home complete")
 
 
