@@ -123,7 +123,7 @@ def find_audit_entries(query=None):
     _entries = []
     for entry in db["audit"].find(query):
         # Set project_name
-        project_id = entry.get("project")
+        project_id = entry.get("project_id")
         if project_id:
             project = db["projects"].find_one({"_id": to_object_id(project_id)})
             if project:
@@ -132,13 +132,31 @@ def find_audit_entries(query=None):
                 entry["project_name"] = "[Not Found]"
 
         # Set user email
-        user_id = entry.get("user")
+        user_id = entry.get("user_id")
         if user_id:
             user = db["users"].find_one({"_id": to_object_id(user_id)})
             if user:
-                entry["user_email"] = user["email"]
+                entry["user_name"] = user["email"]
             else:
-                entry["user_email"] = "[Not Found]"
+                entry["user_name"] = "[Not Found]"
+
+        # Set VM name
+        vm_id = entry.get("vm_id")
+        if user_id:
+            vm = db["vms"].find_one({"_id": to_object_id(vm_id)})
+            if vm:
+                entry["vm_name"] = vm["hostname"]
+            else:
+                entry["vm_name"] = "[Not Found]"
+
+        # Set proxy name
+        proxy_id = entry.get("proxy_id")
+        if proxy_id:
+            proxy = db["proxies"].find_one({"_id": to_object_id(proxy_id)})
+            if proxy:
+                entry["proxy_name"] = proxy["label"]
+            else:
+                entry["proxy_name"] = "[Not Found]"
 
         _entries.append(entry)
 
