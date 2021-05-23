@@ -378,23 +378,21 @@ Response: List of audit entries
       "_id": "M9GLKcDhV0cKVM67wG8G5UGQW",
       "time": 1621454880.3627973,
       "title": "project.create",
-      "user": "QGVfv/UlkuIGTQXkNLSzkBM",
-      "project": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
-      "detail": {},
-      "project_name": "Fosshost",
-      "user_email": "nate@fosshost.org"
+      "user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
+      "user_name": "nate@fosshost.org",
+      "project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
+      "project_name": "Fosshost"
     },
     {
       "_id": "6ilwo3pufTwFtkK/Ws32tdje880OWQ5",
       "time": 1621724859.4778383,
       "title": "vm.delete",
-      "user": "QGVfv/UlkuIGTQXkNLSzkBM",
-      "project": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
-      "detail": {
-        "vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z"
-      },
+      "vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z",
+      "vm_name": "test.example.com",
+      "project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
       "project_name": "Fosshost",
-      "user_email": "nate@fosshost.org"
+      "user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
+      "user_name": "nate@fosshost.org"
     }
   ]
 }
@@ -471,23 +469,21 @@ Response: List of audit entries
       "_id": "M9GLKcDhV0cKVM67wG8G5UGQW",
       "time": 1621454880.3627973,
       "title": "project.create",
-      "user": "QGVfv/UlkuIGTQXkNLSzkBM",
-      "project": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
-      "detail": {},
-      "project_name": "Fosshost",
-      "user_email": "nate@fosshost.org"
+      "user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
+      "user_name": "nate@fosshost.org",
+      "project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
+      "project_name": "Fosshost"
     },
     {
       "_id": "6ilwo3pufTwFtkK/Ws32tdje880OWQ5",
       "time": 1621724859.4778383,
       "title": "vm.delete",
-      "user": "QGVfv/UlkuIGTQXkNLSzkBM",
-      "project": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
-      "detail": {
-        "vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z"
-      },
+      "vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z",
+      "vm_name": "test.example.com",
+      "project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
       "project_name": "Fosshost",
-      "user_email": "nate@fosshost.org"
+      "user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
+      "user_name": "nate@fosshost.org"
     }
   ]
 }
