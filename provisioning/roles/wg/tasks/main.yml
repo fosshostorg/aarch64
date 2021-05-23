@@ -1,0 +1,93 @@
+ ---
+- name: Add debian unstable repo
+  copy:
+    src: templates/unstable.list
+    dest: /etc/apt/sources.list.d/unstable.list
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Pin unstable repo
+  copy:
+    src: templates/limit-unstable
+    dest: /etc/apt/preferences.d/limit-unstable
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install wireguard
+  apt:
+    update_cache: yes
+    state: present
+    name: wireguard
+
+- name: Read private client's key
+  stat:
+    path: "/etc/wireguard/privkey"
+  register: privkey
+
+- name: Generate wireguard client's keys
+  shell: set -o pipefail && \
+         umask 077; wg genkey | tee /etc/wireguard/privkey | wg pubkey > /etc/wireguard/pubkey
+  args:
+    executable: /bin/bash
+  when:
+    - not privkey.stat.exists
+
+- name: Read privkey
+  tags: genConfig
+  slurp:
+    src: "/etc/wireguard/privkey"
+  register: privkey
+
+- name: Read pubkey
+  slurp:
+    src: "/etc/wireguard/pubkey"
+  register: pubkey
+
+- name: show pubkey
+  debug:
+    var: pubkey
+
+- name: Generate configs
+  tags: genConfig
+  template:
+    src: client.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    owner: root
+    group: root
+    mode: "0640"
+  register: config
+  notify:
+    - Enable wg
+    - Restart wg
+
+- name: Check for ipv6 entry in hosts
+  tags: hosts
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^fd0d'
+    state: absent
+  check_mode: yes
+  register: presence
+
+- name: Get Hostname
+  tags: hosts
+  when: presence is not changed
+  shell:
+    cmd: hostname --short
+  register: hostname
+
+- name: Get fqdn
+  tags: hosts
+  when: presence is not changed
+  shell:
+    cmd: hostname --fqdn
+  register: fqdn
+
+- name: Add to hosts file
+  tags: hosts
+  when: presence is not changed
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ wgip | regex_replace('.{3}$','') }} {{ fqdn.stdout }} {{ hostname.stdout }}"
