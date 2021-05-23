@@ -1,4 +1,3 @@
- ---
 - name: Add debian backports repo
   copy:
     src: backports.list
@@ -15,11 +14,17 @@
     group: root
     mode: '0644'
 
-- name: Install wireguard
+- name: Install linux-headers-4.19.0-16-arm64
   apt:
     update_cache: yes
     state: present
-    name: wireguard
+    name: linux-headers-4.19.0-16-arm64
+
+- name: Install wireguard-dkms
+  apt:
+    update_cache: yes
+    state: present
+    name: wireguard-dkms
 
 - name: Read private client's key
   stat:
