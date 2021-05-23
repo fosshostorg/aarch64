@@ -593,7 +593,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Proxy already exists")
 
     if new_proxy.inserted_id:
-        add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], "", new_proxy["_id"])
+        add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], "", new_proxy.inserted_id)
         return _resp(True, "Added proxy")
     else:
         return _resp(False, "Unable to add proxy")
