@@ -129,7 +129,7 @@ def find_audit_entries(query=None):
             if project:
                 entry["project_name"] = project["name"]
             else:
-                entry["project_name"] = "[Not Found]"
+                entry["project_name"] = ""
 
         # Set user email
         user_id = entry.get("user_id")
@@ -138,7 +138,7 @@ def find_audit_entries(query=None):
             if user:
                 entry["user_name"] = user["email"]
             else:
-                entry["user_name"] = "[Not Found]"
+                entry["user_name"] = ""
 
         # Set VM name
         vm_id = entry.get("vm_id")
@@ -147,7 +147,7 @@ def find_audit_entries(query=None):
             if vm:
                 entry["vm_name"] = vm["hostname"]
             else:
-                entry["vm_name"] = "[Not Found]"
+                entry["vm_name"] = ""
 
         # Set proxy name
         proxy_id = entry.get("proxy_id")
