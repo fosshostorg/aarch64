@@ -264,7 +264,7 @@ def signup(json_body: dict) -> Response:
         return _resp(False, "Invalid email address")
 
     try:
-        db["users"].insert_one({
+        user_doc = db["users"].insert_one({
             "email": json_body["email"],
             "password": argon.hash(json_body["password"]),
             "key": token_hex(24)
@@ -272,6 +272,7 @@ def signup(json_body: dict) -> Response:
     except DuplicateKeyError:
         return _resp(False, "User with this email already exists")
 
+    add_audit_entry("user.signup", "", user_doc["_id"], {})
     return _resp(True, "User created")
 
 
@@ -631,9 +632,9 @@ def get_system(user_doc: dict):
 
 
 @app.route("/admin/pop", methods=["POST"])
-@with_authentication(admin=True, pass_user=False)
+@with_authentication(admin=True, pass_user=True)
 @with_json("name", "location", "provider", "peeringdb_id")
-def add_pop(json_body: dict) -> Response:
+def add_pop(json_body: dict, user_doc: dict) -> Response:
     try:
         new_pop = db["pops"].insert_one({
             "name": json_body["name"],
@@ -644,14 +645,15 @@ def add_pop(json_body: dict) -> Response:
     except DuplicateKeyError:
         return _resp(False, "PoP already exists")
     if new_pop.inserted_id:
+        add_audit_entry("pop.create", "", user_doc["_id"], {"pop_name": json_body["name"]})
         return _resp(True, f"PoP {json_body['name']} added")
     raise _resp(False, "Unable to create PoP")
 
 
 @app.route("/admin/host", methods=["POST"])
-@with_authentication(admin=True, pass_user=False)
+@with_authentication(admin=True, pass_user=True)
 @with_json("ip", "pop")
-def add_host(json_body: dict) -> Response:
+def add_host(json_body: dict, user_doc: dict) -> Response:
     try:
         ipaddress.ip_address(json_body["ip"])
     except ValueError:
@@ -688,15 +690,16 @@ def add_host(json_body: dict) -> Response:
 
     new_host = db["pops"].update_one({"_id": pop_doc["_id"]}, {"$push": {"hosts": host}})
     if new_host.modified_count == 1:
+        add_audit_entry("host.create", "", user_doc["_id"], {"pop": json_body["pop"], "ip": json_body["ip"]})
         return _resp(True, "Host added")
     else:
         return _resp(False, "Unable to add host")
 
 
 @app.route("/admin/bgp", methods=["POST"])
-@with_authentication(admin=True, pass_user=False)
+@with_authentication(admin=True, pass_user=True)
 @with_json("ip", "name", "asn", "neighbor")
-def add_bgp_session(json_body: dict) -> Response:
+def add_bgp_session(json_body: dict, user_doc: dict) -> Response:
     for pop in db["pops"].find():
         if pop.get("hosts"):
             for host_index, host in enumerate(pop.get("hosts")):
@@ -713,6 +716,7 @@ def add_bgp_session(json_body: dict) -> Response:
 
                     update = db["pops"].update_one({"_id": pop["_id"]}, {"$set": {"hosts." + str(host_index): host}})
                     if update.modified_count == 1:
+                        add_audit_entry("bgp.session.create", "", user_doc["_id"], {"attributes": json_body})
                         return _resp(True, "Added BGP session")
                     else:
                         return _resp(False, "Unable to add BGP session")
@@ -818,7 +822,7 @@ If you have any questions please reach out to support@fosshost.org
 Best,
 Fosshost Team
 """)
-    add_audit_entry("vm.phonehome", vm_doc["project"], "N/A", {})
+    add_audit_entry("vm.phonehome", vm_doc["project"], "", {})
     return _resp(True, "Phone home complete")
 
 
