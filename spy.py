@@ -1,7 +1,8 @@
 import libvirt
 import sys
 import json
-from flask import Flask, request, Response, make_response
+import resp from api.py
+from flask import Flask, request, Response, makeresponse
 
 try:
     conn = libvirt.open()
@@ -21,23 +22,7 @@ class JSONResponseEncoder(json.JSONEncoder):
             return str(o)
         return json.JSONEncoder.default(self, o)
 
-def _resp(success: bool, message: str, data: object = None):
-        """
-        Return a JSON API response
-        :param success: did the request succeed?
-        :param message: what happened?
-        :param data: any application specific data
-        """
-
-        return Response(JSONResponseEncoder().encode({
-            "meta": {
-                "success": success,
-                "message": message
-            },
-            "data": data
-        }), mimetype="application/json")
-
-def DomainToDict(vm):
+def domainToDict(vm):
         vm_info = vm.info()
         return {'name': vm.name(), 'state': vm_info[0], 'maxMemory': vm_info[1], 'vCPUs': vm_info[3]}
 
@@ -51,28 +36,30 @@ def listVMs():
 
     vms = []
     for vm in domains:
-        vms.append(DomainToDict(vm))
+        vms.append(domainToDict(vm))
 
-    return _resp(True, "Virtual Machines", data=vms)
+    return resp(True, "Virtual Machines", data=vms)
 
 @app.route("/vm/<name>/start")
 def startVM(name):
     vm = conn.lookupByName(name)
     try:
         vm.create()
-        return _resp(True, "Started VM")
+        return resp(True, "Started VM")
     except Exception as e:
-        return _resp(False, str(e))
+        return resp(False, str(e))
 
 @app.route("/vm/<name>/stop")
 def stopVM(name):
     vm = conn.lookupByName(name)
     try:
         vm.shutdown()
-        return _resp(True, "Stopped VM")
+        return resp(True, "Stopped VM")
     except Exception as e:
-        return _resp(False, str(e))
+        return resp(False, str(e))
 
+# Lets only listen on the wireguard interface
 with open("/etc/wireguard/wg0.conf") as f:
     content = f.readlines()
+    # Get the address in the wireguard config file
     app.run(host=content[1].split(" = ")[1].split("/")[0])
