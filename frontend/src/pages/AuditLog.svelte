@@ -51,7 +51,7 @@
         </div>
     {:else}
         {#each logs as log}
-            <AuditLogCard {log} {isProjectLevel}/>
+            <AuditLogCard {log}/>
         {/each}
     {/if}
 </main>
