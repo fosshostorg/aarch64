@@ -22,7 +22,7 @@
   apt:
     update_cache: yes
     state: present
-    name: "linux-headers-{{kernel_version}}"
+    name: "linux-headers-{{kernel_version.stdout}}"
 
 - name: Install wireguard-dkms
   apt:
