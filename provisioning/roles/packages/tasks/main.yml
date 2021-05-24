@@ -35,3 +35,5 @@
       - bcg
       - tayga
       - libvirt-sshd
+      - python3-pip
+      - git

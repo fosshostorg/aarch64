@@ -1,0 +1,5 @@
+- name: Start aarch64-spy
+  systemd:
+    name: aarch64-spy
+    state: started
+    enabled: yes
