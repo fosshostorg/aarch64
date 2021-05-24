@@ -14,11 +14,15 @@
     group: root
     mode: '0644'
 
-- name: Install linux-headers-4.19.0-16-arm64
+- name: Get kernel version
+  shell: uname -r
+  register: kernel_version
+
+- name: Install linux-headers
   apt:
     update_cache: yes
     state: present
-    name: linux-headers-4.19.0-16-arm64
+    name: "linux-headers-{{kernel_version.stdout}}"
 
 - name: Install wireguard-dkms
   apt:
