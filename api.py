@@ -174,7 +174,7 @@ class JSONResponseEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, o)
 
 
-def _resp(success: bool, message: str, data: object = None):
+def resp(success: bool, message: str, data: object = None):
     """
     Return a JSON API response
     :param success: did the request succeed?
@@ -203,12 +203,12 @@ def with_json(*outer_args):
             _json_body = {}
             for arg in outer_args:
                 if not request.json:
-                    return _resp(False, "JSON body must not be empty")
+                    return resp(False, "JSON body must not be empty")
                 val = request.json.get(arg)
                 if val is not None and val is not "":
                     _json_body[arg] = val
                 else:
-                    return _resp(False, "Required argument " + arg + " is not defined.")
+                    return resp(False, "Required argument " + arg + " is not defined.")
             return func(*args, **kwargs, json_body=_json_body)
 
         return wrapper
@@ -232,13 +232,13 @@ def with_authentication(admin: bool, pass_user: bool):
             if not api_key:
                 api_key = request.cookies.get("key")
             if not api_key:
-                return _resp(False, "Not authenticated"), 403
+                return resp(False, "Not authenticated"), 403
 
             user_doc = db["users"].find_one({"key": api_key})
             if not user_doc:
-                return _resp(False, "Not authenticated"), 403
+                return resp(False, "Not authenticated"), 403
             if admin and not user_doc.get("admin"):
-                return _resp(False, "Unauthorized"), 403
+                return resp(False, "Unauthorized"), 403
 
             if pass_user:
                 return func(*args, **kwargs, user_doc=user_doc)
@@ -274,14 +274,14 @@ def add_audit_entry(title: str, project: str, user: str, vm: str, proxy: str):
 @with_json("email", "password")
 def signup(json_body: dict) -> Response:
     if not json_body.get("email"):
-        return _resp(False, "Account email must exist")
+        return resp(False, "Account email must exist")
 
     if not json_body.get("password"):
-        return _resp(False, "Account password must exist")
+        return resp(False, "Account password must exist")
 
     # TODO: Real email validation
     if not ("@" in json_body["email"] and "." in json_body["email"]):
-        return _resp(False, "Invalid email address")
+        return resp(False, "Invalid email address")
 
     try:
         user_doc = db["users"].insert_one({
@@ -290,10 +290,10 @@ def signup(json_body: dict) -> Response:
             "key": token_hex(24)
         })
     except DuplicateKeyError:
-        return _resp(False, "User with this email already exists")
+        return resp(False, "User with this email already exists")
 
     add_audit_entry("user.signup", "", user_doc["_id"], "", "")
-    return _resp(True, "User created")
+    return resp(True, "User created")
 
 
 @app.route("/auth/login", methods=["POST"])
@@ -306,19 +306,19 @@ def user_login(json_body: dict) -> Response:
 
     user = db["users"].find_one({"email": json_body["email"]})
     if not user:
-        return _resp(False, "Invalid username or password")
+        return resp(False, "Invalid username or password")
 
     try:
         valid = argon.verify(user["password"], json_body["password"])
         if not valid:
             raise VerifyMismatchError
         else:
-            rsp = make_response(_resp(True, "Authentication successful"))
+            rsp = makeresponse(resp(True, "Authentication successful"))
             # Set the API key cookie with a 90 day expiration date
             rsp.set_cookie("key", user["key"], httponly=True, secure=True, expires=datetime.datetime.now() + datetime.timedelta(days=90))
             return rsp
     except VerifyMismatchError:
-        return _resp(False, "Invalid username or password")
+        return resp(False, "Invalid username or password")
 
 
 @app.route("/auth/logout", methods=["POST"])
@@ -327,7 +327,7 @@ def user_logout() -> Response:
     Log a user out by removing key cookie
     """
 
-    resp = make_response(_resp(True, "Logged out"))
+    resp = makeresponse(resp(True, "Logged out"))
     # Overwrite and expire the key cookie immediately
     resp.set_cookie("key", "", expires=0, httponly=True, secure=True)
     return resp
@@ -341,7 +341,7 @@ def user_info(user_doc: dict) -> Response:
     """
 
     del user_doc["password"]
-    return _resp(True, "Retrieved user info", data=user_doc)
+    return resp(True, "Retrieved user info", data=user_doc)
 
 
 @app.route("/project", methods=["POST"])
@@ -350,11 +350,11 @@ def user_info(user_doc: dict) -> Response:
 def create_project(json_body: dict, user_doc: dict) -> Response:
     # Begin beta tmp code
     if not user_doc.get("admin"):
-        return _resp(False, "During the AARCH64 beta, only administrators can create projects. Please let your contact at Fosshost know your email address to continue.")
+        return resp(False, "During the AARCH64 beta, only administrators can create projects. Please let your contact at Fosshost know your email address to continue.")
     # End beta tmp code
 
     if not json_body.get("name"):
-        return _resp(False, "Project name must exist")
+        return resp(False, "Project name must exist")
 
     project = db["projects"].insert_one({
         "name": json_body["name"],
@@ -362,7 +362,7 @@ def create_project(json_body: dict, user_doc: dict) -> Response:
     })
 
     add_audit_entry("project.create", project.inserted_id, user_doc["_id"], "", "")
-    return _resp(True, "Project created", str(project.inserted_id))
+    return resp(True, "Project created", str(project.inserted_id))
 
 
 @app.route("/projects", methods=["GET"])
@@ -397,7 +397,7 @@ def projects_list(user_doc: dict) -> Response:
                 project_users.append(project_user_doc["email"])
         project["users"] = project_users
 
-    return _resp(True, "Retrieved project list", data=projects)
+    return resp(True, "Retrieved project list", data=projects)
 
 
 @app.route("/vms/create", methods=["POST"])
@@ -406,14 +406,14 @@ def projects_list(user_doc: dict) -> Response:
 def create_vm(json_body: dict, user_doc: dict) -> Response:
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})
     if not pop_doc:
-        return _resp(False, "PoP doesn't exist")
+        return resp(False, "PoP doesn't exist")
 
     # Update config doc
     # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
     if json_body["plan"] not in config_doc["plans"].keys():
-        return _resp(False, "Plan doesn't exist")
+        return resp(False, "Plan doesn't exist")
 
     json_body["vcpus"] = config_doc["plans"][json_body["plan"]]["vcpus"]
     json_body["memory"] = config_doc["plans"][json_body["plan"]]["memory"]
@@ -421,7 +421,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     del json_body["plan"]
 
     if json_body["os"] not in config_doc["oses"].keys():
-        return _resp(False, "OS doesn't exist")
+        return resp(False, "OS doesn't exist")
 
     if not user_doc.get("admin"):
         project_doc = db["projects"].find_one({
@@ -433,7 +433,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     else:  # Get project if admin
         project_doc = db["projects"].find_one({"_id": to_object_id(json_body["project"])})
     if not project_doc:
-        return _resp(False, "Project doesn't exist or unauthorized")
+        return resp(False, "Project doesn't exist or unauthorized")
     json_body["project"] = to_object_id(json_body["project"])
 
     # Calculate host usage for pop
@@ -473,7 +473,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
             json_body["index"] = index
 
     if not json_body.get("index"):
-        return _resp(False, "Unable to assign VM index")
+        return resp(False, "Unable to assign VM index")
 
     # Iterate over the selected host's prefix
     host_prefix = pop_doc["hosts"][json_body["host"]]["prefix"]
@@ -483,14 +483,14 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
             json_body["gateway"] = str(prefix[1])
             json_body["address"] = str(prefix[2]) + "/" + str(str(prefix.prefixlen))
     if not json_body.get("prefix"):
-        raise _resp(False, "Unable to assign VM prefix")
+        raise resp(False, "Unable to assign VM prefix")
 
     new_vm = db["vms"].insert_one(json_body)
     if new_vm.inserted_id:
         add_audit_entry("vm.create", project_doc["_id"], user_doc["_id"], new_vm.inserted_id, "")
-        return _resp(True, "VM created", data=json_body)
+        return resp(True, "VM created", data=json_body)
 
-    raise _resp(False, "Unable to create VM")
+    raise resp(False, "Unable to create VM")
 
 
 @app.route("/project/adduser", methods=["POST"])
@@ -499,20 +499,20 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 def project_add_user(json_body: dict, user_doc: dict) -> Response:
     project_doc = get_project(user_doc, json_body["project"])
     if not project_doc:
-        return _resp(False, "Project doesn't exist or unauthorized")
+        return resp(False, "Project doesn't exist or unauthorized")
 
     user_doc = db["users"].find_one({"email": json_body["email"]})
     if not user_doc:
-        return _resp(False, "User doesn't exist")
+        return resp(False, "User doesn't exist")
 
     if user_doc["_id"] in project_doc["users"]:
-        return _resp(True, "User is already a member of that project")
+        return resp(True, "User is already a member of that project")
 
     project_update = db["projects"].update_one({"_id": to_object_id(json_body["project"])}, {"$push": {"users": user_doc["_id"]}})
     if project_update.modified_count == 1:
         add_audit_entry("project.adduser", project_doc["_id"], user_doc["_id"], "", "")
-        return _resp(True, "User added to project")
-    return _resp(False, "Unable to add user to project")
+        return resp(True, "User added to project")
+    return resp(False, "Unable to add user to project")
 
 
 @app.route("/project/<project_id>/audit", methods=["GET"])
@@ -520,9 +520,9 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
 def project_get_audit_log(user_doc: dict, project_id: str) -> Response:
     project_doc = get_project(user_doc, project_id)
     if not project_doc:
-        return _resp(False, "Project doesn't exist or unauthorized")
+        return resp(False, "Project doesn't exist or unauthorized")
 
-    return _resp(True, "Retrieved project audit log", find_audit_entries(query={"project_id": project_doc["_id"]}))
+    return resp(True, "Retrieved project audit log", find_audit_entries(query={"project_id": project_doc["_id"]}))
 
 
 @app.route("/project", methods=["DELETE"])
@@ -531,7 +531,7 @@ def project_get_audit_log(user_doc: dict, project_id: str) -> Response:
 def delete_project(json_body: dict, user_doc: dict) -> Response:
     project_doc = get_project(user_doc, json_body["project"])
     if not project_doc:
-        return _resp(False, "Project doesn't exist or unauthorized")
+        return resp(False, "Project doesn't exist or unauthorized")
 
     for vm in db["vms"].find({"project": project_doc["_id"]}):
         db["vms"].delete_one({"_id": vm["_id"]})
@@ -539,9 +539,9 @@ def delete_project(json_body: dict, user_doc: dict) -> Response:
     deleted_project = db["projects"].delete_one({"_id": project_doc["_id"]})
     if deleted_project.deleted_count == 1:
         add_audit_entry("project.delete", project_doc["_id"], user_doc["_id"], "", "")
-        return _resp(True, "Project deleted")
+        return resp(True, "Project deleted")
 
-    return _resp(False, "Unable to delete project")
+    return resp(False, "Unable to delete project")
 
 
 @app.route("/vms/delete", methods=["DELETE"])
@@ -550,21 +550,21 @@ def delete_project(json_body: dict, user_doc: dict) -> Response:
 def delete_vm(json_body: dict, user_doc: dict) -> Response:
     vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
     if not vm_doc:
-        return _resp(False, "VM doesn't exist")
+        return resp(False, "VM doesn't exist")
 
     project_doc = get_project(user_doc, vm_doc["project"])
     if not project_doc:
-        return _resp(False, "Project doesn't exist or unauthorized")
+        return resp(False, "Project doesn't exist or unauthorized")
 
     deleted_vm = db["vms"].delete_one({"_id": to_object_id(json_body["vm"])})
     if deleted_vm.deleted_count == 1:
         add_audit_entry("vm.delete", project_doc["_id"], user_doc["_id"], vm_doc["_id"], "")
-        return _resp(True, "VM deleted")
+        return resp(True, "VM deleted")
 
     # Delete all proxies associated with this VM
     db["proxies"].delete_many({"vm": vm_doc["_id"]})
 
-    return _resp(False, "Unable to delete VM")
+    return resp(False, "Unable to delete VM")
 
 
 @app.route("/proxy", methods=["POST"])
@@ -573,15 +573,15 @@ def delete_vm(json_body: dict, user_doc: dict) -> Response:
 def add_proxy(json_body: dict, user_doc: dict) -> Response:
     vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
     if not vm_doc:
-        return _resp(False, "VM doesn't exist")
+        return resp(False, "VM doesn't exist")
 
     project_doc = get_project(user_doc, vm_doc["project"])
     if not project_doc:
-        return _resp(False, "Project doesn't exist or unauthorized")
+        return resp(False, "Project doesn't exist or unauthorized")
 
     # Validate DNS zone label
     if not valid_label(json_body["label"]):
-        return _resp(False, "Invalid label")
+        return resp(False, "Invalid label")
 
     try:
         new_proxy = db["proxies"].insert_one({
@@ -590,13 +590,13 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
             "vm": vm_doc["_id"]
         })
     except DuplicateKeyError:
-        return _resp(False, "Proxy already exists")
+        return resp(False, "Proxy already exists")
 
     if new_proxy.inserted_id:
         add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], vm_doc["_id"], new_proxy.inserted_id)
-        return _resp(True, "Added proxy")
+        return resp(True, "Added proxy")
     else:
-        return _resp(False, "Unable to add proxy")
+        return resp(False, "Unable to add proxy")
 
 
 @app.route("/proxies/<project_id>", methods=["GET"])
@@ -604,9 +604,9 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
 def get_proxies(project_id: str, user_doc: dict) -> Response:
     project_doc = get_project(user_doc, project_id)
     if not project_doc:
-        return _resp(False, "Project doesn't exist or unauthorized")
+        return resp(False, "Project doesn't exist or unauthorized")
 
-    return _resp(True, "Retrieved proxies", list(db["proxies"].find({"project": project_doc["_id"]})))
+    return resp(True, "Retrieved proxies", list(db["proxies"].find({"project": project_doc["_id"]})))
 
 
 @app.route("/proxy", methods=["DELETE"])
@@ -615,17 +615,17 @@ def get_proxies(project_id: str, user_doc: dict) -> Response:
 def delete_proxy(json_body: dict, user_doc: dict) -> Response:
     proxy_doc = db["proxies"].find_one({"_id": to_object_id(json_body["proxy"])})
     if not proxy_doc:
-        return _resp(False, "Proxy doesn't exist")
+        return resp(False, "Proxy doesn't exist")
 
     project_doc = get_project(user_doc, proxy_doc["project"])
     if not project_doc:
-        return _resp(False, "Project doesn't exist or unauthorized")
+        return resp(False, "Project doesn't exist or unauthorized")
 
     deleted_proxy = db["proxies"].delete_one({"_id": to_object_id(json_body["proxy"])})
     if deleted_proxy.deleted_count == 1:
         add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], proxy_doc["vm"], proxy_doc["_id"])
-        return _resp(True, "Proxy deleted")
-    return _resp(False, "Unable to delete proxy")
+        return resp(True, "Proxy deleted")
+    return resp(False, "Unable to delete proxy")
 
 
 @app.route("/system", methods=["GET"])
@@ -643,7 +643,7 @@ def get_system(user_doc: dict):
             del pop["_id"]
         pops.append(pop)
 
-    return _resp(True, "Retrieved PoPs", data={
+    return resp(True, "Retrieved PoPs", data={
         "pops": pops,
         "plans": config_doc["plans"],
         "oses": config_doc["oses"]
@@ -662,10 +662,10 @@ def add_pop(json_body: dict) -> Response:
             "peeringdb_id": json_body["peeringdb_id"]
         })
     except DuplicateKeyError:
-        return _resp(False, "PoP already exists")
+        return resp(False, "PoP already exists")
     if new_pop.inserted_id:
-        return _resp(True, f"PoP {json_body['name']} added")
-    raise _resp(False, "Unable to create PoP")
+        return resp(True, f"PoP {json_body['name']} added")
+    raise resp(False, "Unable to create PoP")
 
 
 @app.route("/admin/host", methods=["POST"])
@@ -675,16 +675,16 @@ def add_host(json_body: dict) -> Response:
     try:
         ipaddress.ip_address(json_body["ip"])
     except ValueError:
-        return _resp(False, "Invalid IP address")
+        return resp(False, "Invalid IP address")
 
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})
     if not pop_doc:
-        return _resp(False, "PoP doesn't exist")
+        return resp(False, "PoP doesn't exist")
 
     if pop_doc.get("hosts"):
         for existing_host in pop_doc.get("hosts"):
             if existing_host["ip"] == json_body["ip"]:
-                return _resp(False, f"Host with IP {json_body['ip']} already exists")
+                return resp(False, f"Host with IP {json_body['ip']} already exists")
 
     host = {"ip": json_body["ip"]}
 
@@ -704,13 +704,13 @@ def add_host(json_body: dict) -> Response:
         if slash48 not in taken_prefixes:
             host["prefix"] = slash48
     if not host.get("prefix"):
-        raise _resp(False, "No available prefixes to assign")
+        raise resp(False, "No available prefixes to assign")
 
     new_host = db["pops"].update_one({"_id": pop_doc["_id"]}, {"$push": {"hosts": host}})
     if new_host.modified_count == 1:
-        return _resp(True, "Host added")
+        return resp(True, "Host added")
     else:
-        return _resp(False, "Unable to add host")
+        return resp(False, "Unable to add host")
 
 
 @app.route("/admin/bgp", methods=["POST"])
@@ -733,11 +733,11 @@ def add_bgp_session(json_body: dict) -> Response:
 
                     update = db["pops"].update_one({"_id": pop["_id"]}, {"$set": {"hosts." + str(host_index): host}})
                     if update.modified_count == 1:
-                        return _resp(True, "Added BGP session")
+                        return resp(True, "Added BGP session")
                     else:
-                        return _resp(False, "Unable to add BGP session")
+                        return resp(False, "Unable to add BGP session")
 
-    return _resp(False, "Unable to find host with provided IP")
+    return resp(False, "Unable to find host with provided IP")
 
 
 @app.route("/admin/ansible", methods=["GET"])
@@ -797,24 +797,24 @@ def get_ansible_hosts():
             "ansible_host": proxy["ip"],
         }
 
-    return _resp(True, "Retrieved ansible config", data=_config)
+    return resp(True, "Retrieved ansible config", data=_config)
 
 
 @app.route("/admin/audit", methods=["GET"])
 @with_authentication(admin=True, pass_user=False)
 def get_admin_audit_log():
-    return _resp(True, "Retrieved audit log", data=find_audit_entries({}))
+    return resp(True, "Retrieved audit log", data=find_audit_entries({}))
 
 
 @app.route("/intra/phonehome", methods=["GET"])
 def phone_home():
     client_ip = request.headers.get("X-Forwarded-For")
     if not client_ip:
-        return _resp(False, "No header defined")
+        return resp(False, "No header defined")
 
     vm_doc = db["vms"].find_one({"address": client_ip + "/64"})
     if not vm_doc:
-        return _resp(False, "Unable to find VM")
+        return resp(False, "Unable to find VM")
 
     if not vm_doc.get("phoned_home"):
         db["vms"].update_one({"address": client_ip + "/64"}, {"$set": {"phoned_home": True}})
@@ -840,7 +840,7 @@ Best,
 Fosshost Team
 """)
     add_audit_entry("vm.phonehome", vm_doc["project"], "", vm_doc["_id"], "")
-    return _resp(True, "Phone home complete")
+    return resp(True, "Phone home complete")
 
 
 if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
