@@ -142,7 +142,7 @@ def find_audit_entries(query=None):
 
         # Set VM name
         vm_id = entry.get("vm_id")
-        if user_id:
+        if vm_id:
             vm = db["vms"].find_one({"_id": to_object_id(vm_id)})
             if vm:
                 entry["vm_name"] = vm["hostname"]
@@ -522,7 +522,7 @@ def project_get_audit_log(user_doc: dict, project_id: str) -> Response:
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
-    return _resp(True, "Retrieved project audit log", find_audit_entries(query={"project": project_doc["_id"]}))
+    return _resp(True, "Retrieved project audit log", find_audit_entries(query={"project_id": project_doc["_id"]}))
 
 
 @app.route("/project", methods=["DELETE"])

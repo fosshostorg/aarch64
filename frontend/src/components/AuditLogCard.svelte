@@ -5,7 +5,6 @@
     let parts = time.toLocaleString("en-US");
     let timeString = parts.split(',').join(' at ');
 
-    console.log(log)
 </script>
 
 <div>
