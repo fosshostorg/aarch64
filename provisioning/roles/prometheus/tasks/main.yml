@@ -1,0 +1,30 @@
+- name: Download and extract node_exporter
+  unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-arm64.tar.gz
+    dest: /tmp/
+    remote_src: yes
+  register: node_exporter_download
+
+- name: Move node_exporter
+  copy:
+    src: /tmp/node_exporter-1.1.2.linux-arm64/node_exporter
+    dest: /usr/bin/node_exporter
+    mode: +x
+    remote_src: true
+  when: node_exporter_download.changed
+
+- name: Add node_exporter service
+  template:
+    src: node_exporter.service
+    dest: /lib/systemd/system/node-exporter.service
+    owner: root
+    group: root
+  register: node_exporter_service
+
+- name: Start and enable node_expoter
+  systemd:
+    name: node-exporter
+    daemon-reload: true
+    enabled: true
+    state: started
+  when: node_exporter_service.changed
