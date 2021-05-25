@@ -20,7 +20,7 @@
   notify:
     - Start aarch64-spy
 
-- name: Checkout aarch64 repo 
+- name: Checkout aarch64 repo
   git:
     repo: https://github.com/fosshostorg/aarch64.git
     dest: /home/aarch64/src
