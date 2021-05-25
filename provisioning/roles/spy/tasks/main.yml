@@ -21,6 +21,6 @@
     - Start aarch64-spy
 
 - name: Checkout aarch64 repo 
-  ansible.builtin.git:
+  git:
     repo: https://github.com/fosshostorg/aarch64.git
     dest: /home/aarch64/src
