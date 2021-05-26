@@ -95,7 +95,7 @@
   when: ipv6_vpn_hosts_present is not changed
   lineinfile:
     path: /etc/hosts
-    line: "{{ wgip | regex_replace('.{3}$','') }} {{ fqdn.stdout }} {{ hostname.stdout }}"
+    line: "{{ wgip }} {{ fqdn.stdout }} {{ hostname.stdout }}"
 
 - name: show pubkey
   debug:
