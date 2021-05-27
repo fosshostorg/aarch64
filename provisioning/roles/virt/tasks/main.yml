@@ -45,6 +45,11 @@
     src: libvirtd.conf
     dest: /etc/libvirt/
 
+- name: Copy libvirtd defaults file
+  template:
+    src: default_libvirtd
+    dest: /etc/default/libvirtd
+
 - name: Restart libvirtd
   systemd:
     name: libvirtd
