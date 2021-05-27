@@ -12,7 +12,12 @@
 
 	const prefix = "/dashboard";
 	const routes = {
-		"/create": Create,
+		"/create": wrap({
+			component: Create,
+			props: {
+				admin: true,
+			},
+		}),
 		"/auditlog": wrap({
 			component: AuditLog,
 			props: {
@@ -48,8 +53,8 @@
 {/if}
 
 <style>
-    div {
-        width: calc(100% - var(--sidebar-width));
-				margin-left: var(--sidebar-width);
-    }
+	div {
+		width: calc(100% - var(--sidebar-width));
+		margin-left: var(--sidebar-width);
+	}
 </style>
