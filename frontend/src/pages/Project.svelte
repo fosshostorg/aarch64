@@ -95,7 +95,8 @@
 		</PageHeader>
 		<div class="content">
 			{#if params.page === null || params.page === "resources"}
-					<span class="title">Virtual Machines</span>
+					<span class="title">Virtual Machines</span><br>
+					<span class="subtitle">{project.budget_used} out of {project.budget} project cores used</span>
 					{#if project.vms.length === 0}
 						<div class="empty-list">Nothing to see here...</div>
 						<a href="/#/dashboard/create" class="add-new-button"> CREATE VM </a>
@@ -189,6 +190,14 @@
         opacity: 0.7;
         padding: 15px;
         font-size: 22px;
+        font-weight: 500;
+    }
+
+    .subtitle {
+        color: #0e0d0d;
+        opacity: 0.7;
+        padding: 15px;
+        font-size: 15px;
         font-weight: 500;
     }
 
