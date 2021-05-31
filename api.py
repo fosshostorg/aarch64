@@ -806,7 +806,6 @@ def get_ansible_hosts():
             },
             "children": {
                 "hypervisors": {"hosts": {}},
-                "proxies": {"hosts": {}}
             }
         }
     }
