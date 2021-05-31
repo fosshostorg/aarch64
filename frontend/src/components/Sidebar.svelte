@@ -10,7 +10,7 @@
 		{
 			header: "Manage",
 			items: [
-				{ name: "Create New VM", route: "/dashboard/create", admin: true },
+				{ name: "Create New VM", route: "/dashboard/create"},
 				{ name: "Global Audit Log", route: "/dashboard/auditlog", admin: true },
 			],
 			open: true,

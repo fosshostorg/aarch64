@@ -405,7 +405,7 @@ def projects_list(user_doc: dict) -> Response:
 
 
 @app.route("/vms/create", methods=["POST"])
-@with_authentication(admin=True, pass_user=True)
+@with_authentication(admin=False, pass_user=True)
 @with_json("hostname", "plan", "pop", "project", "os")
 def create_vm(json_body: dict, user_doc: dict) -> Response:
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})

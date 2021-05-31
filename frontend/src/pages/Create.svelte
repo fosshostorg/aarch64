@@ -5,7 +5,7 @@
 	import { v4 as uuidv4 } from "uuid";
 	import Select from "svelte-select";
 	import { onMount } from "svelte";
-	import { Projects } from "../stores";
+	import { Projects, User } from "../stores";
 	import { createVM, getMockSystemData } from "../utils";
 	import { push } from "svelte-spa-router";
 	import PageTitle from "../components/PageTitle.svelte";
@@ -25,7 +25,7 @@
 	let location = null;
 	
 	$: budget_used = project.budget_used + (batch * (plans[plan]?plans[plan]["vcpus"]:0));
-	$: can_create = budget_used <= project.budget
+	$: can_create = budget_used <= project.budget || $User.admin == true
 
 	let showSpinner = false;
 
