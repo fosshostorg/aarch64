@@ -347,7 +347,7 @@ def user_info(user_doc: dict) -> Response:
 
 @app.route("/project", methods=["POST"])
 @with_authentication(admin=False, pass_user=True)
-@with_json("name")
+@with_json("name", "budget")
 def create_project(json_body: dict, user_doc: dict) -> Response:
     # Begin beta tmp code
     if not user_doc.get("admin"):
@@ -360,8 +360,7 @@ def create_project(json_body: dict, user_doc: dict) -> Response:
     project = db["projects"].insert_one({
         "name": json_body["name"],
         "users": [user_doc["_id"]],
-        # Default budget of 2 CPU cores
-        "budget": 2
+        "budget": int(json_body["budget"])
     })
 
     add_audit_entry("project.create", project.inserted_id, user_doc["_id"], "", "")
