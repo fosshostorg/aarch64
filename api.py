@@ -63,13 +63,15 @@ def valid_label(label) -> bool:
     # Validates a DNS zone label
     return label and (re.match(r"^(?![0-9]+$)(?!-)[a-zA-Z0-9-]{,63}(?<!-)$", label) is None) and (not label.startswith(".")) and (" " not in label)
 
+
 # Force all projects to have budgets, only needed during initial rollout
 db["projects"].update_many(
-    {"budget": { "$exists": False } },
-        {
-            "$set": {"budget" : 2}
-        }
+    {"budget": {"$exists": False}},
+    {
+        "$set": {"budget": 2}
+    }
 )
+
 
 def send_email(to: str, subject: str, body: str):
     if not DEBUG:
@@ -391,13 +393,13 @@ def projects_list(user_doc: dict) -> Response:
         projects = list(db["projects"].find({}))
 
     for project in projects:
-        project["budget_used"]=0
+        project["budget_used"] = 0
         if not project.get("vms"):
             project["vms"] = []
         for vm in db["vms"].find({"project": project["_id"]}):
             vm_creator = db["users"].find_one({"_id": vm["created"]["by"]})
             vm["creator"] = vm_creator["email"]
-            project["budget_used"]+=vm["vcpus"]
+            project["budget_used"] += vm["vcpus"]
             project["vms"].append(vm)
 
         # Convert user IDs to email addresses
@@ -445,10 +447,10 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
         project_doc = db["projects"].find_one({"_id": to_object_id(json_body["project"])})
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
-    
+
     budget_used = 0
     for vm in db["vms"].find({"project": project_doc["_id"]}):
-        budget_used+=vm["vcpus"]
+        budget_used += vm["vcpus"]
 
     if budget_used + int(json_body["vcpus"]) > int(project_doc["budget"]) and not user_doc.get("admin"):
         return _resp(False, "Project would exceed budget limitations")
@@ -533,6 +535,7 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
         return _resp(True, "User added to project")
     return _resp(False, "Unable to add user to project")
 
+
 @app.route("/project/changebudget", methods=["POST"])
 @with_authentication(admin=True, pass_user=True)
 @with_json("project", "budget")
@@ -546,6 +549,7 @@ def project_change_budget(json_body: dict, user_doc: dict) -> Response:
         add_audit_entry("project.changebudget", project_doc["_id"], "", "", "")
         return _resp(True, "Budget changed")
     return _resp(False, "Unable to change budget")
+
 
 @app.route("/project/<project_id>/audit", methods=["GET"])
 @with_authentication(admin=False, pass_user=True)
