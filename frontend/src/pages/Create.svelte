@@ -147,7 +147,7 @@
                             <div class="create-form-final-section">
                                 <span class="create-form-subheader"> Batch creation: </span>
                                 <span class="create-form-subtitle">
-									Deploy multiple machines at the same time.
+									Deploy multiple machines at the same time
 								</span>
                                 <div class="batch-create-button">
                                     <button
@@ -214,19 +214,19 @@
                                 </div>
                                 <div class="create-form-subheader">Project Usage:</div>
                                 <span class="create-form-subtitle">
-									Limit: {project.budget} cores <br>
-									Current: {project.budget_used} cores<br>
-									<span class={can_create ? "" : "red-text"}>New: {budget_used} cores</span>
+									Limit: {project.budget} {project.budget > 1 ? "cores" : "core"}
+                                    <br>
+									Current: {project.budget_used} {project.budget_used > 1 ? "cores" : "core"}
+                                    <br>
+									<span class={can_create ? "" : "red-text"}>New: {budget_used}  {budget_used > 1 ? "cores" : "core"}</span>
 								</span>
                                 <Button class="submit-button" width="250px" color="#46b0a6" disabled={!can_create}>CREATE</Button>
                                 <span style="margin-bottom: 2rem;"></span>
-                                  <!-- <button class="submit" type="submit">CREATE</button> -->
+                                <!-- <button class="submit" type="submit">CREATE</button> -->
                             </div>
                             <div class="create-form-final-section">
                                 <span class="create-form-subheader">Choose a hostname:</span>
-                                <span class="create-form-subtitle"
-                                >Give your machines a name.</span
-                                >
+                                <span class="create-form-subtitle">Give your machines a name</span>
                                 {#each hostnames as hostname, index}
                                     <!-- <input autocomplete="off" type="text" class="hostname-input" name={'hostname-' + index} bind:value={hostname}/> -->
                                     <Input
@@ -245,12 +245,7 @@
         {:else}
             <PageHeader>You don't have any projects yet</PageHeader>
             <div class="create-form">
-                <button
-                        class="large"
-                        on:click={() => push("/dashboard/projects/create")}
-                >CREATE PROJECT
-                </button
-                >
+                <button class="large" on:click={() => push("/dashboard/projects/create")}>CREATE PROJECT</button>
             </div>
         {/if}
     </div>
