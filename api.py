@@ -359,7 +359,9 @@ def create_project(json_body: dict, user_doc: dict) -> Response:
 
     project = db["projects"].insert_one({
         "name": json_body["name"],
-        "users": [user_doc["_id"]]
+        "users": [user_doc["_id"]],
+        # Default budget of 2 CPU cores
+        "budget": 2
     })
 
     add_audit_entry("project.create", project.inserted_id, user_doc["_id"], "", "")
@@ -383,11 +385,13 @@ def projects_list(user_doc: dict) -> Response:
         projects = list(db["projects"].find({}))
 
     for project in projects:
+        project["budget_used"]=0
         if not project.get("vms"):
             project["vms"] = []
         for vm in db["vms"].find({"project": project["_id"]}):
             vm_creator = db["users"].find_one({"_id": vm["created"]["by"]})
             vm["creator"] = vm_creator["email"]
+            project["budget_used"]+=vm["vcpus"]
             project["vms"].append(vm)
 
         # Convert user IDs to email addresses
