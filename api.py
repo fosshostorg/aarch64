@@ -63,6 +63,13 @@ def valid_label(label) -> bool:
     # Validates a DNS zone label
     return label and (re.match(r"^(?![0-9]+$)(?!-)[a-zA-Z0-9-]{,63}(?<!-)$", label) is None) and (not label.startswith(".")) and (" " not in label)
 
+# Force all projects to have budgets, only needed during initial rollout
+db["projects"].update_many(
+    {"budget": { "$exists": False } },
+        {
+            "$set": {"budget" : 2}
+        }
+)
 
 def send_email(to: str, subject: str, body: str):
     if not DEBUG:
