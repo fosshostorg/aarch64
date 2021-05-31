@@ -37,3 +37,5 @@
       - libvirt-sshd
       - python3-pip
       - git
+      - haproxy
+      - iptables-persistent

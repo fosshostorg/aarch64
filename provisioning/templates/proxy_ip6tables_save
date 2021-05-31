@@ -3,4 +3,5 @@
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 -A OUTPUT ! -d {{ parent_prefix }} -p tcp -m owner --uid-owner 1001 -j DROP
+-A OUTPUT ! -d {{ parent_prefix }} -p udp -m owner --uid-owner 1001 -j DROP
 COMMIT
