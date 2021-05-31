@@ -1,0 +1,50 @@
+- name: Copy haproxy.cfg
+  template:
+    src: haproxy.cfg
+    dest: /etc/haproxy/haproxy.cfg
+  register: haproxy_config
+
+- name: Restart haproxy
+  systemd:
+    name: haproxy
+    state: restarted
+  when: haproxy_config.changed
+
+- name: Copy iptables config
+  template:
+    src: proxy_iptables_save
+    dest: /etc/iptables/rules.v4
+  register: iptables_config
+
+- name: Copy ip6tables config
+  template:
+    src: proxy_ip6tables_save
+    dest: /etc/iptables/rules.v6
+  register: ip6tables_config
+
+- name: Apply ip{,6}tables rules
+  shell: |
+    iptables -F
+    ip6tables -F
+    iptables-restore < /etc/iptables/rules.v4
+    ip6tables-restore < /etc/iptables/rules.v6
+  when: iptables_config.changed or ip6tables_config.changed
+
+- name: Copy sshd config
+  template:
+    src: sshd_config
+    dest: /tmp/sshd_config
+  register: sshd_config
+
+- name: Restart sshd
+  systemd:
+    service: sshd
+    state: restarted
+  when: sshd_config.changed
+
+- name: Add jump user
+  user:
+    name: jump
+    uid: 1001
+    shell: /sbin/nologin
+    password: "U6aMy0wojraho"  # Empty password hash

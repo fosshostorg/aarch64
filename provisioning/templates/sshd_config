@@ -1,0 +1,44 @@
+Port 2222
+#AddressFamily any
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+PermitRootLogin prohibit-password
+PubkeyAuthentication yes
+#PasswordAuthentication yes
+#PermitEmptyPasswords no
+
+# Change to yes to enable challenge-response passwords (beware issues with
+# some PAM modules and threads)
+ChallengeResponseAuthentication no
+
+# Set this to 'yes' to enable PAM authentication, account processing,
+# and session processing. If this is enabled, PAM authentication will
+# be allowed through the ChallengeResponseAuthentication and
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via ChallengeResponseAuthentication may bypass
+# the setting of "PermitRootLogin without-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and ChallengeResponseAuthentication to 'no'.
+UsePAM yes
+
+X11Forwarding no
+PrintMotd no
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_*
+
+# override default of no subsystems
+Subsystem sftp	/usr/lib/openssh/sftp-server
+
+PasswordAuthentication no
+
+Match User jump
+  AllowAgentForwarding no
+  AllowTcpForwarding yes
+  X11Forwarding no
+  PermitTunnel no
+  GatewayPorts no
+  ForceCommand echo 'This account can only be used for ProxyJump (ssh -J)'
+  PermitEmptyPasswords yes
