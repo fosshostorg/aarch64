@@ -7,13 +7,14 @@
     import Input from "../components/Input.svelte";
 
     let name = "";
+    let budget = 2;
 
     const handleSubmit = async (e) => {
         if (__production__) {
             await fetch("__apiRoute__/project", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({name}),
+                body: JSON.stringify({name, budget}),
             })
                 .then(resp => resp.json())
                 .then((data) => {
@@ -52,6 +53,16 @@
                 name="name"
                 placeholder="Name..."
                 type="text"
+            />
+            <Input
+                label="Set project budget (CPU cores):"
+                labelClasses="budget-label"
+                class="budget-input"
+                autocomplete="off"
+                bind:value={budget}
+                name="budget"
+                placeholder="2"
+                type="number"
             />
             <button type="submit">CREATE</button>
             

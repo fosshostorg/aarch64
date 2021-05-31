@@ -5,7 +5,7 @@
 	import { v4 as uuidv4 } from "uuid";
 	import Select from "svelte-select";
 	import { onMount } from "svelte";
-	import { Projects } from "../stores";
+	import { Projects, User } from "../stores";
 	import { createVM, getMockSystemData } from "../utils";
 	import { push } from "svelte-spa-router";
 	import PageTitle from "../components/PageTitle.svelte";
@@ -24,6 +24,9 @@
 	let project = $Projects[0];
 	let location = null;
 	
+	$: budget_used = project.budget_used + (batch * (plans[plan]?plans[plan]["vcpus"]:0));
+	$: can_create = budget_used <= project.budget || $User.admin == true
+
 	let showSpinner = false;
 
 	// // Debugging
@@ -209,7 +212,13 @@
 										/>
 									{/if}
 								</div>
-								<Button class="submit-button" width="250px" color="#46b0a6">CREATE</Button>
+								<div class="create-form-subheader">Project Usage:</div>
+								<span class="create-form-subtitle">
+									Limit: {project.budget} cores <br>
+									Current: {project.budget_used} cores<br>
+									<span class={can_create?"":"red-text"}>New: {budget_used} cores</span>
+								</span>
+								<Button class="submit-button" width="250px" color="#46b0a6" disabled={!can_create}>CREATE</Button>
 								<!-- <button class="submit" type="submit">CREATE</button> -->
 							</div>
 							<div class="create-form-final-section">
@@ -278,6 +287,10 @@
 	div :global(.hostname-input) {
 		width: 360px;
 		margin-bottom: 1rem;
+	}
+
+	.red-text {
+		color: red;
 	}
 
 	button.large {

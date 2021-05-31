@@ -9,6 +9,7 @@ type DropdownItem = {
 type User = {
     email: string;
     projects: Project[];
+    admin: boolean;
 };
 
 type Project = {
@@ -16,6 +17,8 @@ type Project = {
     name: string;
     vms: VM[];
     users: string[];
+    budget: number;
+    budget_used: number;
 };
 
 type VM = {
