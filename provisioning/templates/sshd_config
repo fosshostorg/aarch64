@@ -1,4 +1,4 @@
-Port 2221
+Port 22
 #AddressFamily any
 ListenAddress 0.0.0.0
 ListenAddress ::
@@ -32,7 +32,8 @@ AcceptEnv LANG LC_*
 # override default of no subsystems
 Subsystem sftp	/usr/lib/openssh/sftp-server
 
-PasswordAuthentication no
+# Needed for jump user
+PasswordAuthentication yes
 
 Match User jump
   AllowAgentForwarding no
