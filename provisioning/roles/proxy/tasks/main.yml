@@ -46,5 +46,5 @@
   user:
     name: jump
     uid: 1001
-    shell: /sbin/nologin
+    shell: /usr/sbin/nologin
     password: "U6aMy0wojraho"  # Empty password hash
