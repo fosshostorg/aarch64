@@ -1,4 +1,4 @@
-Port 2222
+Port 2221
 #AddressFamily any
 ListenAddress 0.0.0.0
 ListenAddress ::
