@@ -33,7 +33,7 @@
 - name: Copy sshd config
   template:
     src: sshd_config
-    dest: /tmp/sshd_config
+    dest: /etc/ssh/sshd_config
   register: sshd_config
 
 - name: Restart sshd
