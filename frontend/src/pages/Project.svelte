@@ -33,12 +33,27 @@
 	}
 
 	let newUserEmail;
+	let newBudget = 0;
 
 	function submitAddUser() {
 		fetch("__apiRoute__/project/adduser", {
 			method: "POST",
 			headers: {"Content-Type": "application/json"},
 			body: JSON.stringify({project: params.project_id, email: newUserEmail})
+		})
+			.then(resp => resp.json())
+			.then(data => {
+				alert(data.meta.message);
+				location.reload(); // FIXME: This probably not the best solution, you should make it call correct functions from utils.
+			})
+			.catch((err) => alert(err));
+	}
+
+	function changeBudget(){
+		fetch("__apiRoute__/project/changebudget", {
+			method: "POST",
+			headers: {"Content-Type": "application/json"},
+			body: JSON.stringify({project: params.project_id, budget: newBudget})
 		})
 			.then(resp => resp.json())
 			.then(data => {
@@ -129,6 +144,13 @@
 						<span class="user-form-subtitle">Enter a user's email. Make sure they already have signed up for an account.</span>
 						<Input bind:value={newUserEmail} autocomplete="off" type="text" class="user-input" placeholder="user@example.com"/>
 						<Button width="150px" on:click={() => submitAddUser()}>ADD USER</Button>
+						{#if $User.admin == true}
+						<br>
+						<span class="user-form-subheader">Set project budget:</span>
+						<span class="user-form-subtitle">Current usage is {project.budget_used}/{project.budget}</span>
+						<Input bind:value={newBudget} autocomplete="off" type="number" class="user-input" placeholder="user@example.com"/>
+						<Button width="220px" on:click={() => changeBudget()}>CHANGE BUDGET</Button>
+						{/if}
 						<!-- <button class="user-form-button" on:click={() => submitAddUser()}>ADD USER</button> -->
 						<!-- TODO: THIS SHOULD ONLY SHOW FOR PROJECT CREATOR (OR OWNER?) -->
 						<Button width="250px" color="#aa1717" style="margin-top: 5rem;" on:click={deleteProject}>DELETE PROJECT</Button>

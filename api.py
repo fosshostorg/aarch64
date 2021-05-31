@@ -526,6 +526,19 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
         return _resp(True, "User added to project")
     return _resp(False, "Unable to add user to project")
 
+@app.route("/project/changebudget", methods=["POST"])
+@with_authentication(admin=True, pass_user=True)
+@with_json("project", "budget")
+def project_change_budget(json_body: dict, user_doc: dict) -> Response:
+    project_doc = get_project(user_doc, json_body["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    project_update = db["projects"].update_one({"_id": to_object_id(json_body["project"])}, {"$set": {"budget": json_body["budget"]}})
+    if project_update.modified_count == 1:
+        add_audit_entry("project.changebudget", project_doc["_id"], "", "", "")
+        return _resp(True, "Budget changed")
+    return _resp(False, "Unable to change budget")
 
 @app.route("/project/<project_id>/audit", methods=["GET"])
 @with_authentication(admin=False, pass_user=True)
