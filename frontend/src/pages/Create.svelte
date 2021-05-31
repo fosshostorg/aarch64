@@ -214,11 +214,11 @@
                                 </div>
                                 <div class="create-form-subheader">Project Usage:</div>
                                 <span class="create-form-subtitle">
-									Limit: {project.budget} {project.budget > 1 ? "cores" : "core"}
+									Limit: {project.budget} {project.budget === 1 ? "cores" : "core"}
                                     <br>
-									Current: {project.budget_used} {project.budget_used > 1 ? "cores" : "core"}
+									Current: {project.budget_used} {project.budget_used === 1 ? "cores" : "core"}
                                     <br>
-									<span class={can_create ? "" : "red-text"}>New: {budget_used}  {budget_used > 1 ? "cores" : "core"}</span>
+									<span class={can_create ? "" : "red-text"}>New: {budget_used}  {budget_used === 1 ? "cores" : "core"}</span>
 								</span>
                                 <Button class="submit-button" width="250px" color="#46b0a6" disabled={!can_create}>CREATE</Button>
                                 <span style="margin-bottom: 2rem;"></span>
