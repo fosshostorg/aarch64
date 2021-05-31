@@ -119,12 +119,14 @@ export const getUserInfoAndProjects = async (): Promise<{
 		return {
 			user: {
 				email: "dev@dev.dev",
+				admin: true
 			},
 			projects: [
 				{
 					_id: "605d1fbc361f9e55eec97986",
 					name: "Test Project",
 					users: ["user1@example.com", "user2@example.com"],
+					budget: 10,
 					vms: [
 						{
 							hostname: "testvm1",
@@ -152,6 +154,7 @@ export const getUserInfoAndProjects = async (): Promise<{
 				}, {
 					_id: "605d1fbc361f9e55eec97987",
 					name: "Test Project 2",
+					budget: 8,
 					users: ["user1@example.com", "user2@example.com"],
 					vms: [
 						{
