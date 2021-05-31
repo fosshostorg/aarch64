@@ -148,7 +148,7 @@
 						<br>
 						<span class="user-form-subheader">Set project budget:</span>
 						<span class="user-form-subtitle">Current usage is {project.budget_used}/{project.budget}</span>
-						<Input bind:value={newBudget} autocomplete="off" type="number" class="user-input" placeholder="user@example.com"/>
+						<Input bind:value={newBudget} autocomplete="off" type="number" class="user-input" placeholder="2"/>
 						<Button width="220px" on:click={() => changeBudget()}>CHANGE BUDGET</Button>
 						{/if}
 						<!-- <button class="user-form-button" on:click={() => submitAddUser()}>ADD USER</button> -->
