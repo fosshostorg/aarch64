@@ -284,7 +284,7 @@ def signup(json_body: dict) -> Response:
         return _resp(False, "Invalid email address")
 
     try:
-        user_doc = db["users"].insert_one({
+        db["users"].insert_one({
             "email": json_body["email"],
             "password": argon.hash(json_body["password"]),
             "key": token_hex(24)
@@ -292,6 +292,7 @@ def signup(json_body: dict) -> Response:
     except DuplicateKeyError:
         return _resp(False, "User with this email already exists")
 
+    user_doc = db["users"].find_one({"email": json_body["email"]})
     add_audit_entry("user.signup", "", user_doc["_id"], "", "")
     return _resp(True, "User created")
 
