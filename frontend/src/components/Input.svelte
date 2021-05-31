@@ -56,6 +56,7 @@
     padding: 0 0 0 1rem;
     font-size: 18px;
     transition: ease background-color 0.2s;
+    width: 100%;
   }
 
   input:focus {

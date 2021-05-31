@@ -45,7 +45,7 @@
     <div class="content">
         <form on:submit|preventDefault={handleSubmit}>
             <Input
-                label="Name your project:"
+                label="Project name:"
                 labelClasses="name-label"
                 class="name-input"
                 autocomplete="off"
@@ -55,8 +55,8 @@
                 type="text"
             />
             <Input
-                label="Set project budget (CPU cores):"
-                labelClasses="budget-label"
+                label="Project core budget:"
+                labelClasses="name-label"
                 class="budget-input"
                 autocomplete="off"
                 bind:value={budget}
