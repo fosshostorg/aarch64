@@ -111,7 +111,7 @@
 		<div class="content">
 			{#if params.page === null || params.page === "resources"}
 					<span class="title">Virtual Machines</span><br>
-					<span class="subtitle">{project.budget_used} out of {project.budget} project cores used</span>
+					<span class="subtitle">{project.budget_used} out of {project.budget} allocated cores used</span>
 					{#if project.vms.length === 0}
 						<div class="empty-list">Nothing to see here...</div>
 						<a href="/#/dashboard/create" class="add-new-button"> CREATE VM </a>

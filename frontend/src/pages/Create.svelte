@@ -214,9 +214,9 @@
 								</div>
 								<div class="create-form-subheader">Project Usage:</div>
 								<span class="create-form-subtitle">
+									Limit: {project.budget} cores <br>
 									Current: {project.budget_used} cores<br>
-									New: {budget_used} cores<br>
-									Limit: {project.budget} cores
+									<span class={can_create?"":"red-text"}>New: {budget_used} cores</span>
 								</span>
 								<Button class="submit-button" width="250px" color="#46b0a6" disabled={!can_create}>CREATE</Button>
 								<!-- <button class="submit" type="submit">CREATE</button> -->
@@ -287,6 +287,10 @@
 	div :global(.hostname-input) {
 		width: 360px;
 		margin-bottom: 1rem;
+	}
+
+	.red-text {
+		color: red;
 	}
 
 	button.large {
