@@ -198,7 +198,6 @@
         opacity: 0.7;
         padding: 15px;
         font-size: 15px;
-        font-weight: 500;
     }
 
     span.labels {
