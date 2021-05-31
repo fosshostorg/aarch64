@@ -443,7 +443,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     for vm in db["vms"].find({"project": project_doc["_id"]}):
         budget_used+=vm["vcpus"]
 
-    if budget_used + json_body["vcpus"] > project_doc["budget"] and not user_doc.get("admin"):
+    if budget_used + int(json_body["vcpus"]) > int(project_doc["budget"]) and not user_doc.get("admin"):
         return _resp(False, "Project would exceed budget limitations")
 
     json_body["project"] = to_object_id(json_body["project"])
@@ -534,7 +534,7 @@ def project_change_budget(json_body: dict, user_doc: dict) -> Response:
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
-    project_update = db["projects"].update_one({"_id": to_object_id(json_body["project"])}, {"$set": {"budget": json_body["budget"]}})
+    project_update = db["projects"].update_one({"_id": to_object_id(json_body["project"])}, {"$set": {"budget": int(json_body["budget"])}})
     if project_update.modified_count == 1:
         add_audit_entry("project.changebudget", project_doc["_id"], "", "", "")
         return _resp(True, "Budget changed")
