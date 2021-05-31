@@ -438,6 +438,14 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
         project_doc = db["projects"].find_one({"_id": to_object_id(json_body["project"])})
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
+    
+    budget_used = 0
+    for vm in db["vms"].find({"project": project_doc["_id"]}):
+        budget_used+=vm["vcpus"]
+
+    if budget_used + json_body["vcpus"] > project_doc["budget"] and not user_doc.get("admin"):
+        return _resp(False, "Project would exceed budget limitations")
+
     json_body["project"] = to_object_id(json_body["project"])
 
     # Calculate host usage for pop
