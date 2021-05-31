@@ -827,12 +827,6 @@ def get_ansible_hosts():
                 if host.get("peers"):
                     _config["all"]["children"]["hypervisors"]["hosts"][pop["name"] + str(idx)]["bcg"]["peers"] = host.get("peers")
 
-    for proxy in config_doc["proxies"]:
-        _config["all"]["children"]["proxies"]["hosts"]["proxy." + proxy["pop"]] = {
-            "ansible_port": 22,
-            "ansible_host": proxy["ip"],
-        }
-
     return _resp(True, "Retrieved ansible config", data=_config)
 
 
