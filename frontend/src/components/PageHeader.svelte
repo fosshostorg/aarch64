@@ -4,7 +4,7 @@
 	export let labels: string[] = [];
 	export let baseHref: string = "";
 	export let isResource: boolean = false;
-	export let enabled: boolean = false;
+	export let state: number = 0;
 	export let params: any;
 </script>
 
@@ -14,8 +14,8 @@
 			<slot />
 			{#if isResource}
 				<div class="enabled-tag">
-					<span class:enabled class="enabled-tag-color"></span>
-					{enabled ? "READY" : "PROVISIONING"}
+					<span class:enabled="{state == 1}" class="enabled-tag-color"></span>
+					{state==0 ? "PROVISIONING": (state==1? "RUNNING": "OFFLINE")}
 				</div>
 			{/if}
 		</span>
