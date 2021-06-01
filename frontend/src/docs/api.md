@@ -85,7 +85,8 @@ Request body:
 
 ```json
 {
-  "name": "My Project Name"
+  "name": "My Project Name",
+  "budget": 4
 }
 ```
 
@@ -172,6 +173,18 @@ Request body:
 }
 ```
 
+POST `/project/changeuser`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "project": "605fdf474177ba62253eed4a",
+  "budget": 28 
+}
+```
 ### VMs
 
 POST `/vms/create`
