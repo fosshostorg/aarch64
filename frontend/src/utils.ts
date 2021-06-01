@@ -23,7 +23,7 @@ export function dropdownItems(vm: any): DropdownItem[] {
 				alert(`ssh -p 2222 ${vm._id}@${vm.pop}${vm.host}.infra.aarch64.com`);
 			},
 		},
-		{ label: "START", icon: "power_settings_new", action: (e) => {
+		{ label: "START", icon: "play_arrow", action: (e) => {
 			vmControl(vm, "start")
 		} },
 		{ label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {
