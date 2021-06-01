@@ -65,7 +65,7 @@ def valid_label(label) -> bool:
     return label and (re.match(r"^(?![0-9]+$)(?!-)[a-zA-Z0-9-]{,63}(?<!-)$", label) is None) and (not label.startswith(".")) and (" " not in label)
 
 
-# Force all projects to have budgets, only needed during initial rollout
+# Force all vms to have states, only needed during initial rollout
 db["vms"].update_many(
     {"state": {"$exists": False}},
     {
