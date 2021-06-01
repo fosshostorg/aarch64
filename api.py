@@ -1025,10 +1025,6 @@ if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
     else:
         print("Cancelled")
 
-def domain_to_dict(vm):
-        vm_info = vm.info()
-        return {'name': vm.name(), 'state': vm_info[0], 'maxMemory': vm_info[1], 'vCPUs': vm_info[3]}
-
 def libvirt_state_manager():
     while True:
         time.sleep(10)
@@ -1054,8 +1050,8 @@ def libvirt_state_manager():
     
 
 
-libvirt_States = threading.Thread(target=libvirt_state_manager)
-libvirt_States.start()
+libvirt_state = threading.Thread(target=libvirt_state_manager)
+libvirt_state.start()
 
 if DEBUG:
     print("Running API server in debug mode...")
