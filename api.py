@@ -441,7 +441,10 @@ def start_vm(json_body: dict, user_doc: dict) -> Response:
     except libvirt.libvirtError as e:
         return _resp(False, "Hypervisor does not have VM")
 
-    vm.create()
+    try:
+        vm.create()
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to shutdown VM")
     return _resp(True, "VM Started")
 
 @app.route("/vms/shutdown", methods=["POST"])
@@ -469,7 +472,10 @@ def shutdown_vm(json_body: dict, user_doc: dict) -> Response:
     except libvirt.libvirtError as e:
         return _resp(False, "Hypervisor does not have VM")
 
-    vm.shutdown()
+    try:
+        vm.shutdown()
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to shutdown VM")
     return _resp(True, "VM Shutdown")
 
 @app.route("/vms/reset", methods=["POST"])
@@ -496,8 +502,10 @@ def reset_vm(json_body: dict, user_doc: dict) -> Response:
         vm = conn.lookupByName(json_body["vm"])
     except libvirt.libvirtError as e:
         return _resp(False, "Hypervisor does not have VM")
-
-    vm.reset()
+    try:
+        vm.reset()
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to shutdown VM")
     return _resp(True, "VM Reset")
 
 @app.route("/vms/create", methods=["POST"])
