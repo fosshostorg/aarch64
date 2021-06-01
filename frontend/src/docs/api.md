@@ -136,6 +136,8 @@ Response body:
         "user1@example.com",
         "user2@example.com"
       ],
+      "budget": 6,
+      "budget_used": 4,
       "vms": [
         {
           "hostname": "testvm1",
