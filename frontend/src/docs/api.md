@@ -257,6 +257,126 @@ Response body:
 }
 ```
 
+POST `/vms/start`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "vm": "605fdf4e4177beeb253eed4b"
+}
+```
+
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "VM has been started"
+  },
+  "data": null
+}
+```
+
+POST `/vms/shutdown`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "vm": "605fdf4e4177beeb253eed4b"
+}
+```
+
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "VM has been shutdown"
+  },
+  "data": null
+}
+```
+
+POST `/vms/reboot`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "vm": "605fdf4e4177beeb253eed4b"
+}
+```
+
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "VM has been rebooted"
+  },
+  "data": null
+}
+```
+
+POST `/vms/stop`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "vm": "605fdf4e4177beeb253eed4b"
+}
+```
+
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "VM has been stopped"
+  },
+  "data": null
+}
+```
+
+POST `/vms/reset`
+
+Authentication required
+
+Request body:
+
+```json
+{
+  "vm": "605fdf4e4177beeb253eed4b"
+}
+```
+
+Response body:
+
+```json
+{
+  "meta": {
+    "success": true,
+    "message": "VM has been reset"
+  },
+  "data": null
+}
+```
+
 ### System
 
 GET `/system`
