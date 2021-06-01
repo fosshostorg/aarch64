@@ -37,6 +37,7 @@ type VM = {
     address: string;
     gateway: string;
     creator: string;
+    state: number;
     created: { by: string; at: number };
 };
 

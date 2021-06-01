@@ -3,6 +3,8 @@ import ipaddress
 import json
 import re
 import time
+import libvirt
+import threading
 from email.mime.text import MIMEText
 from email.utils import formatdate
 from functools import wraps
@@ -58,20 +60,21 @@ if not DEBUG and not config_doc.get("email"):
     console.log("Config must have an email account set up")
     exit(1)
 
-
 def valid_label(label) -> bool:
     # Validates a DNS zone label
     return label and (re.match(r"^(?![0-9]+$)(?!-)[a-zA-Z0-9-]{,63}(?<!-)$", label) is None) and (not label.startswith(".")) and (" " not in label)
 
 
 # Force all projects to have budgets, only needed during initial rollout
-db["projects"].update_many(
-    {"budget": {"$exists": False}},
+db["vms"].update_many(
+    {"state": {"$exists": False}},
     {
-        "$set": {"budget": 2}
+        "$set": {"state": 0}
     }
 )
 
+def prefix_to_wireguard(prefix):
+    return f"fd0d:944c:1337:aa64:{prefix.split(':')[2]}::"
 
 def send_email(to: str, subject: str, body: str):
     if not DEBUG:
@@ -506,6 +509,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     if not json_body.get("prefix"):
         raise _resp(False, "Unable to assign VM prefix")
 
+    json_body["state"] = 0
     new_vm = db["vms"].insert_one(json_body)
     if new_vm.inserted_id:
         add_audit_entry("vm.create", project_doc["_id"], user_doc["_id"], new_vm.inserted_id, "")
@@ -815,7 +819,7 @@ def get_ansible_hosts():
             for idx, host in enumerate(pop.get("hosts")):
                 _config["all"]["children"]["hypervisors"]["hosts"][pop["name"] + str(idx)] = {
                     "ansible_host": host["ip"],
-                    "wgip": f"fd0d:944c:1337:aa64:{host['prefix'].split(':')[2]}::",
+                    "wgip": prefix_to_wireguard(host["prefix"]),
                     "bcg": {
                         "asn": config_doc["asn"],
                         "prefixes": [host["prefix"]],
@@ -928,6 +932,31 @@ if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
         })
     else:
         print("Cancelled")
+
+def domain_to_dict(vm):
+        vm_info = vm.info()
+        return {'name': vm.name(), 'state': vm_info[0], 'maxMemory': vm_info[1], 'vCPUs': vm_info[3]}
+
+def libvirt_state_manager():
+    while True:
+        time.sleep(10)
+        try:
+            conn = libvirt.open('qemu+tcp://root@[fd0d:944c:1337:aa64:33c::]:16509/system')
+        except libvirt.libvirtError as e:
+            print(e, file=sys.stderr)
+        vms = conn.listAllDomains(0)
+        for vm in vms:
+            result = db["vms"].update_one(
+                {"_id": to_object_id(vm.name())},
+                {
+                    "$set": {"state": vm.info()[0]}
+                }
+            )
+    
+
+
+libvirt_States = threading.Thread(target=libvirt_state_manager)
+libvirt_States.start()
 
 if DEBUG:
     print("Running API server in debug mode...")

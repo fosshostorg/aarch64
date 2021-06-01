@@ -39,7 +39,7 @@
 			<img
 				src={'./img/' + VM.os.toLowerCase() + '.svg'}
 				alt={VM.os + ' Logo'} />
-			<span class="status" class:online={VM.phoned_home} />
+			<span class="status" class:online={VM.state == 1} />
 		</span>
 		<div class="hostname">{VM.hostname}</div>
 		<div class="location">
