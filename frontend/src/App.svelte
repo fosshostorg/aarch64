@@ -5,7 +5,7 @@
 	import Login from "./pages/Login.svelte";
 	import Signup from "./pages/Signup.svelte";
 	import { onMount } from "svelte";
-	import { consoleWelcomeMessage, getUserInfoAndProjects } from "./utils";
+	import { consoleWelcomeMessage, getUserInfoAndProjects, getUserProjects } from "./utils";
 	import { Projects, User, Snackbars } from "./stores";
 	import Dashboard from "./Dashboard.svelte";
 	import NotFound from "./pages/NotFound.svelte";
@@ -30,6 +30,16 @@ import Snackbar from "./components/Snackbar.svelte";
 		"*": NotFound,
 	};
 
+	function updateProjects(){
+		getUserProjects()
+		.then((data) => {
+			$Projects = data;
+		})
+		if ($User !== {}){
+			setTimeout(updateProjects, 15000)
+		}
+	}
+
 	async function authenticate() {
 		let res = await getUserInfoAndProjects();
 		if (res.user == null) {
@@ -37,6 +47,7 @@ import Snackbar from "./components/Snackbar.svelte";
 		}
 		$User = res.user;
 		$Projects = res.projects;
+		updateProjects()
 		return true;
 	}
 
