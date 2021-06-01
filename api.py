@@ -858,10 +858,10 @@ Password: {vm_doc["password"]}
 SSH is enabled on port 22 with root access, please secure your VM accordingly.
 
 If you don't have IPv6 you can use our dualstack jumpbox:
-ssh -J jump@proxy.dfw.aarch64.com root@{vm_doc["address"][:-3]}
+ssh -J jump@{vm_doc["pop"]}.proxy.infra.aarch64.com root@{vm_doc["address"][:-3]}
 
 Remote "Out of Band" SSH console:
-ssh -p 2222 {vm_doc["_id"]}@{vm_doc["pop"]}{vm_doc["host"]}.aarch64.com
+ssh -p 2222 {vm_doc["_id"]}@{vm_doc["pop"]}{vm_doc["host"]}.infra.aarch64.com
 
 If you have any questions please reach out to support@fosshost.org
 
