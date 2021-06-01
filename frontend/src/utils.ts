@@ -1,6 +1,19 @@
 import {replace} from "svelte-spa-router";
 import { Snackbars, Projects } from "./stores";
 
+function vmControl(vm: any, command: any) {
+	fetch('api/vms/'+command, {
+		method: 'POST',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({"vm":vm._id})
+	  }).then((d)=>d.json()).then((r)=>{
+		  alert(r.meta.message)
+	  })
+}
+
 export function dropdownItems(vm: any): DropdownItem[] {
 	return [
 		{
@@ -10,10 +23,21 @@ export function dropdownItems(vm: any): DropdownItem[] {
 				alert(`ssh -p 2222 ${vm._id}@${vm.pop}${vm.host}.infra.aarch64.com`);
 			},
 		},
-		// { label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {} },
-		// { label: "REBOOT", icon: "refresh", action: (e) => {} },
-		// { label: "STOP", icon: "stop", action: (e) => {} },
-		// { label: "RESET", icon: "sync_problem", action: (e) => {} },
+		{ label: "START", icon: "power_settings_new", action: (e) => {
+			vmControl(vm, "start")
+		} },
+		{ label: "SHUTDOWN", icon: "power_settings_new", action: (e) => {
+			vmControl(vm, "shutdown")
+		} },
+		{ label: "REBOOT", icon: "refresh", action: (e) => {
+			vmControl(vm, "reboot")
+		} },
+		{ label: "STOP", icon: "stop", action: (e) => {
+			vmControl(vm, "stop")
+		} },
+		{ label: "RESET", icon: "sync_problem", action: (e) => {
+			vmControl(vm, "reset")
+		} },
 		{
 			label: "DELETE",
 			icon: "delete",

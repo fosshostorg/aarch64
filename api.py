@@ -444,7 +444,7 @@ def start_vm(json_body: dict, user_doc: dict) -> Response:
     try:
         vm.create()
     except libvirt.libvirtError as e:
-        return _resp(False, "Failed to shutdown VM")
+        return _resp(False, "Failed to start VM")
     return _resp(True, "VM has been started")
 
 @app.route("/vms/shutdown", methods=["POST"])
@@ -567,7 +567,7 @@ def reset_vm(json_body: dict, user_doc: dict) -> Response:
     try:
         vm.reset()
     except libvirt.libvirtError as e:
-        return _resp(False, "Failed to shutdown VM")
+        return _resp(False, "Failed to reset VM")
     return _resp(True, "VM has been reset")
 
 @app.route("/vms/create", methods=["POST"])
