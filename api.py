@@ -1025,34 +1025,6 @@ if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
     else:
         print("Cancelled")
 
-def libvirt_state_manager():
-    while True:
-        time.sleep(10)
-        hypervisors = []
-        for pop in db["pops"].find():
-            if pop.get("hosts"):
-                for idx, host in enumerate(pop.get("hosts")):
-                    hypervisors.append(prefix_to_wireguard(host["prefix"]))
-
-        for hypervisor in hypervisors:
-            try:
-                conn = libvirt.open(f'qemu+tcp://root@[{hypervisor}]:16509/system')
-            except libvirt.libvirtError as e:
-                print(e, file=sys.stderr)
-            vms = conn.listAllDomains(0)
-            for vm in vms:
-                result = db["vms"].update_one(
-                    {"_id": to_object_id(vm.name())},
-                    {
-                        "$set": {"state": vm.info()[0]}
-                    }
-                )
-    
-
-
-libvirt_state = threading.Thread(target=libvirt_state_manager)
-libvirt_state.start()
-
 if DEBUG:
     print("Running API server in debug mode...")
     app.run(debug=True)
