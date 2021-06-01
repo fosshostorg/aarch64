@@ -61,7 +61,7 @@
       --vcpus {{ item["vcpus"] }} \
       --network bridge=vbr{{ item["index"] }},model=virtio \
       --import \
-      --disk path=/opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2 \
+      --disk path=/opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2,bus=virtio \
       --disk path=/opt/aarch64/vms/{{ item["_id"]}}-cloudinit.iso,device=cdrom \
       --nographics \
       --noautoconsole \

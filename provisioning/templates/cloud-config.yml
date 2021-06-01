@@ -20,4 +20,8 @@ runcmd:
 {% if item.os == "ubuntu" or item.os == "debian" %}
   - systemctl restart sshd
 {% endif %}
+{% if item.os == "ubuntu" %}
+  - sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash net.ifnames=0"/' /etc/default/grub
+  - /usr/sbin/update-grub
+{% endif %}
   - sleep 60 ; for i in {1..5}; do wget -O - wget https://console.aarch64.com/api/intra/phonehome 2>/dev/null || curl https://console.aarch64.com/api/intra/phonehome ; done
