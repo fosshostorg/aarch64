@@ -3,6 +3,8 @@ import ipaddress
 import json
 import re
 import time
+import libvirt
+import threading
 from email.mime.text import MIMEText
 from email.utils import formatdate
 from functools import wraps
@@ -58,20 +60,21 @@ if not DEBUG and not config_doc.get("email"):
     console.log("Config must have an email account set up")
     exit(1)
 
-
 def valid_label(label) -> bool:
     # Validates a DNS zone label
     return label and (re.match(r"^(?![0-9]+$)(?!-)[a-zA-Z0-9-]{,63}(?<!-)$", label) is None) and (not label.startswith(".")) and (" " not in label)
 
 
-# Force all projects to have budgets, only needed during initial rollout
-db["projects"].update_many(
-    {"budget": {"$exists": False}},
+# Force all vms to have states, only needed during initial rollout
+db["vms"].update_many(
+    {"state": {"$exists": False}},
     {
-        "$set": {"budget": 2}
+        "$set": {"state": 0}
     }
 )
 
+def prefix_to_wireguard(prefix):
+    return f"fd0d:944c:1337:aa64:{prefix.split(':')[2]}::"
 
 def send_email(to: str, subject: str, body: str):
     if not DEBUG:
@@ -413,6 +416,160 @@ def projects_list(user_doc: dict) -> Response:
     return _resp(True, "Retrieved project list", data=projects)
 
 
+@app.route("/vms/start", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("vm")
+def start_vm(json_body: dict, user_doc: dict) -> Response:
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+
+    project_doc = get_project(user_doc, vm_doc["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+
+    pop = db["pops"].find_one({"name": vm_doc["pop"]})
+    hypervisor = pop["hosts"][vm_doc["host"]]
+    try:
+        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to connect to hypervisor")
+    
+    try:
+        vm = conn.lookupByName(json_body["vm"])
+    except libvirt.libvirtError as e:
+        return _resp(False, "Hypervisor does not have VM")
+
+    try:
+        vm.create()
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to start VM")
+    return _resp(True, "VM has been started")
+
+@app.route("/vms/shutdown", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("vm")
+def shutdown_vm(json_body: dict, user_doc: dict) -> Response:
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+
+    project_doc = get_project(user_doc, vm_doc["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+
+    pop = db["pops"].find_one({"name": vm_doc["pop"]})
+    hypervisor = pop["hosts"][vm_doc["host"]]
+    try:
+        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to connect to hypervisor")
+    
+    try:
+        vm = conn.lookupByName(json_body["vm"])
+    except libvirt.libvirtError as e:
+        return _resp(False, "Hypervisor does not have VM")
+
+    try:
+        vm.shutdown()
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to shutdown VM")
+    return _resp(True, "VM has been shutdown")
+
+@app.route("/vms/reboot", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("vm")
+def reboot_vm(json_body: dict, user_doc: dict) -> Response:
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+
+    project_doc = get_project(user_doc, vm_doc["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+
+    pop = db["pops"].find_one({"name": vm_doc["pop"]})
+    hypervisor = pop["hosts"][vm_doc["host"]]
+    try:
+        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to connect to hypervisor")
+    
+    try:
+        vm = conn.lookupByName(json_body["vm"])
+    except libvirt.libvirtError as e:
+        return _resp(False, "Hypervisor does not have VM")
+
+    try:
+        vm.reboot()
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to reboot VM")
+    return _resp(True, "VM has been rebooted")
+
+@app.route("/vms/stop", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("vm")
+def stop_vm(json_body: dict, user_doc: dict) -> Response:
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+
+    project_doc = get_project(user_doc, vm_doc["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+
+    pop = db["pops"].find_one({"name": vm_doc["pop"]})
+    hypervisor = pop["hosts"][vm_doc["host"]]
+    try:
+        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to connect to hypervisor")
+    
+    try:
+        vm = conn.lookupByName(json_body["vm"])
+    except libvirt.libvirtError as e:
+        return _resp(False, "Hypervisor does not have VM")
+
+    try:
+        vm.destroy()
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to stop VM")
+    return _resp(True, "VM has been stopped")
+
+@app.route("/vms/reset", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("vm")
+def reset_vm(json_body: dict, user_doc: dict) -> Response:
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+
+    project_doc = get_project(user_doc, vm_doc["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+
+    pop = db["pops"].find_one({"name": vm_doc["pop"]})
+    hypervisor = pop["hosts"][vm_doc["host"]]
+    try:
+        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to connect to hypervisor")
+    
+    try:
+        vm = conn.lookupByName(json_body["vm"])
+    except libvirt.libvirtError as e:
+        return _resp(False, "Hypervisor does not have VM")
+    try:
+        vm.reset()
+    except libvirt.libvirtError as e:
+        return _resp(False, "Failed to reset VM")
+    return _resp(True, "VM has been reset")
+
 @app.route("/vms/create", methods=["POST"])
 @with_authentication(admin=False, pass_user=True)
 @with_json("hostname", "plan", "pop", "project", "os")
@@ -506,6 +663,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     if not json_body.get("prefix"):
         raise _resp(False, "Unable to assign VM prefix")
 
+    json_body["state"] = 0
     new_vm = db["vms"].insert_one(json_body)
     if new_vm.inserted_id:
         add_audit_entry("vm.create", project_doc["_id"], user_doc["_id"], new_vm.inserted_id, "")
@@ -815,7 +973,7 @@ def get_ansible_hosts():
             for idx, host in enumerate(pop.get("hosts")):
                 _config["all"]["children"]["hypervisors"]["hosts"][pop["name"] + str(idx)] = {
                     "ansible_host": host["ip"],
-                    "wgip": f"fd0d:944c:1337:aa64:{host['prefix'].split(':')[2]}::",
+                    "wgip": prefix_to_wireguard(host["prefix"]),
                     "bcg": {
                         "asn": config_doc["asn"],
                         "prefixes": [host["prefix"]],

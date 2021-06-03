@@ -6,6 +6,5 @@
     - bcg
     - virt
     - tayga
-#    - spy
     - wg
     - prometheus
