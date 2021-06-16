@@ -306,7 +306,7 @@ def signup(json_body: dict) -> Response:
 
     user_doc = db["users"].find_one({"email": json_body["email"]})
     add_audit_entry("user.signup", "", user_doc["_id"], "", "")
-    requests.post(config_doc["webhook"], data=f"User {json_body['email']} has signed up")
+    requests.post(config_doc["webhook"], json={"content": f"User {json_body['email']} has signed up"})
     return _resp(True, "User created")
 
 
