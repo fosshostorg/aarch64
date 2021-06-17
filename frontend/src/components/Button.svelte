@@ -76,6 +76,7 @@
   button:active {
     background-color: #252424;
     border-color: #252424;
+    padding: 0rem 1.5rem;
   }
 
   button.outlined {
