@@ -58,7 +58,7 @@ export function dropdownItems(vm: any): DropdownItem[] {
 	];
 }
 
-const checkMeta = (body: any): void => {
+export const checkMeta = (body: any): boolean => {
 	if (body !== null && !body.meta.success) {
 		console.error("Failed request: " + body.meta.message);
 		Snackbars.update((s) => [
@@ -71,6 +71,7 @@ const checkMeta = (body: any): void => {
 			},
 		]);
 	}
+	return body.meta.success;
 };
 
 export const getUserInfo = async () => {

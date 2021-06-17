@@ -1,46 +1,29 @@
 <script>
 	import { link, push } from "svelte-spa-router";
-	import { getUserInfo, getUserProjects } from "../utils";
-	import { User, Projects } from "../stores";
 	import PageTitle from "../components/PageTitle.svelte";
+	import Button from "../components/Button.svelte";
+	import { checkMeta } from "../utils";
 
-	let email, password;
+	let email, password = "";
 
 	const handleSubmit = async (e) => {
-		// noinspection JSUnresolvedVariable
-		if (__production__) {
-			await fetch("__apiRoute__/auth/login", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({email, password}),
+		fetch("__apiRoute__/auth/login", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ email, password }),
+		})
+			.then((resp) => resp.json())
+			.then(async (data) => {
+				if (checkMeta(data)) {
+					push("/dashboard/");
+				}
 			})
-				.then((resp) => resp.json())
-				.then(async (data) => {
-					if (data.meta.success) {
-						await getUserProjects()
-							.then((data) => {
-								$Projects = data;
-							})
-							.then(async () => {
-								await getUserInfo().then((data) => {
-									$User = data;
-									push("/dashboard/create");
-								});
-							});
-					} else {
-						alert(data.meta.message);
-					}
-				})
-				.catch((err) => console.log(err));
-		} else {
-			console.log(
-				"%cWould have been posted with email: " + email,
-				"color: lightgreen"
-			);
-		}
+			.catch((err) => console.log(err));
 	};
 </script>
 
+
+<PageTitle title="AARCH64 Dashboard Login" />
 <main>
 	<div>
 		<img alt="AARCH64 Logo" src="./img/Fosshost_Light.png" />
@@ -49,19 +32,19 @@
 				autocomplete="email"
 				bind:value={email}
 				placeholder="Email"
-				type="email" />
+				type="email"
+			/>
 			<input
 				autocomplete="password"
 				bind:value={password}
 				placeholder="Password"
-				type="password" />
-			<button type="submit">LOGIN</button>
+				type="password"
+			/>
+			<Button width="100%" type="submit">LOGIN</Button>
 		</form>
 		<a href="/signup" use:link>Don't have an account? <b>Sign Up</b></a>
 	</div>
 </main>
-
-<PageTitle title="AARCH64 Dashboard Login" />
 
 <style>
 	main {
@@ -71,24 +54,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	button {
-		width: 100%;
-		height: 40px;
-		border: none;
-		color: white;
-		background-color: #0e0d0d;
-		font-size: 22px;
-		font-weight: 500;
-		font-family: inherit;
-		margin: 0px;
-	}
-
-	button:active {
-		margin: 0px;
-		padding: 0px 8px;
-		opacity: 0.85;
 	}
 
 	a {

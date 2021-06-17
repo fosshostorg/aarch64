@@ -1,5 +1,4 @@
 <script>
-	import Sidebar from "../components/Sidebar.svelte";
 	import { onMount } from "svelte";
 	import { push } from "svelte-spa-router";
 
