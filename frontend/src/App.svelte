@@ -10,7 +10,7 @@
 	import Dashboard from "./Dashboard.svelte";
 	import NotFound from "./pages/NotFound.svelte";
 	import MDPWrapper from "rollup-plugin-mdsvex-pages/src/components/MDPWrapper.svelte";
-import Snackbar from "./components/Snackbar.svelte";
+	import Snackbar from "./components/Snackbar.svelte";
 
 	const dashboardWrap = wrap({
 		component: Dashboard,
@@ -30,13 +30,15 @@ import Snackbar from "./components/Snackbar.svelte";
 		"*": NotFound,
 	};
 
+	let updateInterval = null;
+
 	function updateProjects(){
 		getUserProjects()
 		.then((data) => {
 			$Projects = data;
 		})
-		if ($User !== {}){
-			setTimeout(updateProjects, 15000)
+		if ($User !== {} && updateInterval == null){
+			updateInterval = setInterval(updateProjects, 15000)
 		}
 	}
 

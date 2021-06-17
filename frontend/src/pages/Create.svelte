@@ -341,6 +341,7 @@
         background-color: #0e0d0d;
         border: none;
         height: 40px;
+        width: 40px;
         cursor: pointer;
     }
 
