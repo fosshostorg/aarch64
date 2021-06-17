@@ -23,9 +23,9 @@
 			<div class="button-wrapper">
 				{#each labels as label, i}
 					<button
-						class:current={params.page == label.toLowerCase().replaceAll(' ', '') || (i == 0 && params.page == null)}
+						class:current={params.page == label.toLowerCase().replace(/ /g, '') || (i == 0 && params.page == null)}
 						on:click={() => {
-							window.location.href = baseHref + "/" + label.toLowerCase().replaceAll(' ', '');
+							window.location.href = baseHref + "/" + label.toLowerCase().replace(/ /g, '');
 						}}>{label}</button>
 				{/each}
 			</div>
