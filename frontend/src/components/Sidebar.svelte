@@ -21,6 +21,7 @@
 				// { name: "Settings", route: "/account/settings" },
 				// { name: "API", route: "https://github.com/", isGlobal: true },
 				{ name: "Docs", route: "/docs" },
+				{ name: "Feedback", route: "https://roadmap.aarch64.com/aarch64" },
 			],
 			open: true,
 		},
