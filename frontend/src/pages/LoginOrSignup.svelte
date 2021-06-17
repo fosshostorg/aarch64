@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { link, push } from "svelte-spa-router";
     import Button from "../components/Button.svelte";
+import Input from "../components/Input.svelte";
 	import PageTitle from "../components/PageTitle.svelte";
     import { checkMeta } from "../utils";
 
@@ -34,16 +35,18 @@
 	<div>
 		<img alt="AARCH64 Logo" src="./img/Fosshost_Light.png" />
 		<form on:submit|preventDefault={handleSubmit}>
-			<input
+			<Input
 				autocomplete="email"
 				bind:value={email}
 				placeholder="Email"
-				type="email" />
-			<input
-				autocomplete="password"
-				bind:value={password}
-				placeholder="Password"
-				type="password" />
+				type="email"
+                style="margin-bottom: 20px;" />
+            <Input
+                autocomplete="password"
+                bind:value={password}
+                placeholder="Password"
+                type="password" 
+                style="margin-bottom: 20px;" />
             <Button width="100%" type="submit">{isLogin ? "LOGIN" : "SIGNUP"}</Button>
 		</form>
         {#if isLogin}

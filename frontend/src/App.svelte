@@ -41,13 +41,16 @@
 
 	let updateInterval = null;
 
+	//TODO: This might not work perfectly, need to do more testing. -SETH
 	function updateProjects(){
-		getUserProjects()
-		.then((data) => {
-			$Projects = data;
-		})
-		if ($User !== {} && updateInterval == null){
-			updateInterval = setInterval(updateProjects, 15000)
+		if ($User !== null) {
+			getUserProjects()
+			.then((data) => {
+				$Projects = data;
+			})
+			if (updateInterval == null){
+				updateInterval = setInterval(updateProjects, 15000)
+			}
 		}
 	}
 
@@ -63,13 +66,8 @@
 	}
 
 	function conditionsFailed(event) {
-		// console.log("conditions failed");
 		// Authentication has failed.
 		push("/login");
-	}
-
-	function routeLoaded(event) {
-		console.log("routeLoaded event");
 	}
 
 	onMount(() => {
