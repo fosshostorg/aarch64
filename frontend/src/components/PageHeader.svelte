@@ -89,14 +89,11 @@
 		margin: 0px;
 		margin-bottom: -5px;
 		cursor: pointer;
+		padding: 0px 8px;
 	}
 
 	button.current {
 		border-bottom: 5px solid #0e0d0d;
-	}
-
-	button:active {
-		padding: 0px 8px;
 	}
 
 	div.header {
