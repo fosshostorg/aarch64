@@ -30,10 +30,6 @@
 	};
 
 	onMount(() => {
-		if ($User === {} || $User === null || $User === "undefined") {
-			console.log("redirected");
-		}
-
 		// Redirect to projects create page if user doesn't have any projects, otherwise redirect to their first project
 		if (window.location.hash === "#/dashboard" || window.location.hash === "#/dashboard/") {
 			if ($Projects.length < 1) {
@@ -45,12 +41,10 @@
 	});
 </script>
 
-{#if $User !== {}}
-	<Sidebar />
-	<div>
-		<Router {routes} {prefix} />
-	</div>
-{/if}
+<Sidebar />
+<div>
+	<Router {routes} {prefix} />
+</div>
 
 <style>
 	div {

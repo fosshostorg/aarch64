@@ -65,7 +65,7 @@
 		return true;
 	}
 
-	function conditionsFailed(event) {
+	function conditionsFailed() {
 		// Authentication has failed.
 		push("/login");
 	}

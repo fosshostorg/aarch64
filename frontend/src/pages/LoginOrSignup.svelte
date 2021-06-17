@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { link, push } from "svelte-spa-router";
     import Button from "../components/Button.svelte";
-import Input from "../components/Input.svelte";
+    import Input from "../components/Input.svelte";
 	import PageTitle from "../components/PageTitle.svelte";
     import { checkMeta } from "../utils";
 
@@ -91,16 +91,6 @@ import Input from "../components/Input.svelte";
         margin-top: 25px;
         padding-top: 25px;
         border-top: 1px solid #0e0d0d4f;
-    }
-
-    input {
-        width: 100%;
-        border: 1px solid #0e0d0d;
-        height: 38px;
-        color: #0e0d0d;
-        padding: 0 0 0 10px;
-        font-size: 18px;
-        margin: 0 0 18px 0;
     }
 
     img {
