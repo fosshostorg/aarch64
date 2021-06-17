@@ -2,8 +2,6 @@
 	import Router, {location, push} from "svelte-spa-router";
 	import { wrap } from "svelte-spa-router/wrap";
 	import Index from "./pages/Index.svelte";
-	import Login from "./pages/Login.svelte";
-	import Signup from "./pages/Signup.svelte";
 	import { onMount } from "svelte";
 	import { consoleWelcomeMessage, getUserInfoAndProjects, getUserProjects } from "./utils";
 	import { Projects, User, Snackbars } from "./stores";
@@ -11,6 +9,7 @@
 	import NotFound from "./pages/NotFound.svelte";
 	import MDPWrapper from "rollup-plugin-mdsvex-pages/src/components/MDPWrapper.svelte";
 	import Snackbar from "./components/Snackbar.svelte";
+	import LoginOrSignup from "./pages/LoginOrSignup.svelte";	
 
 	const dashboardWrap = wrap({
 		component: Dashboard,
@@ -23,8 +22,18 @@
 
 	const routes = {
 		"/": Index,
-		"/login": Login,
-		"/signup": Signup,
+		"/login": wrap({
+			component: LoginOrSignup,
+			props: {
+				isLogin: true,
+			}
+		}),
+		"/signup": wrap({
+			component: LoginOrSignup,
+			props: {
+				isLogin: false,
+			}
+		}),
 		"/dashboard": dashboardWrap,
 		"/dashboard/*": dashboardWrap,
 		"*": NotFound,

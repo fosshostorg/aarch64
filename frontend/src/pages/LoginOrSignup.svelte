@@ -1,34 +1,34 @@
-<script>
+<script lang="ts">
 	import { link, push } from "svelte-spa-router";
+    import Button from "../components/Button.svelte";
 	import PageTitle from "../components/PageTitle.svelte";
+    import { checkMeta } from "../utils";
 
-	let email, password;
+    export let isLogin: boolean;
+
+	let email: string, password: string = "";
 
 	const handleSubmit = async (e) => {
-		// noinspection JSUnresolvedVariable
-		if (__production__) {
-			await fetch("__apiRoute__/auth/signup", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password })
-			})
-				.then((resp) => resp.json())
-				.then(async (data) => {
-					if (data.meta.success) {
-						await push("/login");
-					} else {
-						alert(data.meta.message);
-					}
-				})
-				.catch((err) => console.log(err));
-		} else {
-			console.log(
-				"%cWould have been posted with email: " + email,
-				"color: lightgreen"
-			);
-		}
+        fetch(`__apiRoute__/auth/${isLogin ? "login" : "signup"}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        })
+            .then((resp) => resp.json())
+            .then(async (data) => {
+                if (checkMeta(data)) {
+                    if (isLogin) {
+                        push("/dashboard");
+                    } else {
+                        push("/login");
+                    }
+                }
+            })
+            .catch((err) => console.log(err));
 	};
 </script>
+
+<PageTitle title="AARCH64 Dashboard Signup" />
 
 <main>
 	<div>
@@ -44,13 +44,15 @@
 				bind:value={password}
 				placeholder="Password"
 				type="password" />
-			<button type="submit">SIGNUP</button>
+            <Button width="100%" type="submit">{isLogin ? "LOGIN" : "SIGNUP"}</Button>
 		</form>
-		<a href="/login" use:link>Already have an account? <b>Log In</b></a>
+        {#if isLogin}
+            <a href="/signup" use:link>Don't have an account? <b>Sign Up</b></a>
+        {:else}
+            <a href="/login" use:link>Already have an account? <b>Log In</b></a>
+        {/if}
 	</div>
 </main>
-
-<PageTitle title="AARCH64 Dashboard Signup" />
 
 <style>
     main {
@@ -60,24 +62,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-
-    button {
-        width: 100%;
-        height: 40px;
-        border: none;
-        color: white;
-        background-color: #0e0d0d;
-        font-size: 22px;
-        font-weight: 500;
-        font-family: inherit;
-        margin: 0;
-    }
-
-    button:active {
-        margin: 0px;
-        padding: 0 8px;
-        opacity: 0.85;
     }
 
     a {
@@ -100,13 +84,14 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin: 0 auto;
         margin-top: 25px;
         padding-top: 25px;
         border-top: 1px solid #0e0d0d4f;
     }
 
     input {
-        width: calc(100% - 12px);
+        width: 100%;
         border: 1px solid #0e0d0d;
         height: 38px;
         color: #0e0d0d;
