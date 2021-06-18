@@ -18,8 +18,6 @@
 		{
 			header: "Account",
 			items: [
-				// { name: "Settings", route: "/account/settings" },
-				// { name: "API", route: "https://github.com/", isGlobal: true },
 				{ name: "Docs", route: "/docs" },
 			],
 			open: true,
@@ -76,7 +74,7 @@
 					{:else}
 						{#each category.items as item}
 							{#if !item.admin || $User.admin}
-								{#if item.isGlobal}
+								{#if item.route[0] !== "/"}
 									<a class="sidebar-category-item" href={item.route}>
 										<span> {item.name} </span>
 									</a>
