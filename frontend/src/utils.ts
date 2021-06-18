@@ -70,6 +70,16 @@ export const checkMeta = (body: any): boolean => {
 				grouped: true,
 			},
 		]);
+	} else if (body !== null && body.meta.success) {
+		Snackbars.update((s) => [
+			...s,
+			{
+				color: "green",
+				status: "200",
+				message: body.meta.message,
+				grouped: true,
+			},
+		]);
 	}
 	return body.meta.success;
 };

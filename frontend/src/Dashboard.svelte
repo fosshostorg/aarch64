@@ -12,12 +12,7 @@
 
 	const prefix = "/dashboard";
 	const routes = {
-		"/create": wrap({
-			component: Create,
-			props: {
-				admin: true,
-			},
-		}),
+		"/create": Create,
 		"/auditlog": wrap({
 			component: AuditLog,
 			props: {

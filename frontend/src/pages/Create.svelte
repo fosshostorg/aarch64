@@ -6,108 +6,83 @@
     import Select from "svelte-select";
     import {onMount} from "svelte";
     import {Projects, User} from "../stores";
-    import {createVM, getMockSystemData} from "../utils";
+    import {checkMeta, createVM} from "../utils";
     import {push} from "svelte-spa-router";
     import PageTitle from "../components/PageTitle.svelte";
     import Spinner from "../components/Spinner.svelte";
     import Input from "../components/Input.svelte";
     import Button from "../components/Button.svelte";
 
-    let images = {};
-    let plans = {};
-    let locations = [];
-    let image = "";
-    let plan = "";
+    /* Where fetched system details are stored */
+    let data: System = {
+        pops: [],
+        plans: {},
+        oses: {}
+    };
 
-    let batch = 1;
-    let hostnames = [uuidv4()];
-    let project = $Projects[0];
+    /* The currently selected image and plan */
+    let image: string = "";
+    let plan: string = "";
+
+    /* Number of VMs to create in this batch */
+    let batch: number = 1;
+    /* List of hostnames used for each VM in the batch */
+    let hostnames: string[] = [uuidv4()];
+    /* The currently selected project, defaults to the first project the user has */
+    let project: Project = $Projects[0];
+    /* The currently selected locaiton */
     let location = null;
 
-    $: budget_used = project.budget_used + (batch * (plans[plan] ? plans[plan]["vcpus"] : 0));
+    /* Amount of budget used, amount left for creation */
+    $: budget_used = project.budget_used + (batch * (data.plans[plan] ? data.plans[plan]["vcpus"] : 0));
     $: can_create = budget_used <= project.budget || $User.admin == true
 
+    /* Loading screen */
     let showSpinner = false;
 
-    // // Debugging
-    // $: console.log(project)
-    // $: console.log(location)
-
-    const addHost = (e) => {
+    /* Adds a new hostname field w/ increase in batch size */
+    const addHost = (e: any) => {
         e.preventDefault();
         hostnames = [...hostnames, uuidv4()];
     };
 
-    const removeHost = (e) => {
+    /* Adds a new hostname field w/ decrease in batch size */
+    const removeHost = (e: any) => {
         e.preventDefault();
         hostnames.splice(-1, 1);
         hostnames = hostnames;
     };
 
-    const createFormSubmit = async (e) => {
+    /* Creates the VMs by looping through every hostname in the list, will wait until all in the batch have been created */
+    const createFormSubmit = async () => {
         showSpinner = true;
 
-        // @ts-ignore
-        if (__production__) {
-            if (hostnames.length > 1) {
-                let project_id;
-                for (const hostname of hostnames) {
-                    project_id = project._id;
-                    await createVM(project._id, hostname, plan, image, location.name)
-                        .then((data) => {
-                            console.log(data);
-                        })
-                        .catch((err) => console.log(err));
-                }
-                await push("/dashboard/projects/" + project_id);
-                return;
-            }
-
-            await createVM(project._id, hostnames[0], plan, image, location.name)
-                .then((data) => {
-                    if (data !== null) {
-                        push("/dashboard/projects/" + project._id);
-                    } else {
-                        showSpinner = false;
-                    }
-                })
-                .catch((err) => console.log(err));
-        } else {
-            console.log("%cFetch would have been posted with: ", "color: lightgreen");
-            console.log(project._id, hostnames, plan, image, location.name);
+        for (const hostname of hostnames) {
+            await createVM(project._id, hostname, plan, image, location.name)
+            .catch((err) => console.log(err));
         }
+
+        showSpinner = false;
+        push("/dashboard/projects/" + project._id);
     };
 
+    /* Loads the os, plan, and pop data */
     const loadData = async () => {
         // @ts-ignore
-        if (__production__) {
-            await fetch("__apiRoute__/system")
-                .then((res) => res.json())
-                .then((body) => {
-                    if (!body.meta.success) {
-                        window.location.href = "/#/login";
-                    }
+        fetch("__apiRoute__/system")
+            .then((res) => res.json())
+            .then((body) => {
+                if (!body.meta.success) {
+                    checkMeta(body);
+                    return;
+                }
 
-                    let data: System = body.data as System;
-                    plans = data.plans;
-                    locations = data.pops;
-                    images = data.oses;
+                data = body.data as System;
 
-                    image = Object.keys(images)[0];
-                    plan = Object.keys(plans)[0];
-                    location = locations[0];
-                });
-        } else {
-            // !production
-            let data: System = getMockSystemData() as System;
-            plans = data.plans;
-            locations = data.pops;
-            images = data.oses;
-
-            image = Object.keys(images)[0];
-            plan = Object.keys(plans)[0];
-            location = locations[0];
-        }
+                image = Object.keys(data.oses)[0];
+                plan = Object.keys(data.plans)[0];
+                location = data.pops[0];
+            });
     };
 
     onMount(() => {
@@ -136,11 +111,19 @@
                     <form on:submit|preventDefault={createFormSubmit}>
                         <span class="form-header"> Choose an image: </span>
                         <div class="create-form-select">
-                            <VMSelect bind:current={image} data={images}/>
+                            {#if Object.keys(data.plans).length > 0}
+                                <VMSelect bind:current={image} data={data.oses}/>
+                            {:else}
+                                <Spinner />
+                            {/if}
                         </div>
                         <span class="form-header"> Choose a plan: </span>
                         <div class="create-form-select">
-                            <VMSelect bind:current={plan} data={plans} isOS={false}/>
+                            {#if Object.keys(data.oses).length > 0}
+                                <VMSelect bind:current={plan} data={data.plans} isOS={false}/>
+                            {:else}
+                                <Spinner />
+                            {/if}
                         </div>
                         <span class="form-header"> Finalize and create: </span>
                         <div class="create-form-final">
@@ -200,7 +183,7 @@
                                         <Select
                                                 isClearable={false}
                                                 isSearchable={false}
-                                                items={locations}
+                                                items={data.pops}
                                                 optionIdentifier="location"
                                                 getOptionLabel={(option, filterText) => {
 												return option.location;
@@ -222,13 +205,11 @@
 								</span>
                                 <Button class="submit-button" width="250px" color="#46b0a6" disabled={!can_create}>CREATE</Button>
                                 <span style="margin-bottom: 2rem;"></span>
-                                <!-- <button class="submit" type="submit">CREATE</button> -->
                             </div>
                             <div class="create-form-final-section">
                                 <span class="create-form-subheader">Choose a hostname:</span>
                                 <span class="create-form-subtitle">Give your machines a name</span>
                                 {#each hostnames as hostname, index}
-                                    <!-- <input autocomplete="off" type="text" class="hostname-input" name={'hostname-' + index} bind:value={hostname}/> -->
                                     <Input
                                             autocomplete="off"
                                             type="text"

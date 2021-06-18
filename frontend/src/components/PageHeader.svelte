@@ -1,11 +1,10 @@
 <script lang="ts">
 	export let options: boolean = false;
-	export let current: string = "";
 	export let labels: string[] = [];
 	export let baseHref: string = "";
 	export let isResource: boolean = false;
 	export let state: number = 0;
-	export let params: any;
+	export let params: any = null;
 </script>
 
 <span class="wrapper">

@@ -67,8 +67,7 @@
 		display: flex;
 		align-items: flex-start;
 		justify-content: center;
-		padding-bottom: 20px;
-		height: 116px;
+		height: 136px;
 	}
 
 	.icons span {
