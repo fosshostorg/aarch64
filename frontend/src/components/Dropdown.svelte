@@ -59,7 +59,6 @@
 	}
 
 	div :not(:last-child) {
-		/* border-top: 1px solid #0e0d0d; */
 		border-bottom: 1px solid #0e0d0d;
 	}
 
