@@ -21,7 +21,7 @@
    */
   export let handleClose: (e: Event) => any = null;
   /** number of ms before snackbar is removed */
-  export let timeout: number = 4000;
+  export let timeout: number = 2000;
   /** is this snackbar part of a snackbar group? designed for internal use */
   export let grouped: boolean = false;
   /** styles passed on to the snackbar */

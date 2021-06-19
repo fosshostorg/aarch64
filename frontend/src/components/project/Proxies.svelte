@@ -5,21 +5,30 @@
     import Input from "../Input.svelte";
     import Button from "../Button.svelte";
     import Select from "svelte-select";
-    import {Snackbars} from '../../stores';
     import Spinner from "../Spinner.svelte";
+    import { checkMeta } from '../../utils';
 
+    /* The project we are currently viewing */
     export let project = null;
 
+    /* Table headers */
     let headers = [
         {value: 'HOSTNAME', key: 'hostname'},
         {value: 'VM', key: 'vm'},
         {value: '', key: 'icon'}
     ]
 
-    let rows = null;
+    /* The proxies to show in the table */
+    let proxies = null;
+
+    /* The hostname and VM to add from the new proxy form */
     let hostname = "";
     let currentVM = null;
 
+    /* Sets the VMs of our project for the dropdown */
+    let vms = setVMS(project);
+
+    /* Gets the VMs of a project for the dropdown options */
     function setVMS(project) {
         getProxies();
         currentVM = null;
@@ -31,8 +40,7 @@
         })
     }
 
-    $: vms = setVMS(project);
-
+    /* Gets the name of a VM from a VM object, for use in the dropdown */
     function findVMName(id: string): string {
         for (const vm of project.vms) {
             if (vm._id === id) {
@@ -41,6 +49,7 @@
         }
     }
 
+    /* Gets the project's proxies (as they are not returned in the larger project object) */
     function getProxies() {
         fetch(`__apiRoute__/proxies/${project._id}`, {
             method: "GET"
@@ -48,8 +57,8 @@
             .then(resp => resp.json())
             .then(data => {
                 if (data.meta.success) {
-                    rows = [];
-                    rows = data.data.map(rec => {
+                    proxies = [];
+                    proxies = data.data.map(rec => {
                         return {
                             hostname: rec.label,
                             vm: {hostname: findVMName(rec.vm), _id: rec.vm,},
@@ -60,18 +69,13 @@
                         }
                     })
                 } else {
-                    $Snackbars.push({
-                        color: "red",
-                        status: "ERROR",
-                        message: data.meta.message,
-                        grouped: true,
-                    })
-                    $Snackbars = $Snackbars;
+                    checkMeta(data);
                 }
             })
             .catch((err) => alert(err));
     }
 
+    /* Adds a new proxy */
     function addProxy() {
         fetch("__apiRoute__/proxy", {
             method: "POST",
@@ -80,30 +84,15 @@
         })
             .then(resp => resp.json())
             .then(data => {
-                if (data.meta.success) {
-                    $Snackbars.push({
-                        color: "green",
-                        status: 200,
-                        message: data.meta.message,
-                        grouped: true,
-                    })
-                    $Snackbars = $Snackbars;
+                if (checkMeta(data)) {
                     getProxies();
-                } else {
-                    $Snackbars.push({
-                        color: "red",
-                        status: "ERROR",
-                        message: data.meta.message,
-                        grouped: true,
-                    })
-                    $Snackbars = $Snackbars;
                 }
             })
             .catch((err) => alert(err));
     }
 
+    /* Deletes a given proxy */
     function deleteProxy(proxy_id: string) {
-        console.log("deleting proxy", proxy_id)
         fetch("__apiRoute__/proxy", {
             method: "DELETE",
             headers: {"Content-Type": "application/json"},
@@ -111,22 +100,7 @@
         })
             .then(resp => resp.json())
             .then((data) => {
-                if (!data.meta.success) {
-                    $Snackbars.push({
-                        color: "red",
-                        status: "ERROR",
-                        message: data.meta.message,
-                        grouped: true,
-                    })
-                    $Snackbars = $Snackbars;
-                } else {
-                    $Snackbars.push({
-                        color: "green",
-                        status: 200,
-                        message: data.meta.message,
-                        grouped: true,
-                    })
-                    $Snackbars = $Snackbars;
+                if (checkMeta(data)) {
                     getProxies();
                 }
             })
@@ -135,13 +109,14 @@
 </script>
 
 <main>
-    {#if rows == null}
-  <span class="loading">
-    <Spinner/>
-  </span>
+    {#if proxies == null}
+        <span class="loading">
+            <Spinner/>
+        </span>
     {:else}
+        {#if proxies.length > 0}
         <div>
-            <Table {headers} {rows}>
+            <Table {headers} rows={proxies}>
                 <span class="cell-slot" slot="cell" let:row let:cell>
                 {#if cell.key !== 'icon'}
                     <span class="cell">
@@ -162,6 +137,7 @@
                 </span>
             </Table>
         </div>
+        {/if}
         <span class="form-header">Add a new proxy:</span>
         <span class="form-wrapper">
             <span class="form-inputs">
