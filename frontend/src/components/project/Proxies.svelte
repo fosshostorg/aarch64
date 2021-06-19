@@ -1,12 +1,12 @@
 <script lang="ts">
     // @ts-nocheck
-    import Table from '../components/Table.svelte';
+    import Table from '../Table.svelte';
     import {link} from 'svelte-spa-router';
-    import Input from "../components/Input.svelte";
-    import Button from "../components/Button.svelte";
+    import Input from "../Input.svelte";
+    import Button from "../Button.svelte";
     import Select from "svelte-select";
-    import {Snackbars} from '../stores';
-    import Spinner from "./Spinner.svelte";
+    import {Snackbars} from '../../stores';
+    import Spinner from "../Spinner.svelte";
 
     export let project = null;
 

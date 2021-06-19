@@ -93,4 +93,10 @@
     border-color: #777;
   }
 
+  a {
+    text-decoration: none;
+    display: inline-flex;
+    flex-shrink: 1;
+  }
+
 </style>

@@ -7,7 +7,7 @@
   export let error: string = null;
   export let disabled: boolean = false;
   export let icon: string = null;
-  export let value: string = "";
+  export let value: any = "";
   export let fixErrorHeight: boolean = false;
 
   let focus: boolean;

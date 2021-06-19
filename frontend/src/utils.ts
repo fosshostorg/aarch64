@@ -116,6 +116,11 @@ export const getUserProjects = async () => {
 	return body;
 };
 
+export const updateProjects = async () => {
+	const data = await getUserProjects();
+	Projects.set(data);
+}
+
 export const updateUserInfo = async (user: { email: string }) => {
 	console.log(
 		"Would have updated user info, but there is no route to do so >:("
