@@ -32,7 +32,6 @@ import Button from './Button.svelte';
     <label for="text-input">{label}:</label>
     <div>
         <Input type="text" value={text} id="text-input" class="input-field" disabled />
-        <!-- <button on:click={copyHandler}>COPY</button> -->
         <Button class="copy-button" on:click={copyHandler}>COPY</Button>
     </div>
 </main>
