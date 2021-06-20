@@ -583,7 +583,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
-    if not bool(re.match('^[a-zA-Z0-9]+$', json_body["hostname"])):
+    if not bool(re.match('^[a-zA-Z0-9\-_]+$', json_body["hostname"])):
         return _resp(False, "VM names can only include a-Z, 0-9, and -_")
 
     if json_body["plan"] not in config_doc["plans"].keys():
