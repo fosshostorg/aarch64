@@ -14,7 +14,7 @@
 			<div class="selection-card" class:selected={current == option}>
 				{#if isOS}
 					<img
-						src={'./img/' + option.toLowerCase() + '.svg'}
+						src={'./img/' + data[option].image}
 						alt={option + ' Logo'} />
 				{/if}
 				<span class="selection-card-header"> {option} </span>
