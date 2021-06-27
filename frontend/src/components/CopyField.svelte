@@ -11,7 +11,7 @@
             $Snackbars.push({
 				color: "green",
 				status: "OK",
-				message: "password copied",
+				message: "Copied",
 				grouped: true,
 			})
             $Snackbars = $Snackbars;
@@ -19,7 +19,7 @@
             $Snackbars.push({
 				color: "red",
 				status: "ERROR",
-				message: "password copy failed",
+				message: "Copy failed",
 				grouped: true,
 			})
             $Snackbars = $Snackbars;
