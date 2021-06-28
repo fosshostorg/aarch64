@@ -28,3 +28,34 @@
     enabled: true
     state: started
   when: node_exporter_service.changed
+
+- name: Download ipmi_exporter
+  unarchive:
+    src: https://github.com/soundcloud/ipmi_exporter/releases/download/v1.4.0/ipmi_exporter-1.4.0.linux-arm64.tar.gz
+    dest: /tmp/
+    remote_src: yes
+  register: ipmi_exporter_download
+
+- name: Move ipmi_exporter
+  copy:
+    src: /tmp/ipmi_exporter-1.4.0.linux-arm64/ipmi_exporter
+    dest: /usr/bin/ipmi_exporter
+    mode: +x
+    remote_src: true
+  when: ipmi_exporter_download.changed
+
+- name: Add ipmi_exporter service
+  template:
+    src: ipmi_exporter.service
+    dest: /lib/systemd/system/ipmi-exporter.service
+    owner: root
+    group: root
+  register: ipmi_exporter_service
+
+- name: Start and enable ipmi_expoter
+  systemd:
+    name: ipmi-exporter
+    daemon-reload: true
+    enabled: true
+    state: started
+  when: ipmi_exporter_service.changed
