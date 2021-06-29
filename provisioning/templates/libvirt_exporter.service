@@ -1,0 +1,11 @@
+[Unit]
+Description=Prometheus libvirt exporter
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=bash -c '/usr/bin/libvirt_exporter --web.listen-address="[$(cat /etc/wireguard/wg0.conf | grep Address | cut -d " " -f 3 | cut -d "/" -f 1)]:9000"'
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
