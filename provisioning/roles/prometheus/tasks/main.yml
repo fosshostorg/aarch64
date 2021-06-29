@@ -21,10 +21,73 @@
     group: root
   register: node_exporter_service
 
-- name: Start and enable node_expoter
+- name: Start and enable node_exporter
   systemd:
     name: node-exporter
     daemon-reload: true
     enabled: true
     state: started
   when: node_exporter_service.changed
+
+# IPMI Exporter
+
+- name: Install FreeIPMI
+  apt:
+    update_cache: yes
+    state: present
+    name: freeipmi
+
+- name: Download ipmi_exporter
+  unarchive:
+    src: https://github.com/soundcloud/ipmi_exporter/releases/download/v1.4.0/ipmi_exporter-1.4.0.linux-arm64.tar.gz
+    dest: /tmp/
+    remote_src: yes
+  register: ipmi_exporter_download
+
+- name: Move ipmi_exporter
+  copy:
+    src: /tmp/ipmi_exporter-1.4.0.linux-arm64/ipmi_exporter
+    dest: /usr/bin/ipmi_exporter
+    mode: +x
+    remote_src: true
+  when: ipmi_exporter_download.changed
+
+- name: Add ipmi_exporter service
+  template:
+    src: ipmi_exporter.service
+    dest: /lib/systemd/system/ipmi-exporter.service
+    owner: root
+    group: root
+  register: ipmi_exporter_service
+
+- name: Start and enable ipmi_exporter
+  systemd:
+    name: ipmi-exporter
+    daemon-reload: true
+    enabled: true
+    state: started
+  when: ipmi_exporter_service.changed
+
+# libvirt exporter
+
+- name: Download libvirt_exporter
+  get_url:
+    url: https://releases.aarch64.com/libvirt_exporter
+    dest: /usr/bin/libvirt_exporter
+    mode: +x
+
+- name: Add libvirt_exporter service
+  template:
+    src: libvirt_exporter.service
+    dest: /lib/systemd/system/libvirt-exporter.service
+    owner: root
+    group: root
+  register: libvirt_exporter_service
+
+- name: Start and enable libvirt_exporter
+  systemd:
+    name: libvirt-exporter
+    daemon-reload: true
+    enabled: true
+    state: started
+  when: libvirt_exporter_service.changed

@@ -9,7 +9,6 @@ import css from "rollup-plugin-css-only";
 import replace from "@rollup/plugin-replace";
 import mdsvexPages from "rollup-plugin-mdsvex-pages";
 
-// const production = !process.env.ROLLUP_WATCH;
 const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
