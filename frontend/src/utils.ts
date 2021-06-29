@@ -8,9 +8,9 @@ function vmControl(vm: any, command: any) {
 		  'Accept': 'application/json',
 		  'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({"vm":vm._id})
-	  }).then((d)=>d.json()).then((r)=>{
-		  alert(r.meta.message)
+		body: JSON.stringify({vm :vm._id})
+	  }).then(res => res.json()).then(body => {
+		  checkMeta(body);
 	  })
 }
 
