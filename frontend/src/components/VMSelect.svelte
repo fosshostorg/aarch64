@@ -1,11 +1,10 @@
-<script>
-    import RadioButton from './RadioButton.svelte'
+<script lang="ts">
+    /*globals OS, Plan */
+    import RadioButton from './RadioButton.svelte';
 
-    export let isOS = true
-
-    export let data = {}
-
-    export let current = ''
+    export let isOS = true;
+    export let data: { [key: string]: OS | Plan } = {};
+    export let current = '';
 </script>
 
 <main>
@@ -13,7 +12,7 @@
         <RadioButton id={option} bind:group={current}>
             <div class="selection-card" class:selected={current == option}>
                 {#if isOS}
-                    <img src={'./img/' + data[option].image} alt={option + ' Logo'} />
+                    <img src={`./img/${data[option].image}`} alt={`${option} Logo`} />
                 {/if}
                 <span class="selection-card-header"> {option} </span>
                 <divider />

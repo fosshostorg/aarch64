@@ -1,10 +1,13 @@
 <script lang="ts">
-    export let options = false
-    export let labels: string[] = []
-    export let baseHref = ''
-    export let isResource = false
-    export let state = 0
-    export let params: any = null
+    export let options = false;
+    export let labels: string[] = [];
+    export let baseHref = '';
+    export let isResource = false;
+    export let state = 0;
+    export let params: { project_id: string; page: string } = {
+        project_id: '',
+        page: ''
+    };
 </script>
 
 <span class="wrapper">
@@ -27,7 +30,7 @@
                             (i == 0 && params.page == null)}
                         on:click={() => {
                             window.location.href =
-                                baseHref + '/' + label.toLowerCase().replace(/ /g, '')
+                                baseHref + '/' + label.toLowerCase().replace(/ /g, '');
                         }}>{label}</button
                     >
                 {/each}

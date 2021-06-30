@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { User } from '../stores'
-    import Dropdown from './Dropdown.svelte'
+    /*globals APIResponse */
+    import { User } from '../stores';
+    import Dropdown from './Dropdown.svelte';
 
-    export let breadcrumbs: { path: string; label: string }[] = []
+    export let breadcrumbs: { path: string; label: string }[] = [];
 
     async function logout() {
         await fetch('__apiRoute__/auth/logout', {
@@ -10,19 +11,19 @@
             headers: { 'Content-Type': 'application/json' }
         })
             .then((res: Response) => res.json())
-            .then(data => {
+            .then((data: APIResponse<null>) => {
                 if (data.meta.success) {
-                    window.location.href = '/#/'
+                    window.location.href = '/#/';
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => console.log(err));
     }
 
-    const handleLogout = e => {
-        open = true
-    }
+    const handleLogout = () => {
+        open = true;
+    };
 
-    let open = false
+    let open = false;
 </script>
 
 <nav>
@@ -52,8 +53,8 @@
                         {
                             label: 'LOGOUT',
                             icon: 'logout',
-                            action: e => {
-                                logout()
+                            action: () => {
+                                void logout();
                             }
                         }
                     ]}

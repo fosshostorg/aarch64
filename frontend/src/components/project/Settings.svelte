@@ -1,17 +1,18 @@
 <script lang="ts">
-    import { push } from 'svelte-spa-router'
-    import { User } from '../../stores'
-    import { checkMeta, updateProjects } from '../../utils'
-    import Button from '../Button.svelte'
-    import Input from '../Input.svelte'
+    /*globals Project */
+    import { push } from 'svelte-spa-router';
+    import { User } from '../../stores';
+    import { checkMeta, updateProjects } from '../../utils';
+    import Button from '../Button.svelte';
+    import Input from '../Input.svelte';
 
     /* URL parameters and the current project, passed down from the Project page */
-    export let params: any = {}
-    export let project: Project
+    export let params: { project_id: string };
+    export let project: Project;
 
     /* Variables bound to form inputs for adding emails and chaning budget */
-    let newUserEmail = ''
-    let newBudget = 0
+    let newUserEmail = '';
+    let newBudget = 0;
 
     /* Adds a new user to the project */
     const submitAddUser = () => {
@@ -23,11 +24,11 @@
             .then(resp => resp.json())
             .then(data => {
                 if (checkMeta(data)) {
-                    updateProjects()
+                    void updateProjects();
                 }
             })
-            .catch(err => console.error(err))
-    }
+            .catch(err => console.error(err));
+    };
 
     /* Changes the project's budget */
     const changeBudget = () => {
@@ -39,11 +40,11 @@
             .then(resp => resp.json())
             .then(data => {
                 if (checkMeta(data)) {
-                    updateProjects()
+                    void updateProjects();
                 }
             })
-            .catch(err => console.error(err))
-    }
+            .catch(err => console.error(err));
+    };
 
     /* Deletes the project and forwards the user to the dashboard */
     const deleteProject = () => {
@@ -60,12 +61,12 @@
                 .then(resp => resp.json())
                 .then(data => {
                     if (checkMeta(data)) {
-                        push('/dashboard')
+                        void push('/dashboard');
                     }
                 })
-                .catch(err => console.error(err))
+                .catch(err => console.error(err));
         }
-    }
+    };
 </script>
 
 <div>

@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { dropdownItems } from '../utils'
+    /*globals VM */
+    import { dropdownItems } from '../utils';
 
-    export let vm: VM
+    export let vm: VM;
 
-    let options = dropdownItems(vm)
+    let options = dropdownItems(vm);
 </script>
 
 <div class="action-options">

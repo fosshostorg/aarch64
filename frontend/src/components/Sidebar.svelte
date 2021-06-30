@@ -1,9 +1,7 @@
 <script>
-    import { link } from 'svelte-spa-router'
-    import active from 'svelte-spa-router/active'
-    import { Projects, User } from '../stores'
-
-    // let projects = [{name: "vela's Project", route: '/projects/1'}, {name: "nqdrt1's Long Project Name", route: '/projects/2'}]
+    import { link } from 'svelte-spa-router';
+    import active from 'svelte-spa-router/active';
+    import { Projects, User } from '../stores';
 
     let sidebar = [
         { header: 'Projects', items: [], open: true },
@@ -27,7 +25,7 @@
             ],
             open: true
         }
-    ]
+    ];
 </script>
 
 <nav>
@@ -39,7 +37,7 @@
                 <span
                     class="sidebar-category-header noselect"
                     on:click={() => {
-                        category.open = !category.open
+                        category.open = !category.open;
                     }}
                 >
                     {category.header.toUpperCase()}
@@ -53,11 +51,11 @@
                             {#each $Projects as project}
                                 <a
                                     class="sidebar-category-item"
-                                    href={'/dashboard/projects/' + project._id}
+                                    href={`/dashboard/projects/${project._id}`}
                                     use:link
                                     use:active={{
                                         path: new RegExp(
-                                            `\/dashboard\/projects\/${project._id}`
+                                            `/dashboard/projects/${project._id}`
                                         ),
                                         className: 'sidebar-item-active'
                                     }}
@@ -91,7 +89,7 @@
                                         href={item.route}
                                         use:link
                                         use:active={{
-                                            path: item.route + '*',
+                                            path: `${item.route}*`,
                                             className: 'sidebar-item-active'
                                         }}
                                     >

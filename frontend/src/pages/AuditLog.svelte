@@ -1,40 +1,39 @@
 <script lang="ts">
-    import AuditLogCard from '../components/AuditLogCard.svelte'
-    import { location, push } from 'svelte-spa-router'
-    import { onMount } from 'svelte'
-    import Spinner from '../components/Spinner.svelte'
-    import PageHeader from '../components/PageHeader.svelte'
-    import Navbar from '../components/Navbar.svelte'
-    import { User } from '../stores'
+    /*globals Log, APIResponse */
+    import AuditLogCard from '../components/AuditLogCard.svelte';
+    import { push } from 'svelte-spa-router';
+    import { onMount } from 'svelte';
+    import Spinner from '../components/Spinner.svelte';
+    import PageHeader from '../components/PageHeader.svelte';
+    import Navbar from '../components/Navbar.svelte';
+    import { User } from '../stores';
 
-    export let admin: boolean
-    export let params: any
+    export let admin: boolean;
+    export let params: { project_id: string };
 
-    let logs: Log[] = null
-    let isProjectLevel = $location.includes('project')
+    let logs: Log[] = null;
 
     const getLogs = async () => {
-        const route = admin ? `/admin/audit` : `/project/${params.project_id}/audit`
+        const route = admin ? `/admin/audit` : `/project/${params.project_id}/audit`;
         fetch(`__apiRoute__${route}`)
             .then(res => res.json())
-            .then(data => {
+            .then((data: APIResponse<Log[]>) => {
                 if (data.meta.success) {
-                    logs = data.data
+                    logs = data.data;
                 }
             })
             .catch(err => {
-                console.error(err)
-            })
-    }
+                console.error(err);
+            });
+    };
 
     onMount(() => {
-        // @ts-ignore
         if (admin && !$User.admin) {
-            push('/dashboard')
+            void push('/dashboard');
         } else {
-            getLogs()
+            void getLogs();
         }
-    })
+    });
 </script>
 
 {#if admin}

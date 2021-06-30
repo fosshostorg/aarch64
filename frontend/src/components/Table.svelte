@@ -1,12 +1,12 @@
 <script lang="ts">
-    export let headers: { value: string; key: string; [key: string]: any }[] = []
-    export let rows: { value: string; [key: string]: any }[] = []
+    export let headers: { value: string; key: string; [key: string]: any }[] = [];
+    export let rows: { value: string; [key: string]: any }[] = [];
 
-    $: headerKeys = headers.map(({ key }) => key)
+    $: headerKeys = headers.map(({ key }) => key);
     $: rows = rows.map(row => ({
         ...row,
         cells: headerKeys.map(key => ({ key, value: row[key] }))
-    }))
+    }));
 </script>
 
 <table>

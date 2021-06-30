@@ -1,17 +1,17 @@
 <script lang="ts">
-    import { link, push } from 'svelte-spa-router'
-    import Button from '../components/Button.svelte'
-    import Input from '../components/Input.svelte'
-    import PageTitle from '../components/PageTitle.svelte'
-    import { checkMeta } from '../utils'
+    import { link, push } from 'svelte-spa-router';
+    import Button from '../components/Button.svelte';
+    import Input from '../components/Input.svelte';
+    import PageTitle from '../components/PageTitle.svelte';
+    import { checkMeta } from '../utils';
 
-    export let isLogin: boolean
+    export let isLogin: boolean;
 
-    let email: string,
-        password = ''
+    let email: string;
+    let password: string;
 
-    const handleSubmit = async e => {
-        fetch(`__apiRoute__/auth/${isLogin ? 'login' : 'signup'}`, {
+    const handleSubmit = async () => {
+        await fetch(`__apiRoute__/auth/${isLogin ? 'login' : 'signup'}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -20,14 +20,14 @@
             .then(async data => {
                 if (checkMeta(data)) {
                     if (isLogin) {
-                        push('/dashboard')
+                        void push('/dashboard');
                     } else {
-                        push('/login')
+                        void push('/login');
                     }
                 }
             })
-            .catch(err => console.log(err))
-    }
+            .catch(err => console.log(err));
+    };
 </script>
 
 <PageTitle title="AARCH64 Dashboard Signup" />

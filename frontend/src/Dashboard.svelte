@@ -1,16 +1,16 @@
 <script>
-    import Router, { push } from 'svelte-spa-router'
-    import Create from './pages/Create.svelte'
-    import Project from './pages/Project.svelte'
-    import NewProject from './pages/NewProject.svelte'
-    import Sidebar from './components/Sidebar.svelte'
-    import { Projects, User } from './stores'
-    import { onMount } from 'svelte'
-    import Resource from './pages/Resource.svelte'
-    import AuditLog from './pages/AuditLog.svelte'
-    import { wrap } from 'svelte-spa-router/wrap'
+    import Router, { push } from 'svelte-spa-router';
+    import Create from './pages/Create.svelte';
+    import Project from './pages/Project.svelte';
+    import NewProject from './pages/NewProject.svelte';
+    import Sidebar from './components/Sidebar.svelte';
+    import { Projects, User } from './stores';
+    import { onMount } from 'svelte';
+    import Resource from './pages/Resource.svelte';
+    import AuditLog from './pages/AuditLog.svelte';
+    import { wrap } from 'svelte-spa-router/wrap';
 
-    const prefix = '/dashboard'
+    const prefix = '/dashboard';
     const routes = {
         '/create': Create,
         '/auditlog': wrap({
@@ -22,7 +22,7 @@
         '/projects/create': NewProject,
         '/projects/:project_id/:page?': Project,
         '/projects/:project_id/resources/:resource_id': Resource
-    }
+    };
 
     onMount(() => {
         // Redirect to projects create page if user doesn't have any projects, otherwise redirect to their first project
@@ -31,12 +31,12 @@
             window.location.hash === '#/dashboard/'
         ) {
             if ($Projects.length < 1) {
-                push('/dashboard/projects/create')
+                push('/dashboard/projects/create');
             } else {
-                push('/dashboard/projects/' + $Projects[0]._id)
+                push('/dashboard/projects/' + $Projects[0]._id);
             }
         }
-    })
+    });
 </script>
 
 <Sidebar />

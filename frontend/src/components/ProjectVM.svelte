@@ -1,7 +1,8 @@
 <script lang="ts">
-    import { push } from 'svelte-spa-router'
-    import Dropdown from './Dropdown.svelte'
-    import { dropdownItems } from '../utils'
+    /*globals VM */
+    import { push } from 'svelte-spa-router';
+    import Dropdown from './Dropdown.svelte';
+    import { dropdownItems } from '../utils';
 
     export let VM: VM = {
         _id: '',
@@ -17,23 +18,26 @@
         password: '',
         phoned_home: false,
         address: '',
-        gateway: ''
-    }
+        gateway: '',
+        creator: '',
+        state: 0,
+        created: { by: '', at: 0 }
+    };
 
-    export let link = ''
+    export let link = '';
 
-    let listOpen = false
+    let listOpen = false;
 
-    const handleSettings = e => {
-        listOpen = !listOpen
-    }
+    const handleSettings = () => {
+        listOpen = !listOpen;
+    };
 </script>
 
 <main>
     <span
         class="wrapper"
         on:click={() => {
-            push(link)
+            void push(link);
         }}
     >
         <span class="img">
@@ -145,11 +149,6 @@
         justify-content: center;
         flex-grow: 1;
         flex-basis: 270px;
-    }
-
-    .ip b {
-        font-weight: bold;
-        padding: 0px 5px;
     }
 
     img {

@@ -1,9 +1,9 @@
 <script lang="ts">
-    export let log: Log
+    export let log: Log;
 
-    let time = new Date(log.time * 1000)
-    let parts = time.toLocaleString('en-US')
-    let timeString = parts.split(',').join(' at ')
+    let time = new Date(log.time * 1000);
+    let parts = time.toLocaleString('en-US');
+    let timeString = parts.split(',').join(' at ');
 </script>
 
 <div>

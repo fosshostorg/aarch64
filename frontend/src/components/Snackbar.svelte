@@ -1,54 +1,54 @@
 <script lang="ts">
     // Taken from https://github.com/knightss27/seth-js
 
-    import { fly } from 'svelte/transition'
-    import { sineInOut } from 'svelte/easing'
-    import { onMount, createEventDispatcher } from 'svelte'
+    import { fly } from 'svelte/transition';
+    import { sineInOut } from 'svelte/easing';
+    import { onMount, createEventDispatcher } from 'svelte';
     // import { validateHTMLColor, validateHTMLColorName } from "validate-color";
 
     /** should the snackbar be visible */
-    export let open = false
+    export let open = false;
     /** status code for the snackbar */
-    export let status: string | number = '200'
+    export let status: string | number = '200';
     /** message to be displayed */
-    export let message = ''
+    export let message = '';
 
     /** snackbar color */
-    export let color = 'green'
+    export let color = 'green';
     /** callback function for when the close button is clicked.
      *  **PLEASE NOTE**: This will override the default close management function.
      *  If you do not want a controlled snackbar, use `on:close`.
      */
-    export let handleClose: (e: Event) => any = null
+    export let handleClose: ((e: Event) => unknown) | null = null;
     /** number of ms before snackbar is removed */
-    export let timeout = 2000
+    export let timeout = 2000;
     /** is this snackbar part of a snackbar group? designed for internal use */
-    export let grouped = false
+    export let grouped = false;
     /** styles passed on to the snackbar */
-    export let style = ''
-    const dispatch = createEventDispatcher()
+    export let style = '';
+    const dispatch = createEventDispatcher();
     const internalHandleClose = (e: Event) => {
         // Dispatch close event
-        dispatch('close', { event: e, open })
+        dispatch('close', { event: e, open });
 
         // Call handleClose if it has been set
         if (handleClose !== null) {
-            handleClose(e)
-            return
+            handleClose(e);
+            return;
         }
-        open = false
-    }
+        open = false;
+    };
     onMount(() => {
         if (grouped) {
-            open = true
+            open = true;
         }
         if (timeout !== null) {
-            const autoClose = setTimeout(internalHandleClose, timeout)
+            const autoClose = setTimeout(internalHandleClose, timeout);
             return () => {
-                clearTimeout(autoClose)
-            }
+                clearTimeout(autoClose);
+            };
         }
-    })
+    });
 
     // $: if (!(validateHTMLColorName(color) || validateHTMLColor(color))) {
     //     color = "green"

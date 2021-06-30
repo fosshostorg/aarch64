@@ -1,32 +1,30 @@
 <script lang="ts">
     /** outlined variant? */
-    export let outline = false
+    export let outline = false;
     /** color of the button, can be any CSS valid string */
-    export let color = 'black'
-    /** color of the button's background/text when disabled */
-    export let disabledColor = '#aaa'
+    export let color = 'black';
     /** material icon to render */
-    export let icon = ''
+    export let icon = '';
     /** styles passed to the button component */
-    export let style = ''
+    export let style = '';
     /** disable button? */
-    export let disabled = false
+    export let disabled = false;
     /** flip icon and text arrangement */
-    export let flipped = false
+    export let flipped = false;
     /** width of the button */
-    export let width = ''
+    export let width = '';
     /** height of the button */
-    export let height = ''
+    export let height = '';
     /** href for button to act as link. this will wrap the button with an <a> */
-    export let href: string = null
+    export let href = '';
 
-    let userClasses = ''
-    export { userClasses as class }
+    let userClasses = '';
+    export { userClasses as class };
 
-    $: isSlotFilled = $$slots['default']
+    $: isSlotFilled = $$slots['default'];
 </script>
 
-{#if href !== null}
+{#if href.length > 0}
     <a {href}>
         <button
             class:outline

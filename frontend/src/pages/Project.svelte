@@ -1,35 +1,35 @@
 <script lang="ts">
-    import Navbar from '../components/Navbar.svelte'
-    import PageHeader from '../components/PageHeader.svelte'
-    import ProjectVM from '../components/ProjectVM.svelte'
-    import { Projects, User } from '../stores'
-    import PageTitle from '../components/PageTitle.svelte'
-    import Input from '../components/Input.svelte'
-    import Button from '../components/Button.svelte'
-    import { push } from 'svelte-spa-router'
-    import Proxies from '../components/project/Proxies.svelte'
-    import AuditLog from './AuditLog.svelte'
-    import { checkMeta, updateProjects } from '../utils'
-    import Settings from '../components/project/Settings.svelte'
+    /*globals Project */
+    import Navbar from '../components/Navbar.svelte';
+    import PageHeader from '../components/PageHeader.svelte';
+    import ProjectVM from '../components/ProjectVM.svelte';
+    import { Projects } from '../stores';
+    import PageTitle from '../components/PageTitle.svelte';
+    import Button from '../components/Button.svelte';
+    import Proxies from '../components/project/Proxies.svelte';
+    import AuditLog from './AuditLog.svelte';
+    import Settings from '../components/project/Settings.svelte';
 
-    export let params: any = {}
+    export let params: { project_id: string; page: string } = {
+        project_id: '',
+        page: ''
+    };
 
-    const getProjectById = (id: string, _projects: any[]) => {
-        let returnProject = null
-        let projects = [..._projects]
+    const getProjectById = (id: string, _projects: Project[]) => {
+        let returnProject: Project = null;
+        let projects = [..._projects];
         projects.forEach(project => {
             if (project._id == id) {
-                returnProject = project
+                returnProject = project;
             }
-        })
-        return returnProject
-    }
+        });
+        return returnProject;
+    };
 
-    let project: Project
-    $: project = getProjectById(params.project_id, $Projects)
+    let project: Project;
+    $: project = getProjectById(params.project_id, $Projects);
 
-    let views = ['RESOURCES', 'SETTINGS', 'PROXIES', 'AUDIT LOG']
-    let currentView = 'RESOURCES'
+    let views = ['RESOURCES', 'SETTINGS', 'PROXIES', 'AUDIT LOG'];
 </script>
 
 <PageTitle title={project ? project.name : 'Project page'} />
@@ -76,10 +76,7 @@
                         {#each project.vms as vm}
                             <ProjectVM
                                 VM={vm}
-                                link={'/dashboard/projects/' +
-                                    project._id +
-                                    '/resources/' +
-                                    vm['_id']}
+                                link={`/dashboard/projects/${project._id}/resources/${vm._id}`}
                             />
                         {/each}
                     </div>

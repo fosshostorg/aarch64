@@ -1,5 +1,5 @@
-import { Writable, writable } from 'svelte/store'
+import { Writable, writable } from 'svelte/store';
 
-export const Projects: Writable<Project[]> = writable([])
-export const User: Writable<any> = writable(null)
-export const Snackbars: Writable<any[]> = writable([])
+export const Projects: Writable<Project[]> = writable([]);
+export const User: Writable<User> = writable(null);
+export const Snackbars: Writable<Snackbar[]> = writable([]);

@@ -1,5 +1,6 @@
 <script lang="ts">
-    export let vm: VM
+    /*globals VM */
+    export let vm: VM;
 </script>
 
 <main>

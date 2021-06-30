@@ -1,6 +1,6 @@
 <script>
-    import { link, push } from 'svelte-spa-router'
-    import PageTitle from '../components/PageTitle.svelte'
+    import { link, push } from 'svelte-spa-router';
+    import PageTitle from '../components/PageTitle.svelte';
 </script>
 
 <PageTitle title="404 Not Found" />

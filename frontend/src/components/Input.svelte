@@ -1,22 +1,22 @@
 <script lang="ts">
-    let userClasses = ''
-    export { userClasses as class }
-    export let labelClasses = ''
-    export let placeholder = ''
-    export let label = ''
-    export let error: string = null
-    export let disabled = false
-    export let icon: string = null
-    export let value: any = ''
-    export let fixErrorHeight = false
+    let userClasses = '';
+    export { userClasses as class };
+    export let labelClasses = '';
+    export let placeholder = '';
+    export let label = '';
+    export let error: string = null;
+    export let disabled = false;
+    export let icon: string = null;
+    export let value: any = '';
+    export let fixErrorHeight = false;
 
-    let focus: boolean
+    let focus: boolean;
     const handleFocus = () => {
-        focus = true
-    }
+        focus = true;
+    };
     const handleBlur = () => {
-        focus = false
-    }
+        focus = false;
+    };
 </script>
 
 <!-- svelte-ignore a11y-label-has-associated-control -->

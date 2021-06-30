@@ -1,22 +1,22 @@
 <script lang="ts">
-    export let items: DropdownItem[] = []
-    export let open = false
+    export let items: DropdownItem[] = [];
+    export let open = false;
 
     const handleBlur = (e: FocusEvent) => {
         if (open) {
             if (e.relatedTarget !== null && (e.relatedTarget as HTMLElement).id !== '') {
                 if ((e.relatedTarget as HTMLElement).id !== 'dropdown') {
-                    open = false
+                    open = false;
                 }
             } else {
-                open = false
+                open = false;
             }
         }
-    }
+    };
 
     const init = (el: HTMLElement) => {
-        el.focus()
-    }
+        el.focus();
+    };
 </script>
 
 <main>

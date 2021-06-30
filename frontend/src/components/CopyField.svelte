@@ -1,13 +1,13 @@
 <script lang="ts">
-    import Input from './Input.svelte'
-    import { Snackbars } from '../stores'
-    import Button from './Button.svelte'
+    import Input from './Input.svelte';
+    import { Snackbars } from '../stores';
+    import Button from './Button.svelte';
 
-    export let text = ''
-    export let label = 'Password'
+    export let text = '';
+    export let label = 'Password';
 
     function copyHandler() {
-        console.log('done')
+        console.log('done');
         navigator.clipboard.writeText(text).then(
             function () {
                 $Snackbars.push({
@@ -15,8 +15,8 @@
                     status: 'OK',
                     message: 'copied',
                     grouped: true
-                })
-                $Snackbars = $Snackbars
+                });
+                $Snackbars = $Snackbars;
             },
             function (err) {
                 $Snackbars.push({
@@ -24,10 +24,10 @@
                     status: 'ERROR',
                     message: 'copy failed',
                     grouped: true
-                })
-                $Snackbars = $Snackbars
+                });
+                $Snackbars = $Snackbars;
             }
-        )
+        );
     }
 </script>
 

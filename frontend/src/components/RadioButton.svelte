@@ -1,6 +1,6 @@
 <script lang="ts">
-    export let id = ''
-    export let group = ''
+    export let id = '';
+    export let group = '';
 </script>
 
 <label class="container" on:click>

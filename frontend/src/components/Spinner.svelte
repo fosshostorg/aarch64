@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let style: string = null
+    export let style: string = null;
 </script>
 
 <div {style}>

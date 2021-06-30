@@ -1,52 +1,53 @@
 <script lang="ts">
-    // @ts-nocheck
-    import Table from '../Table.svelte'
-    import { link } from 'svelte-spa-router'
-    import Input from '../Input.svelte'
-    import Button from '../Button.svelte'
-    import Select from 'svelte-select'
-    import Spinner from '../Spinner.svelte'
-    import { checkMeta } from '../../utils'
+    /*global Project, VM , ProxyItem, APIResponse */
+    import Table from '../Table.svelte';
+    import { link } from 'svelte-spa-router';
+    import Input from '../Input.svelte';
+    import Button from '../Button.svelte';
+    import Select from 'svelte-select';
+    import Spinner from '../Spinner.svelte';
+    import { checkMeta } from '../../utils';
 
     /* The project we are currently viewing */
-    export let project = null
+    export let project: Project = null;
 
     /* Table headers */
     let headers = [
         { value: 'HOSTNAME', key: 'hostname' },
         { value: 'VM', key: 'vm' },
         { value: '', key: 'icon' }
-    ]
+    ];
 
     /* The proxies to show in the table */
-    let proxies = null
+    let proxies: ProxyItem[] = null;
 
     /* The hostname and VM to add from the new proxy form */
-    let hostname = ''
-    let currentVM = null
+    let hostname = '';
+    let currentVM = null;
 
     /* Sets the VMs of our project for the dropdown */
-    let vms = setVMS(project)
+    let vms = setVMS(project);
 
     /* Gets the VMs of a project for the dropdown options */
-    function setVMS(project) {
-        getProxies()
-        currentVM = null
+    function setVMS(project: Project): { value: VM; label: string }[] {
+        getProxies();
+        currentVM = null;
         return project.vms.map(vm => {
             return {
                 value: vm,
                 label: vm.hostname
-            }
-        })
+            };
+        });
     }
 
     /* Gets the name of a VM from a VM object, for use in the dropdown */
     function findVMName(id: string): string {
         for (const vm of project.vms) {
             if (vm._id === id) {
-                return vm.hostname
+                return vm.hostname;
             }
         }
+        return '';
     }
 
     /* Gets the project's proxies (as they are not returned in the larger project object) */
@@ -55,9 +56,9 @@
             method: 'GET'
         })
             .then(resp => resp.json())
-            .then(data => {
+            .then((data: APIResponse<Proxy[]>) => {
                 if (data.meta.success) {
-                    proxies = []
+                    proxies = [];
                     proxies = data.data.map(rec => {
                         return {
                             hostname: rec.label,
@@ -66,13 +67,13 @@
                                 value: 'delete_outline',
                                 id: rec._id
                             }
-                        }
-                    })
+                        };
+                    });
                 } else {
-                    checkMeta(data)
+                    checkMeta(data);
                 }
             })
-            .catch(err => alert(err))
+            .catch(err => alert(err));
     }
 
     /* Adds a new proxy */
@@ -85,10 +86,10 @@
             .then(resp => resp.json())
             .then(data => {
                 if (checkMeta(data)) {
-                    getProxies()
+                    getProxies();
                 }
             })
-            .catch(err => alert(err))
+            .catch(err => alert(err));
     }
 
     /* Deletes a given proxy */
@@ -101,10 +102,10 @@
             .then(resp => resp.json())
             .then(data => {
                 if (checkMeta(data)) {
-                    getProxies()
+                    getProxies();
                 }
             })
-            .catch(err => alert(err))
+            .catch(err => alert(err));
     }
 </script>
 

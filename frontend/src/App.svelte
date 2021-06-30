@@ -1,28 +1,28 @@
 <script lang="ts">
-    import Router, { location, push } from 'svelte-spa-router'
-    import { wrap } from 'svelte-spa-router/wrap'
-    import Index from './pages/Index.svelte'
-    import { onMount } from 'svelte'
+    import Router, { location, push } from 'svelte-spa-router';
+    import { wrap } from 'svelte-spa-router/wrap';
+    import Index from './pages/Index.svelte';
+    import { onMount } from 'svelte';
     import {
         consoleWelcomeMessage,
         getUserInfoAndProjects,
         getUserProjects
-    } from './utils'
-    import { Projects, User, Snackbars } from './stores'
-    import Dashboard from './Dashboard.svelte'
-    import NotFound from './pages/NotFound.svelte'
-    import MDPWrapper from 'rollup-plugin-mdsvex-pages/src/components/MDPWrapper.svelte'
-    import Snackbar from './components/Snackbar.svelte'
-    import LoginOrSignup from './pages/LoginOrSignup.svelte'
+    } from './utils';
+    import { Projects, User, Snackbars } from './stores';
+    import Dashboard from './Dashboard.svelte';
+    import NotFound from './pages/NotFound.svelte';
+    import MDPWrapper from 'rollup-plugin-mdsvex-pages/src/components/MDPWrapper.svelte';
+    import Snackbar from './components/Snackbar.svelte';
+    import LoginOrSignup from './pages/LoginOrSignup.svelte';
 
     const dashboardWrap = wrap({
         component: Dashboard,
         conditions: [
             async () => {
-                return await authenticate()
+                return await authenticate();
             }
         ]
-    })
+    });
 
     const routes = {
         '/': Index,
@@ -41,42 +41,42 @@
         '/dashboard': dashboardWrap,
         '/dashboard/*': dashboardWrap,
         '*': NotFound
-    }
+    };
 
-    let updateInterval: number | null = null
+    let updateInterval: number | null = null;
 
     //TODO: This might not work perfectly, need to do more testing. -SETH
     function updateProjects() {
         if ($User !== null) {
             void getUserProjects().then(data => {
                 // eslint-disable-next-line no-undef
-                $Projects = data as Project[]
-            })
+                $Projects = data as Project[];
+            });
             if (updateInterval == null) {
-                updateInterval = setInterval(updateProjects, 15000)
+                updateInterval = setInterval(updateProjects, 15000);
             }
         }
     }
 
     async function authenticate() {
-        let res = await getUserInfoAndProjects()
+        let res = await getUserInfoAndProjects();
         if (res.user == null) {
-            return false
+            return false;
         }
-        $User = res.user
-        $Projects = res.projects
-        updateProjects()
-        return true
+        $User = res.user;
+        $Projects = res.projects;
+        updateProjects();
+        return true;
     }
 
     function conditionsFailed() {
         // Authentication has failed.
-        void push('/login')
+        void push('/login');
     }
 
     onMount(() => {
-        consoleWelcomeMessage()
-    })
+        consoleWelcomeMessage();
+    });
 </script>
 
 <MDPWrapper>

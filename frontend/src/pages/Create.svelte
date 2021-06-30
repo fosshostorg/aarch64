@@ -1,95 +1,95 @@
 <script lang="ts">
-    import VMSelect from '../components/VMSelect.svelte'
-    import Navbar from '../components/Navbar.svelte'
-    import PageHeader from '../components/PageHeader.svelte'
-    import { v4 as uuidv4 } from 'uuid'
-    import Select from 'svelte-select'
-    import { onMount } from 'svelte'
-    import { Projects, User } from '../stores'
-    import { checkMeta, createVM } from '../utils'
-    import { push } from 'svelte-spa-router'
-    import PageTitle from '../components/PageTitle.svelte'
-    import Spinner from '../components/Spinner.svelte'
-    import Input from '../components/Input.svelte'
-    import Button from '../components/Button.svelte'
+    /*globals System, Project, Pop, APIResponse */
+    import VMSelect from '../components/VMSelect.svelte';
+    import Navbar from '../components/Navbar.svelte';
+    import PageHeader from '../components/PageHeader.svelte';
+    import { v4 as uuidv4 } from 'uuid';
+    import Select from 'svelte-select';
+    import { onMount } from 'svelte';
+    import { Projects, User } from '../stores';
+    import { checkMeta, createVM } from '../utils';
+    import { push } from 'svelte-spa-router';
+    import PageTitle from '../components/PageTitle.svelte';
+    import Spinner from '../components/Spinner.svelte';
+    import Input from '../components/Input.svelte';
+    import Button from '../components/Button.svelte';
 
     /* Where fetched system details are stored */
     let data: System = {
         pops: [],
         plans: {},
         oses: {}
-    }
+    };
 
     /* The currently selected image and plan */
-    let image = ''
-    let plan = ''
+    let image = '';
+    let plan = '';
 
     /* Number of VMs to create in this batch */
-    let batch = 1
+    let batch = 1;
     /* List of hostnames used for each VM in the batch */
-    let hostnames: string[] = [uuidv4()]
+    let hostnames: string[] = [uuidv4()] as string[];
     /* The currently selected project, defaults to the first project the user has */
-    let project: Project = $Projects[0]
+    let project: Project = $Projects[0] as Project;
     /* The currently selected locaiton */
-    let location = null
+    let location: Pop | null = null;
 
     /* Amount of budget used, amount left for creation */
     $: budget_used =
-        project.budget_used + batch * (data.plans[plan] ? data.plans[plan]['vcpus'] : 0)
-    $: can_create = budget_used <= project.budget || $User.admin == true
+        project.budget_used + batch * (data.plans[plan] ? data.plans[plan]['vcpus'] : 0);
+    $: can_create = budget_used <= project.budget || $User.admin == true;
 
     /* Loading screen */
-    let showSpinner = false
+    let showSpinner = false;
 
     /* Adds a new hostname field w/ increase in batch size */
-    const addHost = (e: any) => {
-        e.preventDefault()
-        hostnames = [...hostnames, uuidv4()]
-    }
+    const addHost = (e: Event) => {
+        e.preventDefault();
+        hostnames = [...hostnames, uuidv4()] as string[];
+    };
 
     /* Adds a new hostname field w/ decrease in batch size */
-    const removeHost = (e: any) => {
-        e.preventDefault()
-        hostnames.splice(-1, 1)
-        hostnames = hostnames
-    }
+    const removeHost = (e: Event) => {
+        e.preventDefault();
+        hostnames.splice(-1, 1);
+        hostnames = hostnames;
+    };
 
     /* Creates the VMs by looping through every hostname in the list, will wait until all in the batch have been created */
     const createFormSubmit = async () => {
-        showSpinner = true
+        showSpinner = true;
 
         for (const hostname of hostnames) {
             await createVM(project._id, hostname, plan, image, location.name).catch(err =>
                 console.log(err)
-            )
+            );
         }
 
-        showSpinner = false
-        push('/dashboard/projects/' + project._id)
-    }
+        showSpinner = false;
+        void push('/dashboard/projects/' + project._id);
+    };
 
     /* Loads the os, plan, and pop data */
     const loadData = async () => {
-        // @ts-ignore
-        fetch('__apiRoute__/system')
+        await fetch('__apiRoute__/system')
             .then(res => res.json())
-            .then(body => {
+            .then((body: APIResponse<System>) => {
                 if (!body.meta.success) {
-                    checkMeta(body)
-                    return
+                    checkMeta(body);
+                    return;
                 }
 
-                data = body.data as System
+                data = body.data;
 
-                image = Object.keys(data.oses)[0]
-                plan = Object.keys(data.plans)[0]
-                location = data.pops[0]
-            })
-    }
+                image = Object.keys(data.oses)[0];
+                plan = Object.keys(data.plans)[0];
+                location = data.pops[0];
+            });
+    };
 
     onMount(() => {
-        loadData()
-    })
+        void loadData();
+    });
 </script>
 
 <PageTitle title="AARCH64 | Create VM" />
@@ -144,9 +144,9 @@
                                     <button
                                         class="batch-create-remove"
                                         on:click={e => {
-                                            e.preventDefault()
+                                            e.preventDefault();
                                             if (batch > 1) {
-                                                batch--, removeHost(e)
+                                                batch--, removeHost(e);
                                             }
                                         }}
                                     >
@@ -158,10 +158,10 @@
                                     <button
                                         class="batch-create-add"
                                         on:click={e => {
-                                            e.preventDefault()
+                                            e.preventDefault();
                                             if (batch < 5) {
-                                                batch++
-                                                addHost(e)
+                                                batch++;
+                                                addHost(e);
                                             }
                                         }}
                                     >
@@ -175,11 +175,11 @@
                                         isSearchable={false}
                                         items={$Projects}
                                         optionIdentifier="_id"
-                                        getOptionLabel={(option, filterText) => {
-                                            return option.name
+                                        getOptionLabel={option => {
+                                            return option.name;
                                         }}
                                         getSelectionLabel={option => {
-                                            if (option) return option.name
+                                            if (option) return option.name;
                                         }}
                                         bind:selectedValue={project}
                                     />
@@ -194,10 +194,10 @@
                                             items={data.pops}
                                             optionIdentifier="location"
                                             getOptionLabel={(option, filterText) => {
-                                                return option.location
+                                                return option.location;
                                             }}
                                             getSelectionLabel={option => {
-                                                if (option) return option.location
+                                                if (option) return option.location;
                                             }}
                                             bind:selectedValue={location}
                                         />
