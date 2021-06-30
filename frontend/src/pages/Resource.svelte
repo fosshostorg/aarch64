@@ -1,60 +1,67 @@
 <script lang="ts">
-    import Navbar from "../components/Navbar.svelte";
-    import PageHeader from "../components/PageHeader.svelte";
-    import PageTitle from "../components/PageTitle.svelte";
-    import VMInfo from "../components/VMInfo.svelte";
-    import VMOptions from "../components/VMOptions.svelte";
-    import {Projects} from "../stores";
-    import {push} from "svelte-spa-router";
-    import CopyField from "../components/CopyField.svelte";
-    import CreationInfo from "../components/CreationInfo.svelte";
+    import Navbar from '../components/Navbar.svelte'
+    import PageHeader from '../components/PageHeader.svelte'
+    import PageTitle from '../components/PageTitle.svelte'
+    import VMInfo from '../components/VMInfo.svelte'
+    import VMOptions from '../components/VMOptions.svelte'
+    import { Projects } from '../stores'
+    import { push } from 'svelte-spa-router'
+    import CopyField from '../components/CopyField.svelte'
+    import CreationInfo from '../components/CreationInfo.svelte'
 
-    export let params: any = {};
+    export let params: any = {}
 
     const getProjectById = (id: string, _projects: any[]) => {
-        let returnProject = null;
-        let projects = [..._projects];
-        projects.forEach((project) => {
+        let returnProject = null
+        let projects = [..._projects]
+        projects.forEach(project => {
             if (project._id == id) {
-                returnProject = project;
+                returnProject = project
             }
-        });
-        return returnProject;
-    };
+        })
+        return returnProject
+    }
 
-    $: project = getProjectById(params.project_id, $Projects);
+    $: project = getProjectById(params.project_id, $Projects)
 
     // Dumb typescript stuff I should probably remove
     function toVM(vm: any): VM {
-        return vm as VM;
+        return vm as VM
     }
-
 </script>
 
-<PageTitle title="AARCH64 | VMs"/>
+<PageTitle title="AARCH64 | VMs" />
 
 <main>
     {#if project}
         {#each project.vms as vm}
             {#if toVM(vm)._id === params.resource_id}
-                <Navbar breadcrumbs={[
-				{label: 'Dashboard', path: '/dashboard/'},
-				{label: project.name, path: `/dashboard/projects/${project._id}`},
-				{label: 'Resource', path: `/dashboard/projects/${project._id}/resources/${vm._id}`}
-				]}/>
+                <Navbar
+                    breadcrumbs={[
+                        { label: 'Dashboard', path: '/dashboard/' },
+                        {
+                            label: project.name,
+                            path: `/dashboard/projects/${project._id}`
+                        },
+                        {
+                            label: 'Resource',
+                            path: `/dashboard/projects/${project._id}/resources/${vm._id}`
+                        }
+                    ]}
+                />
                 <PageHeader isResource state={vm.state}>{toVM(vm).hostname}</PageHeader>
                 <div class="wrapper">
                     <div class="info">
                         <span class="title">System:</span>
                         <span class="info-wrapper">
-							<VMInfo vm={toVM(vm)}/>
-						</span>
-                        <CreationInfo vm={toVM(vm)}/>
-                        <CopyField label="Address" text={vm.address.slice(0, -3)}/>
-                        <CopyField text={vm.password}/>
+                            <VMInfo vm={toVM(vm)} />
+                        </span>
+                        <CreationInfo vm={toVM(vm)} />
+                        <CopyField label="Address" text={vm.address.slice(0, -3)} />
+                        <CopyField text={vm.password} />
                     </div>
                     <div class="actions">
-                        <VMOptions vm={toVM(vm)}/>
+                        <VMOptions vm={toVM(vm)} />
                     </div>
                 </div>
             {/if}

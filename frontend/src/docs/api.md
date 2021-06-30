@@ -19,11 +19,11 @@ All routes return a JSON object with `meta` and `data` keys. `meta` will always 
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "A short description of what went wrong or right"
-  },
-  "data": {}
+	"meta": {
+		"success": true,
+		"message": "A short description of what went wrong or right"
+	},
+	"data": {}
 }
 ```
 
@@ -35,8 +35,8 @@ Request body:
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "OCfF23Jg0g0us0LQmg0us0LQm2SkD"
+	"email": "user@example.com",
+	"password": "OCfF23Jg0g0us0LQmg0us0LQm2SkD"
 }
 ```
 
@@ -46,8 +46,8 @@ Request body:
 
 ```json
 {
-  "email": "user@example.com",
-  "password": "OCfF23Jg0g0us0LQmg0us0LQm2SkD"
+	"email": "user@example.com",
+	"password": "OCfF23Jg0g0us0LQmg0us0LQm2SkD"
 }
 ```
 
@@ -63,15 +63,15 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "Retrieved user info"
-  },
-  "data": {
-    "_id": "605d72d2ccfea63484bfe78e",
-    "email": "user@example.com",
-    "key": "cfea63484ccfea63484bfe78ed72d2cbfe78eea63484bfe78e"
-  }
+	"meta": {
+		"success": true,
+		"message": "Retrieved user info"
+	},
+	"data": {
+		"_id": "605d72d2ccfea63484bfe78e",
+		"email": "user@example.com",
+		"key": "cfea63484ccfea63484bfe78ed72d2cbfe78eea63484bfe78e"
+	}
 }
 ```
 
@@ -85,8 +85,8 @@ Request body:
 
 ```json
 {
-  "name": "My Project Name",
-  "budget": 4
+	"name": "My Project Name",
+	"budget": 4
 }
 ```
 
@@ -94,11 +94,11 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "Project created"
-  },
-  "data": "605d72d2ccfea63484bfe78e"
+	"meta": {
+		"success": true,
+		"message": "Project created"
+	},
+	"data": "605d72d2ccfea63484bfe78e"
 }
 ```
 
@@ -110,7 +110,7 @@ Request body:
 
 ```json
 {
-  "project": "605fdf474177beeb253eed4a"
+	"project": "605fdf474177beeb253eed4a"
 }
 ```
 
@@ -124,41 +124,38 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "Retrieved project list"
-  },
-  "data": [
-    {
-      "_id": "605d1fbc361f9e55eec97986",
-      "name": "Test Project",
-      "users": [
-        "user1@example.com",
-        "user2@example.com"
-      ],
-      "budget": 6,
-      "budget_used": 4,
-      "vms": [
-        {
-          "hostname": "testvm1",
-          "vcpus": 4,
-          "memory": 8,
-          "ssd": 16,
-          "pop": "dfw",
-          "project": "605d1fbc361f9e55eec97986",
-          "host": 0,
-          "index": 0,
-          "prefix": "2001:db8:ffff::/64",
-          "gateway": "2001:db8:ffff::1",
-          "address": "2001:db8:ffff::2/64",
-          "os": "debian",
-          "_id": "605d1fea3c05da2790ea3dbb",
-          "password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
-          "phoned_home": true
-        }
-      ]
-    }
-  ]
+	"meta": {
+		"success": true,
+		"message": "Retrieved project list"
+	},
+	"data": [
+		{
+			"_id": "605d1fbc361f9e55eec97986",
+			"name": "Test Project",
+			"users": ["user1@example.com", "user2@example.com"],
+			"budget": 6,
+			"budget_used": 4,
+			"vms": [
+				{
+					"hostname": "testvm1",
+					"vcpus": 4,
+					"memory": 8,
+					"ssd": 16,
+					"pop": "dfw",
+					"project": "605d1fbc361f9e55eec97986",
+					"host": 0,
+					"index": 0,
+					"prefix": "2001:db8:ffff::/64",
+					"gateway": "2001:db8:ffff::1",
+					"address": "2001:db8:ffff::2/64",
+					"os": "debian",
+					"_id": "605d1fea3c05da2790ea3dbb",
+					"password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
+					"phoned_home": true
+				}
+			]
+		}
+	]
 }
 ```
 
@@ -170,8 +167,8 @@ Request body:
 
 ```json
 {
-  "project": "605fdf474177ba62253eed4a",
-  "email": "user2@example.com"
+	"project": "605fdf474177ba62253eed4a",
+	"email": "user2@example.com"
 }
 ```
 
@@ -183,10 +180,11 @@ Request body:
 
 ```json
 {
-  "project": "605fdf474177ba62253eed4a",
-  "budget": 28 
+	"project": "605fdf474177ba62253eed4a",
+	"budget": 28
 }
 ```
+
 ### VMs
 
 POST `/vms/create`
@@ -197,11 +195,11 @@ Request body:
 
 ```json
 {
-  "hostname": "testvm1",
-  "pop": "dfw",
-  "project": "605d1fbc361f9e55eec97986",
-  "plan": "v1.medium.aarch64",
-  "os": "debian"
+	"hostname": "testvm1",
+	"pop": "dfw",
+	"project": "605d1fbc361f9e55eec97986",
+	"plan": "v1.medium.aarch64",
+	"os": "debian"
 }
 ```
 
@@ -209,27 +207,27 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "VM created"
-  },
-  "data": {
-    "hostname": "testvm1",
-    "vcpus": 4,
-    "memory": 8,
-    "ssd": 16,
-    "pop": "dfw",
-    "project": "605d1fbc361f9e55eec97986",
-    "host": 0,
-    "index": 0,
-    "os": "debian",
-    "prefix": "2001:db8:ffff::/64",
-    "gateway": "2001:db8:ffff::1",
-    "address": "2001:db8:ffff::2/64",
-    "_id": "605d1fea3c05da2790ea3dbb",
-    "password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
-    "phoned_home": false
-  }
+	"meta": {
+		"success": true,
+		"message": "VM created"
+	},
+	"data": {
+		"hostname": "testvm1",
+		"vcpus": 4,
+		"memory": 8,
+		"ssd": 16,
+		"pop": "dfw",
+		"project": "605d1fbc361f9e55eec97986",
+		"host": 0,
+		"index": 0,
+		"os": "debian",
+		"prefix": "2001:db8:ffff::/64",
+		"gateway": "2001:db8:ffff::1",
+		"address": "2001:db8:ffff::2/64",
+		"_id": "605d1fea3c05da2790ea3dbb",
+		"password": "3c05da2790ea3d3c05da2790ea3d3c05da2790ea3d",
+		"phoned_home": false
+	}
 }
 ```
 
@@ -241,7 +239,7 @@ Request body:
 
 ```json
 {
-  "vm": "605fdf4e4177beeb253eed4b"
+	"vm": "605fdf4e4177beeb253eed4b"
 }
 ```
 
@@ -249,11 +247,11 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "VM deleted"
-  },
-  "data": null
+	"meta": {
+		"success": true,
+		"message": "VM deleted"
+	},
+	"data": null
 }
 ```
 
@@ -265,7 +263,7 @@ Request body:
 
 ```json
 {
-  "vm": "605fdf4e4177beeb253eed4b"
+	"vm": "605fdf4e4177beeb253eed4b"
 }
 ```
 
@@ -273,11 +271,11 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "VM has been started"
-  },
-  "data": null
+	"meta": {
+		"success": true,
+		"message": "VM has been started"
+	},
+	"data": null
 }
 ```
 
@@ -289,7 +287,7 @@ Request body:
 
 ```json
 {
-  "vm": "605fdf4e4177beeb253eed4b"
+	"vm": "605fdf4e4177beeb253eed4b"
 }
 ```
 
@@ -297,11 +295,11 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "VM has been shutdown"
-  },
-  "data": null
+	"meta": {
+		"success": true,
+		"message": "VM has been shutdown"
+	},
+	"data": null
 }
 ```
 
@@ -313,7 +311,7 @@ Request body:
 
 ```json
 {
-  "vm": "605fdf4e4177beeb253eed4b"
+	"vm": "605fdf4e4177beeb253eed4b"
 }
 ```
 
@@ -321,11 +319,11 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "VM has been rebooted"
-  },
-  "data": null
+	"meta": {
+		"success": true,
+		"message": "VM has been rebooted"
+	},
+	"data": null
 }
 ```
 
@@ -337,7 +335,7 @@ Request body:
 
 ```json
 {
-  "vm": "605fdf4e4177beeb253eed4b"
+	"vm": "605fdf4e4177beeb253eed4b"
 }
 ```
 
@@ -345,11 +343,11 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "VM has been stopped"
-  },
-  "data": null
+	"meta": {
+		"success": true,
+		"message": "VM has been stopped"
+	},
+	"data": null
 }
 ```
 
@@ -361,7 +359,7 @@ Request body:
 
 ```json
 {
-  "vm": "605fdf4e4177beeb253eed4b"
+	"vm": "605fdf4e4177beeb253eed4b"
 }
 ```
 
@@ -369,11 +367,11 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "VM has been reset"
-  },
-  "data": null
+	"meta": {
+		"success": true,
+		"message": "VM has been reset"
+	},
+	"data": null
 }
 ```
 
@@ -389,58 +387,58 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "Retrieved PoPs"
-  },
-  "data": {
-    "pops": [
-      {
-        "_id": "605a8ee1cdf6bb6559de1cb7",
-        "name": "dfw",
-        "provider": "Equinix Metal",
-        "location": "Dallas, TX",
-        "peeringdb_id": 4
-      }
-    ],
-    "plans": {
-      "v1.xsmall.aarch64": {
-        "vcpus": 1,
-        "memory": 1,
-        "ssd": 4
-      },
-      "v1.small.aarch64": {
-        "vcpus": 2,
-        "memory": 4,
-        "ssd": 8
-      },
-      "v1.medium.aarch64": {
-        "vcpus": 4,
-        "memory": 8,
-        "ssd": 16
-      },
-      "v1.large.aarch64": {
-        "vcpus": 8,
-        "memory": 16,
-        "ssd": 32
-      },
-      "v1.xlarge.aarch64": {
-        "vcpus": 16,
-        "memory": 32,
-        "ssd": 64
-      }
-    },
-    "oses": {
-      "debian": {
-        "version": "10.8",
-        "url": "https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2"
-      },
-      "ubuntu": {
-        "version": "20.10",
-        "url": "https://cloud-images.ubuntu.com/groovy/current/groovy-server-cloudimg-arm64.img"
-      }
-    }
-  }
+	"meta": {
+		"success": true,
+		"message": "Retrieved PoPs"
+	},
+	"data": {
+		"pops": [
+			{
+				"_id": "605a8ee1cdf6bb6559de1cb7",
+				"name": "dfw",
+				"provider": "Equinix Metal",
+				"location": "Dallas, TX",
+				"peeringdb_id": 4
+			}
+		],
+		"plans": {
+			"v1.xsmall.aarch64": {
+				"vcpus": 1,
+				"memory": 1,
+				"ssd": 4
+			},
+			"v1.small.aarch64": {
+				"vcpus": 2,
+				"memory": 4,
+				"ssd": 8
+			},
+			"v1.medium.aarch64": {
+				"vcpus": 4,
+				"memory": 8,
+				"ssd": 16
+			},
+			"v1.large.aarch64": {
+				"vcpus": 8,
+				"memory": 16,
+				"ssd": 32
+			},
+			"v1.xlarge.aarch64": {
+				"vcpus": 16,
+				"memory": 32,
+				"ssd": 64
+			}
+		},
+		"oses": {
+			"debian": {
+				"version": "10.8",
+				"url": "https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2"
+			},
+			"ubuntu": {
+				"version": "20.10",
+				"url": "https://cloud-images.ubuntu.com/groovy/current/groovy-server-cloudimg-arm64.img"
+			}
+		}
+	}
 }
 ```
 
@@ -454,8 +452,8 @@ Request body:
 
 ```json
 {
-  "vm": "60641b57f50d8e43cfc9dfb7",
-  "label": "test.example.com"
+	"vm": "60641b57f50d8e43cfc9dfb7",
+	"label": "test.example.com"
 }
 ```
 
@@ -467,18 +465,18 @@ Response body:
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "Retrieved proxies"
-  },
-  "data": [
-    {
-      "_id": "f9e55eec9605d1fbd1fbc361",
-      "project": "605d1fbc361f9e55eec97986",
-      "label": "example.com",
-      "vm": "d1fbc361f9e5e55361f9e5e55e"
-    }
-  ]
+	"meta": {
+		"success": true,
+		"message": "Retrieved proxies"
+	},
+	"data": [
+		{
+			"_id": "f9e55eec9605d1fbd1fbc361",
+			"project": "605d1fbc361f9e55eec97986",
+			"label": "example.com",
+			"vm": "d1fbc361f9e5e55361f9e5e55e"
+		}
+	]
 }
 ```
 
@@ -490,7 +488,7 @@ Request body:
 
 ```json
 {
-  "proxy": "f9e55eec9605d1fbd1fbc361"
+	"proxy": "f9e55eec9605d1fbd1fbc361"
 }
 ```
 
@@ -504,35 +502,34 @@ Response: List of audit entries
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "Retrieved audit log"
-  },
-  "data": [
-    {
-      "_id": "M9GLKcDhV0cKVM67wG8G5UGQW",
-      "time": 1621724859.4778383,
-      "title": "project.create",
-      "user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
-      "user_name": "nate@fosshost.org",
-      "project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
-      "project_name": "Fosshost"
-    },
-    {
-      "_id": "6ilwo3pufTwFtkK/Ws32tdje880OWQ5",
-      "time": 1621454880.3627973,
-      "title": "vm.delete",
-      "vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z",
-      "vm_name": "test.example.com",
-      "project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
-      "project_name": "Fosshost",
-      "user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
-      "user_name": "nate@fosshost.org"
-    }
-  ]
+	"meta": {
+		"success": true,
+		"message": "Retrieved audit log"
+	},
+	"data": [
+		{
+			"_id": "M9GLKcDhV0cKVM67wG8G5UGQW",
+			"time": 1621724859.4778383,
+			"title": "project.create",
+			"user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
+			"user_name": "nate@fosshost.org",
+			"project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
+			"project_name": "Fosshost"
+		},
+		{
+			"_id": "6ilwo3pufTwFtkK/Ws32tdje880OWQ5",
+			"time": 1621454880.3627973,
+			"title": "vm.delete",
+			"vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z",
+			"vm_name": "test.example.com",
+			"project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
+			"project_name": "Fosshost",
+			"user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
+			"user_name": "nate@fosshost.org"
+		}
+	]
 }
 ```
-
 
 ### Admin
 
@@ -544,10 +541,10 @@ Request body:
 
 ```json
 {
-  "name": "dfw",
-  "provider": "Equinix Metal",
-  "location": "Dallas, TX",
-  "peeringdb_id": 4
+	"name": "dfw",
+	"provider": "Equinix Metal",
+	"location": "Dallas, TX",
+	"peeringdb_id": 4
 }
 ```
 
@@ -559,8 +556,8 @@ Request body:
 
 ```json
 {
-  "pop": "dfw",
-  "ip": "192.0.2.1"
+	"pop": "dfw",
+	"ip": "192.0.2.1"
 }
 ```
 
@@ -578,10 +575,10 @@ Request body:
 
 ```json
 {
-  "ip": "192.0.2.3",
-  "name": "Transit",
-  "asn": 65530,
-  "neighbor": "192.0.2.100"
+	"ip": "192.0.2.3",
+	"name": "Transit",
+	"asn": 65530,
+	"neighbor": "192.0.2.100"
 }
 ```
 
@@ -595,32 +592,32 @@ Response: List of audit entries
 
 ```json
 {
-  "meta": {
-    "success": true,
-    "message": "Retrieved audit log"
-  },
-  "data": [
-    {
-      "_id": "M9GLKcDhV0cKVM67wG8G5UGQW",
-      "time": 1621724859.4778383,
-      "title": "project.create",
-      "user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
-      "user_name": "nate@fosshost.org",
-      "project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
-      "project_name": "Fosshost"
-    },
-    {
-      "_id": "6ilwo3pufTwFtkK/Ws32tdje880OWQ5",
-      "time": 1621454880.3627973,
-      "title": "vm.delete",
-      "vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z",
-      "vm_name": "test.example.com",
-      "project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
-      "project_name": "Fosshost",
-      "user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
-      "user_name": "nate@fosshost.org"
-    }
-  ]
+	"meta": {
+		"success": true,
+		"message": "Retrieved audit log"
+	},
+	"data": [
+		{
+			"_id": "M9GLKcDhV0cKVM67wG8G5UGQW",
+			"time": 1621724859.4778383,
+			"title": "project.create",
+			"user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
+			"user_name": "nate@fosshost.org",
+			"project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
+			"project_name": "Fosshost"
+		},
+		{
+			"_id": "6ilwo3pufTwFtkK/Ws32tdje880OWQ5",
+			"time": 1621454880.3627973,
+			"title": "vm.delete",
+			"vm_id": "BZhCT8qLco759IT2BcqCWcXsB6Z",
+			"vm_name": "test.example.com",
+			"project_id": "JefGMbQDMsK9pAEn6CBhhVyO8L0F6",
+			"project_name": "Fosshost",
+			"user_id": "QGVfv/UlkuIGTQXkNLSzkBM",
+			"user_name": "nate@fosshost.org"
+		}
+	]
 }
 ```
 

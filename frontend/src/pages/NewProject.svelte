@@ -1,46 +1,48 @@
 <script>
-    import PageHeader from "../components/PageHeader.svelte";
-    import Navbar from "../components/Navbar.svelte";
-    import {push} from "svelte-spa-router";
-    import {Projects} from "../stores";
-    import PageTitle from "../components/PageTitle.svelte";
-    import Input from "../components/Input.svelte";
+    import PageHeader from '../components/PageHeader.svelte'
+    import Navbar from '../components/Navbar.svelte'
+    import { push } from 'svelte-spa-router'
+    import { Projects } from '../stores'
+    import PageTitle from '../components/PageTitle.svelte'
+    import Input from '../components/Input.svelte'
 
-    let name = "";
-    let budget = 2;
+    let name = ''
+    let budget = 2
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async e => {
         if (__production__) {
-            await fetch("__apiRoute__/project", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({name, budget}),
+            await fetch('__apiRoute__/project', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, budget })
             })
                 .then(resp => resp.json())
-                .then((data) => {
+                .then(data => {
                     if (data.meta.success) {
-                        push("/dashboard/projects/" + data.data);
+                        push('/dashboard/projects/' + data.data)
                     } else {
-                        alert(data.meta.message);
+                        alert(data.meta.message)
                     }
                 })
-                .catch((err) => console.log(err));
+                .catch(err => console.log(err))
         } else {
             console.log(
-                "%cRequest would have been sent with name: " + name,
-                "color: lightgreen"
-            );
+                '%cRequest would have been sent with name: ' + name,
+                'color: lightgreen'
+            )
         }
-    };
+    }
 </script>
 
-<PageTitle title="New Project"/>
+<PageTitle title="New Project" />
 
 <main>
-    <Navbar breadcrumbs={[
-		{label:'Dashboard', path: '/dashboard/projects/create'},
-		{label:'Add New Project', path:'/dashboard/projects/create'},
-		]}/>
+    <Navbar
+        breadcrumbs={[
+            { label: 'Dashboard', path: '/dashboard/projects/create' },
+            { label: 'Add New Project', path: '/dashboard/projects/create' }
+        ]}
+    />
     <PageHeader>Add New Project</PageHeader>
     <div class="content">
         <form on:submit|preventDefault={handleSubmit}>
@@ -65,7 +67,6 @@
                 type="number"
             />
             <button type="submit">CREATE</button>
-            
         </form>
     </div>
 </main>

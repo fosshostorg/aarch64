@@ -1,41 +1,41 @@
 <script lang="ts">
     // @ts-nocheck
-    import Table from '../Table.svelte';
-    import {link} from 'svelte-spa-router';
-    import Input from "../Input.svelte";
-    import Button from "../Button.svelte";
-    import Select from "svelte-select";
-    import Spinner from "../Spinner.svelte";
-    import { checkMeta } from '../../utils';
+    import Table from '../Table.svelte'
+    import { link } from 'svelte-spa-router'
+    import Input from '../Input.svelte'
+    import Button from '../Button.svelte'
+    import Select from 'svelte-select'
+    import Spinner from '../Spinner.svelte'
+    import { checkMeta } from '../../utils'
 
     /* The project we are currently viewing */
-    export let project = null;
+    export let project = null
 
     /* Table headers */
     let headers = [
-        {value: 'HOSTNAME', key: 'hostname'},
-        {value: 'VM', key: 'vm'},
-        {value: '', key: 'icon'}
+        { value: 'HOSTNAME', key: 'hostname' },
+        { value: 'VM', key: 'vm' },
+        { value: '', key: 'icon' }
     ]
 
     /* The proxies to show in the table */
-    let proxies = null;
+    let proxies = null
 
     /* The hostname and VM to add from the new proxy form */
-    let hostname = "";
-    let currentVM = null;
+    let hostname = ''
+    let currentVM = null
 
     /* Sets the VMs of our project for the dropdown */
-    let vms = setVMS(project);
+    let vms = setVMS(project)
 
     /* Gets the VMs of a project for the dropdown options */
     function setVMS(project) {
-        getProxies();
-        currentVM = null;
+        getProxies()
+        currentVM = null
         return project.vms.map(vm => {
             return {
                 value: vm,
-                label: vm.hostname,
+                label: vm.hostname
             }
         })
     }
@@ -44,7 +44,7 @@
     function findVMName(id: string): string {
         for (const vm of project.vms) {
             if (vm._id === id) {
-                return vm.hostname;
+                return vm.hostname
             }
         }
     }
@@ -52,108 +52,121 @@
     /* Gets the project's proxies (as they are not returned in the larger project object) */
     function getProxies() {
         fetch(`__apiRoute__/proxies/${project._id}`, {
-            method: "GET"
+            method: 'GET'
         })
             .then(resp => resp.json())
             .then(data => {
                 if (data.meta.success) {
-                    proxies = [];
+                    proxies = []
                     proxies = data.data.map(rec => {
                         return {
                             hostname: rec.label,
-                            vm: {hostname: findVMName(rec.vm), _id: rec.vm,},
+                            vm: { hostname: findVMName(rec.vm), _id: rec.vm },
                             icon: {
                                 value: 'delete_outline',
                                 id: rec._id
-                            },
+                            }
                         }
                     })
                 } else {
-                    checkMeta(data);
+                    checkMeta(data)
                 }
             })
-            .catch((err) => alert(err));
+            .catch(err => alert(err))
     }
 
     /* Adds a new proxy */
     function addProxy() {
-        fetch("__apiRoute__/proxy", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({vm: currentVM.value._id, label: hostname})
+        fetch('__apiRoute__/proxy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ vm: currentVM.value._id, label: hostname })
         })
             .then(resp => resp.json())
             .then(data => {
                 if (checkMeta(data)) {
-                    getProxies();
+                    getProxies()
                 }
             })
-            .catch((err) => alert(err));
+            .catch(err => alert(err))
     }
 
     /* Deletes a given proxy */
     function deleteProxy(proxy_id: string) {
-        fetch("__apiRoute__/proxy", {
-            method: "DELETE",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({proxy: proxy_id})
+        fetch('__apiRoute__/proxy', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ proxy: proxy_id })
         })
             .then(resp => resp.json())
-            .then((data) => {
+            .then(data => {
                 if (checkMeta(data)) {
-                    getProxies();
+                    getProxies()
                 }
             })
-            .catch((err) => alert(err));
+            .catch(err => alert(err))
     }
 </script>
 
 <main>
     {#if proxies == null}
         <span class="loading">
-            <Spinner/>
+            <Spinner />
         </span>
     {:else}
         {#if proxies.length > 0}
-        <div>
-            <Table {headers} rows={proxies}>
-                <span class="cell-slot" slot="cell" let:row let:cell>
-                {#if cell.key !== 'icon'}
-                    <span class="cell">
-                    {#if cell.key === 'vm'}
-                        {cell.value.hostname}
-                        <a class="material-icons vm-link" use:link href={`/dashboard/projects/${project._id}/resources/${cell.value._id}`}>
-                        open_in_new
-                        </a>
-                    {:else}
-                        {cell.value}
-                    {/if}
+            <div>
+                <Table {headers} rows={proxies}>
+                    <span class="cell-slot" slot="cell" let:row let:cell>
+                        {#if cell.key !== 'icon'}
+                            <span class="cell">
+                                {#if cell.key === 'vm'}
+                                    {cell.value.hostname}
+                                    <a
+                                        class="material-icons vm-link"
+                                        use:link
+                                        href={`/dashboard/projects/${project._id}/resources/${cell.value._id}`}
+                                    >
+                                        open_in_new
+                                    </a>
+                                {:else}
+                                    {cell.value}
+                                {/if}
+                            </span>
+                        {:else}
+                            <span
+                                class="material-icons icon-cell"
+                                on:click={() => deleteProxy(cell.value.id)}
+                            >
+                                {cell.value.value}
+                            </span>
+                        {/if}
                     </span>
-                {:else}
-                    <span class="material-icons icon-cell" on:click={() => deleteProxy(cell.value.id)}>
-                        {cell.value.value}
-                    </span>
-                {/if}
-                </span>
-            </Table>
-        </div>
+                </Table>
+            </div>
         {/if}
         <span class="form-header">Add a new proxy:</span>
         <span class="form-wrapper">
             <span class="form-inputs">
-                <Input class="hostname-input" labelClasses="hostname-input-label" type="text" bind:value={hostname} placeholder="Hostname"/>
+                <Input
+                    class="hostname-input"
+                    labelClasses="hostname-input-label"
+                    type="text"
+                    bind:value={hostname}
+                    placeholder="Hostname"
+                />
                 <span class="select-wrapper">
                     <Select
-                            isClearable={false}
-                            isSearchable={false}
-                            items={vms}
-                            bind:selectedValue={currentVM}
-                            inputStyles="width: 100%;"
-                            placeholder="Choose VM"
+                        isClearable={false}
+                        isSearchable={false}
+                        items={vms}
+                        bind:selectedValue={currentVM}
+                        inputStyles="width: 100%;"
+                        placeholder="Choose VM"
                     />
+                </span>
             </span>
-        </span>
-        <Button style="margin-top: 1rem;" on:click={() => addProxy()}>CREATE</Button>
+            <Button style="margin-top: 1rem;" on:click={() => addProxy()}>CREATE</Button>
         </span>
     {/if}
 </main>

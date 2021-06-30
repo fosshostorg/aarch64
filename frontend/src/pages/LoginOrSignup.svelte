@@ -1,60 +1,63 @@
 <script lang="ts">
-	import { link, push } from "svelte-spa-router";
-    import Button from "../components/Button.svelte";
-    import Input from "../components/Input.svelte";
-	import PageTitle from "../components/PageTitle.svelte";
-    import { checkMeta } from "../utils";
+    import { link, push } from 'svelte-spa-router'
+    import Button from '../components/Button.svelte'
+    import Input from '../components/Input.svelte'
+    import PageTitle from '../components/PageTitle.svelte'
+    import { checkMeta } from '../utils'
 
-    export let isLogin: boolean;
+    export let isLogin: boolean
 
-	let email: string, password: string = "";
+    let email: string,
+        password = ''
 
-	const handleSubmit = async (e) => {
-        fetch(`__apiRoute__/auth/${isLogin ? "login" : "signup"}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+    const handleSubmit = async e => {
+        fetch(`__apiRoute__/auth/${isLogin ? 'login' : 'signup'}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         })
-            .then((resp) => resp.json())
-            .then(async (data) => {
+            .then(resp => resp.json())
+            .then(async data => {
                 if (checkMeta(data)) {
                     if (isLogin) {
-                        push("/dashboard");
+                        push('/dashboard')
                     } else {
-                        push("/login");
+                        push('/login')
                     }
                 }
             })
-            .catch((err) => console.log(err));
-	};
+            .catch(err => console.log(err))
+    }
 </script>
 
 <PageTitle title="AARCH64 Dashboard Signup" />
 
 <main>
-	<div>
-		<img alt="AARCH64 Logo" src="./img/Fosshost_Light.png" />
-		<form on:submit|preventDefault={handleSubmit}>
-			<Input
-				autocomplete="email"
-				bind:value={email}
-				placeholder="Email"
-				type="email"
-                style="margin-bottom: 20px;" />
+    <div>
+        <img alt="AARCH64 Logo" src="./img/Fosshost_Light.png" />
+        <form on:submit|preventDefault={handleSubmit}>
+            <Input
+                autocomplete="email"
+                bind:value={email}
+                placeholder="Email"
+                type="email"
+                style="margin-bottom: 20px;"
+            />
             <Input
                 autocomplete="password"
                 bind:value={password}
                 placeholder="Password"
-                type="password" 
-                style="margin-bottom: 20px;" />
-            <Button width="100%" type="submit">{isLogin ? "LOGIN" : "SIGNUP"}</Button>
-		</form>
+                type="password"
+                style="margin-bottom: 20px;"
+            />
+            <Button width="100%" type="submit">{isLogin ? 'LOGIN' : 'SIGNUP'}</Button>
+        </form>
         {#if isLogin}
             <a href="/signup" use:link>Don't have an account? <b>Sign Up</b></a>
         {:else}
             <a href="/login" use:link>Already have an account? <b>Log In</b></a>
         {/if}
-	</div>
+    </div>
 </main>
 
 <style>

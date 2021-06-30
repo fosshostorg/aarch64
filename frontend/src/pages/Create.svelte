@@ -1,109 +1,111 @@
 <script lang="ts">
-    import VMSelect from "../components/VMSelect.svelte";
-    import Navbar from "../components/Navbar.svelte";
-    import PageHeader from "../components/PageHeader.svelte";
-    import {v4 as uuidv4} from "uuid";
-    import Select from "svelte-select";
-    import {onMount} from "svelte";
-    import {Projects, User} from "../stores";
-    import {checkMeta, createVM} from "../utils";
-    import {push} from "svelte-spa-router";
-    import PageTitle from "../components/PageTitle.svelte";
-    import Spinner from "../components/Spinner.svelte";
-    import Input from "../components/Input.svelte";
-    import Button from "../components/Button.svelte";
+    import VMSelect from '../components/VMSelect.svelte'
+    import Navbar from '../components/Navbar.svelte'
+    import PageHeader from '../components/PageHeader.svelte'
+    import { v4 as uuidv4 } from 'uuid'
+    import Select from 'svelte-select'
+    import { onMount } from 'svelte'
+    import { Projects, User } from '../stores'
+    import { checkMeta, createVM } from '../utils'
+    import { push } from 'svelte-spa-router'
+    import PageTitle from '../components/PageTitle.svelte'
+    import Spinner from '../components/Spinner.svelte'
+    import Input from '../components/Input.svelte'
+    import Button from '../components/Button.svelte'
 
     /* Where fetched system details are stored */
     let data: System = {
         pops: [],
         plans: {},
         oses: {}
-    };
+    }
 
     /* The currently selected image and plan */
-    let image: string = "";
-    let plan: string = "";
+    let image = ''
+    let plan = ''
 
     /* Number of VMs to create in this batch */
-    let batch: number = 1;
+    let batch = 1
     /* List of hostnames used for each VM in the batch */
-    let hostnames: string[] = [uuidv4()];
+    let hostnames: string[] = [uuidv4()]
     /* The currently selected project, defaults to the first project the user has */
-    let project: Project = $Projects[0];
+    let project: Project = $Projects[0]
     /* The currently selected locaiton */
-    let location = null;
+    let location = null
 
     /* Amount of budget used, amount left for creation */
-    $: budget_used = project.budget_used + (batch * (data.plans[plan] ? data.plans[plan]["vcpus"] : 0));
+    $: budget_used =
+        project.budget_used + batch * (data.plans[plan] ? data.plans[plan]['vcpus'] : 0)
     $: can_create = budget_used <= project.budget || $User.admin == true
 
     /* Loading screen */
-    let showSpinner = false;
+    let showSpinner = false
 
     /* Adds a new hostname field w/ increase in batch size */
     const addHost = (e: any) => {
-        e.preventDefault();
-        hostnames = [...hostnames, uuidv4()];
-    };
+        e.preventDefault()
+        hostnames = [...hostnames, uuidv4()]
+    }
 
     /* Adds a new hostname field w/ decrease in batch size */
     const removeHost = (e: any) => {
-        e.preventDefault();
-        hostnames.splice(-1, 1);
-        hostnames = hostnames;
-    };
+        e.preventDefault()
+        hostnames.splice(-1, 1)
+        hostnames = hostnames
+    }
 
     /* Creates the VMs by looping through every hostname in the list, will wait until all in the batch have been created */
     const createFormSubmit = async () => {
-        showSpinner = true;
+        showSpinner = true
 
         for (const hostname of hostnames) {
-            await createVM(project._id, hostname, plan, image, location.name)
-            .catch((err) => console.log(err));
+            await createVM(project._id, hostname, plan, image, location.name).catch(err =>
+                console.log(err)
+            )
         }
 
-        showSpinner = false;
-        push("/dashboard/projects/" + project._id);
-    };
+        showSpinner = false
+        push('/dashboard/projects/' + project._id)
+    }
 
     /* Loads the os, plan, and pop data */
     const loadData = async () => {
         // @ts-ignore
-        fetch("__apiRoute__/system")
-            .then((res) => res.json())
-            .then((body) => {
+        fetch('__apiRoute__/system')
+            .then(res => res.json())
+            .then(body => {
                 if (!body.meta.success) {
-                    checkMeta(body);
-                    return;
+                    checkMeta(body)
+                    return
                 }
 
-                data = body.data as System;
+                data = body.data as System
 
-                image = Object.keys(data.oses)[0];
-                plan = Object.keys(data.plans)[0];
-                location = data.pops[0];
-            });
-    };
+                image = Object.keys(data.oses)[0]
+                plan = Object.keys(data.plans)[0]
+                location = data.pops[0]
+            })
+    }
 
     onMount(() => {
-        loadData();
-    });
+        loadData()
+    })
 </script>
 
-<PageTitle title="AARCH64 | Create VM"/>
+<PageTitle title="AARCH64 | Create VM" />
 
 <main>
     <Navbar
-            breadcrumbs={[
-			{ label: "Dashboard", path: "/dashboard" },
-			{ label: "Create New VM", path: "/dashboard/create" },
-		]}
+        breadcrumbs={[
+            { label: 'Dashboard', path: '/dashboard' },
+            { label: 'Create New VM', path: '/dashboard/create' }
+        ]}
     />
     <div class="content">
         {#if $Projects.length > 0}
             {#if showSpinner}
                 <div style="display: flex; justify-content: center;">
-                    <Spinner/>
+                    <Spinner />
                 </div>
             {:else}
                 <PageHeader>Create VM</PageHeader>
@@ -112,7 +114,7 @@
                         <span class="form-header"> Choose an image: </span>
                         <div class="create-form-select">
                             {#if Object.keys(data.plans).length > 0}
-                                <VMSelect bind:current={image} data={data.oses}/>
+                                <VMSelect bind:current={image} data={data.oses} />
                             {:else}
                                 <Spinner />
                             {/if}
@@ -120,7 +122,11 @@
                         <span class="form-header"> Choose a plan: </span>
                         <div class="create-form-select">
                             {#if Object.keys(data.oses).length > 0}
-                                <VMSelect bind:current={plan} data={data.plans} isOS={false}/>
+                                <VMSelect
+                                    bind:current={plan}
+                                    data={data.plans}
+                                    isOS={false}
+                                />
                             {:else}
                                 <Spinner />
                             {/if}
@@ -128,34 +134,36 @@
                         <span class="form-header"> Finalize and create: </span>
                         <div class="create-form-final">
                             <div class="create-form-final-section">
-                                <span class="create-form-subheader"> Batch creation: </span>
+                                <span class="create-form-subheader">
+                                    Batch creation:
+                                </span>
                                 <span class="create-form-subtitle">
-									Deploy multiple machines at the same time
-								</span>
+                                    Deploy multiple machines at the same time
+                                </span>
                                 <div class="batch-create-button">
                                     <button
-                                            class="batch-create-remove"
-                                            on:click={(e) => {
-											e.preventDefault();
-											if (batch > 1) {
-												batch--, removeHost(e);
-											}
-										}}
+                                        class="batch-create-remove"
+                                        on:click={e => {
+                                            e.preventDefault()
+                                            if (batch > 1) {
+                                                batch--, removeHost(e)
+                                            }
+                                        }}
                                     >
                                         <span class="material-icons"> remove </span>
                                     </button>
                                     <div class="batch-label">
-                                        <b>{batch}</b>VM{batch > 1 ? "s" : ""}
+                                        <b>{batch}</b>VM{batch > 1 ? 's' : ''}
                                     </div>
                                     <button
-                                            class="batch-create-add"
-                                            on:click={(e) => {
-											e.preventDefault();
-											if (batch < 5) {
-												batch++;
-												addHost(e);
-											}
-										}}
+                                        class="batch-create-add"
+                                        on:click={e => {
+                                            e.preventDefault()
+                                            if (batch < 5) {
+                                                batch++
+                                                addHost(e)
+                                            }
+                                        }}
                                     >
                                         <span class="material-icons"> add </span>
                                     </button>
@@ -163,17 +171,17 @@
                                 <div class="create-form-subheader">Project:</div>
                                 <div class="select-wrapper">
                                     <Select
-                                            isClearable={false}
-                                            isSearchable={false}
-                                            items={$Projects}
-                                            optionIdentifier="_id"
-                                            getOptionLabel={(option, filterText) => {
-											return option.name;
-										}}
-                                            getSelectionLabel={(option) => {
-											if (option) return option.name;
-										}}
-                                            bind:selectedValue={project}
+                                        isClearable={false}
+                                        isSearchable={false}
+                                        items={$Projects}
+                                        optionIdentifier="_id"
+                                        getOptionLabel={(option, filterText) => {
+                                            return option.name
+                                        }}
+                                        getSelectionLabel={option => {
+                                            if (option) return option.name
+                                        }}
+                                        bind:selectedValue={project}
                                     />
                                     <!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
                                 </div>
@@ -181,41 +189,55 @@
                                 <div class="select-wrapper">
                                     {#if location !== null}
                                         <Select
-                                                isClearable={false}
-                                                isSearchable={false}
-                                                items={data.pops}
-                                                optionIdentifier="location"
-                                                getOptionLabel={(option, filterText) => {
-												return option.location;
-											}}
-                                                getSelectionLabel={(option) => {
-												if (option) return option.location;
-											}}
-                                                bind:selectedValue={location}
+                                            isClearable={false}
+                                            isSearchable={false}
+                                            items={data.pops}
+                                            optionIdentifier="location"
+                                            getOptionLabel={(option, filterText) => {
+                                                return option.location
+                                            }}
+                                            getSelectionLabel={option => {
+                                                if (option) return option.location
+                                            }}
+                                            bind:selectedValue={location}
                                         />
                                     {/if}
                                 </div>
                                 <div class="create-form-subheader">Project Usage:</div>
                                 <span class="create-form-subtitle">
-									Limit: {project.budget} {project.budget === 1 ? "cores" : "core"}
-                                    <br>
-									Current: {project.budget_used} {project.budget_used === 1 ? "cores" : "core"}
-                                    <br>
-									<span class={can_create ? "" : "red-text"}>New: {budget_used}  {budget_used === 1 ? "cores" : "core"}</span>
-								</span>
-                                <Button class="submit-button" width="250px" color="#46b0a6" disabled={!can_create}>CREATE</Button>
-                                <span style="margin-bottom: 2rem;"></span>
+                                    Limit: {project.budget}
+                                    {project.budget === 1 ? 'cores' : 'core'}
+                                    <br />
+                                    Current: {project.budget_used}
+                                    {project.budget_used === 1 ? 'cores' : 'core'}
+                                    <br />
+                                    <span class={can_create ? '' : 'red-text'}
+                                        >New: {budget_used}
+                                        {budget_used === 1 ? 'cores' : 'core'}</span
+                                    >
+                                </span>
+                                <Button
+                                    class="submit-button"
+                                    width="250px"
+                                    color="#46b0a6"
+                                    disabled={!can_create}>CREATE</Button
+                                >
+                                <span style="margin-bottom: 2rem;" />
                             </div>
                             <div class="create-form-final-section">
-                                <span class="create-form-subheader">Choose a hostname:</span>
-                                <span class="create-form-subtitle">Give your machines a name</span>
+                                <span class="create-form-subheader"
+                                    >Choose a hostname:</span
+                                >
+                                <span class="create-form-subtitle"
+                                    >Give your machines a name</span
+                                >
                                 {#each hostnames as hostname, index}
                                     <Input
-                                            autocomplete="off"
-                                            type="text"
-                                            class="hostname-input"
-                                            name={"hostname-" + index}
-                                            bind:value={hostname}
+                                        autocomplete="off"
+                                        type="text"
+                                        class="hostname-input"
+                                        name={'hostname-' + index}
+                                        bind:value={hostname}
                                     />
                                 {/each}
                             </div>
@@ -226,7 +248,9 @@
         {:else}
             <PageHeader>You don't have any projects yet</PageHeader>
             <div class="create-form">
-                <button class="large" on:click={() => push("/dashboard/projects/create")}>CREATE PROJECT</button>
+                <button class="large" on:click={() => push('/dashboard/projects/create')}
+                    >CREATE PROJECT</button
+                >
             </div>
         {/if}
     </div>

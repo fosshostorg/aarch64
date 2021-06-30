@@ -1,18 +1,15 @@
 <script lang="ts">
     // @ts-nocheck
-    import Table from "./Table.svelte";
+    import Table from './Table.svelte'
 
-    export let vm: VM;
+    export let vm: VM
 
     let headers = [
-        {value: "Created By", key: "creator"},
-        {value: "Created On", key: "created_at"}
+        { value: 'Created By', key: 'creator' },
+        { value: 'Created On', key: 'created_at' }
     ]
 
-    let rows = [
-        {creator: vm.creator, created_at: new Date(vm.created.at*1000)},
-    ]
-
+    let rows = [{ creator: vm.creator, created_at: new Date(vm.created.at * 1000) }]
 </script>
 
 <div>

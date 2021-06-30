@@ -1,47 +1,45 @@
 <script>
-	import RadioButton from "./RadioButton.svelte";
+    import RadioButton from './RadioButton.svelte'
 
-	export let isOS = true;
+    export let isOS = true
 
-	export let data = {};
+    export let data = {}
 
-	export let current = "";
+    export let current = ''
 </script>
 
 <main>
-	{#each Object.keys(data) as option, i}
-		<RadioButton id={option} bind:group={current}>
-			<div class="selection-card" class:selected={current == option}>
-				{#if isOS}
-					<img
-						src={'./img/' + data[option].image}
-						alt={option + ' Logo'} />
-				{/if}
-				<span class="selection-card-header"> {option} </span>
-				<divider />
-				{#if isOS}
-					<span class="selection-card-text">
-						{data[option].version}
-					</span>
-				{:else}
-					<span class="selection-card-details">
-						<span class="vCPU">
-							<b>{data[option].vcpus}</b>
-							vCPU
-						</span>
-						<span class="RAM">
-							<b>{data[option].memory}GB</b>
-							RAM
-						</span>
-						<span class="SSD">
-							<b>{data[option].ssd}GB</b>
-							SSD
-						</span>
-					</span>
-				{/if}
-			</div>
-		</RadioButton>
-	{/each}
+    {#each Object.keys(data) as option, i}
+        <RadioButton id={option} bind:group={current}>
+            <div class="selection-card" class:selected={current == option}>
+                {#if isOS}
+                    <img src={'./img/' + data[option].image} alt={option + ' Logo'} />
+                {/if}
+                <span class="selection-card-header"> {option} </span>
+                <divider />
+                {#if isOS}
+                    <span class="selection-card-text">
+                        {data[option].version}
+                    </span>
+                {:else}
+                    <span class="selection-card-details">
+                        <span class="vCPU">
+                            <b>{data[option].vcpus}</b>
+                            vCPU
+                        </span>
+                        <span class="RAM">
+                            <b>{data[option].memory}GB</b>
+                            RAM
+                        </span>
+                        <span class="SSD">
+                            <b>{data[option].ssd}GB</b>
+                            SSD
+                        </span>
+                    </span>
+                {/if}
+            </div>
+        </RadioButton>
+    {/each}
 </main>
 
 <style>
