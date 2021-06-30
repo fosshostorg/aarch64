@@ -4,7 +4,13 @@ type DropdownItem = {
     action: (e: MouseEvent) => void;
 };
 
-// NEW TYPES
+type Snackbar = {
+    color?: string;
+    status?: string | number;
+    message?: string;
+    grouped?: boolean;
+    timeout?: number;
+};
 
 type User = {
     email: string;
@@ -49,7 +55,7 @@ type System = {
 
 type OS = {
     version: string;
-    url: string;
+    image: string;
 };
 
 type Pop = {
@@ -67,15 +73,42 @@ type Plan = {
 };
 
 type Log = {
-    _id: string,
-    time: number,
-    title: string,
-    user_id: string,
-    user_name: string,
-    project_id: string,
-    project_name: string,
-    proxy_id: string,
-    proxy_name: string,
-    vm_id: string,
-    vm_name: string,
-}
+    _id: string;
+    time: number;
+    title: string;
+    user_id: string;
+    user_name: string;
+    project_id: string;
+    project_name: string;
+    proxy_id: string;
+    proxy_name: string;
+    vm_id: string;
+    vm_name: string;
+};
+
+type APIResponse<Type> = {
+    meta: {
+        success: boolean;
+        message: string;
+    };
+    data: Type;
+};
+
+type ProxyItem = {
+    hostname: string;
+    vm: {
+        hostname: string;
+        _id: string;
+    };
+    icon: {
+        value: string;
+        id: string;
+    };
+};
+
+type Proxy = {
+    _id: string;
+    project: string;
+    label: string;
+    vm: string;
+};

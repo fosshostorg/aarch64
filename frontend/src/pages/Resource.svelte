@@ -1,20 +1,23 @@
 <script lang="ts">
-    import Navbar from "../components/Navbar.svelte";
-    import PageHeader from "../components/PageHeader.svelte";
-    import PageTitle from "../components/PageTitle.svelte";
-    import VMInfo from "../components/VMInfo.svelte";
-    import VMOptions from "../components/VMOptions.svelte";
-    import {Projects} from "../stores";
-    import {push} from "svelte-spa-router";
-    import CopyField from "../components/CopyField.svelte";
-    import CreationInfo from "../components/CreationInfo.svelte";
+    /*globals Project */
+    import Navbar from '../components/Navbar.svelte';
+    import PageHeader from '../components/PageHeader.svelte';
+    import PageTitle from '../components/PageTitle.svelte';
+    import VMInfo from '../components/VMInfo.svelte';
+    import VMOptions from '../components/VMOptions.svelte';
+    import { Projects } from '../stores';
+    import CopyField from '../components/CopyField.svelte';
+    import CreationInfo from '../components/CreationInfo.svelte';
 
-    export let params: any = {};
+    export let params: { project_id: string; resource_id: string } = {
+        project_id: '',
+        resource_id: ''
+    };
 
-    const getProjectById = (id: string, _projects: any[]) => {
-        let returnProject = null;
+    const getProjectById = (id: string, _projects: Project[]): Project => {
+        let returnProject: Project = {};
         let projects = [..._projects];
-        projects.forEach((project) => {
+        projects.forEach(project => {
             if (project._id == id) {
                 returnProject = project;
             }
@@ -22,39 +25,42 @@
         return returnProject;
     };
 
+    let project: Project;
     $: project = getProjectById(params.project_id, $Projects);
-
-    // Dumb typescript stuff I should probably remove
-    function toVM(vm: any): VM {
-        return vm as VM;
-    }
-
 </script>
 
-<PageTitle title="AARCH64 | VMs"/>
+<PageTitle title="AARCH64 | VMs" />
 
 <main>
     {#if project}
         {#each project.vms as vm}
-            {#if toVM(vm)._id === params.resource_id}
-                <Navbar breadcrumbs={[
-				{label: 'Dashboard', path: '/dashboard/'},
-				{label: project.name, path: `/dashboard/projects/${project._id}`},
-				{label: 'Resource', path: `/dashboard/projects/${project._id}/resources/${vm._id}`}
-				]}/>
-                <PageHeader isResource state={vm.state}>{toVM(vm).hostname}</PageHeader>
+            {#if vm._id === params.resource_id}
+                <Navbar
+                    breadcrumbs={[
+                        { label: 'Dashboard', path: '/dashboard/' },
+                        {
+                            label: project.name,
+                            path: `/dashboard/projects/${project._id}`
+                        },
+                        {
+                            label: 'Resource',
+                            path: `/dashboard/projects/${project._id}/resources/${vm._id}`
+                        }
+                    ]}
+                />
+                <PageHeader isResource state={vm.state}>{vm.hostname}</PageHeader>
                 <div class="wrapper">
                     <div class="info">
                         <span class="title">System:</span>
                         <span class="info-wrapper">
-							<VMInfo vm={toVM(vm)}/>
-						</span>
-                        <CreationInfo vm={toVM(vm)}/>
-                        <CopyField label="Address" text={vm.address.slice(0, -3)}/>
-                        <CopyField text={vm.password}/>
+                            <VMInfo {vm} />
+                        </span>
+                        <CreationInfo {vm} />
+                        <CopyField label="Address" text={vm.address.slice(0, -3)} />
+                        <CopyField text={vm.password} />
                     </div>
                     <div class="actions">
-                        <VMOptions vm={toVM(vm)}/>
+                        <VMOptions {vm} />
                     </div>
                 </div>
             {/if}
@@ -96,9 +102,5 @@
         margin: 10px 0px;
         display: flex;
         align-items: center;
-    }
-
-    .material-icons {
-        cursor: pointer;
     }
 </style>
