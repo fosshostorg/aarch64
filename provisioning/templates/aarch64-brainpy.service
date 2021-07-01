@@ -1,0 +1,11 @@
+[Unit]
+Description=AArch64 Brain.py: remotely controlling VMs
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /root/brain/brain.py
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

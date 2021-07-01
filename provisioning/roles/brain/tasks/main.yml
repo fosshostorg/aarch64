@@ -1,0 +1,17 @@
+- name: Creates /root/brain
+  file:
+    path: /root/brain
+    state: directory
+- name: Copy brain.py
+  template:
+    src: brain.py
+    dest: /root/brain/brain.py
+  register: brainpy
+- name: Copy systemd service file to server
+  copy:
+    src: aarch64-brainpy.service
+    dest: /etc/systemd/system
+    owner: root
+    group: root
+  notify:
+    - Start aarch64-brainpy
