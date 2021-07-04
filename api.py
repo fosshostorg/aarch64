@@ -618,14 +618,18 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     json_body["project"] = to_object_id(json_body["project"])
 
+    # Refresh config doc
+    config_doc = db["config"].find_one()
+
     # Calculate host usage for pop
     _host_usage = {}
     for idx, host in enumerate(pop_doc["hosts"]):
-        if idx not in _host_usage:
-            _host_usage[idx] = 0
+        if (pop_doc["name"] + str(idx)) not in config_doc["disabled_hosts"]:
+            if idx not in _host_usage:
+                _host_usage[idx] = 0
 
-        for host_vm in db["vms"].find({"pop": json_body["pop"], "host": idx}):
-            _host_usage[idx] += (host_vm["vcpus"] + host_vm["memory"])
+            for host_vm in db["vms"].find({"pop": json_body["pop"], "host": idx}):
+                _host_usage[idx] += (host_vm["vcpus"] + host_vm["memory"])
 
     # Sort host usage dict by value (ordered from least used to greatest)
     _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
