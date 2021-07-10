@@ -126,12 +126,27 @@ class EchoHandler(BaseRequestHandler):
                     continue;   
                 state = msg_decoded["state"]
                 try: 
+                    # stop
                     if (state == "stop"):
                         vm.shutdown()
                         continue
+                    # start
                     if (state == "start"):
                         vm.create()
                         continue
+                    # shutdown 
+                    if (state == "shutdown"):
+                        vm.shutdown()
+                        continue
+                    # reboot 
+                    if (state == "reboot"):
+                        vm.reboot()
+                        continue
+                    # reset
+                    if (state == "reset"):
+                        vm.reset()
+                        continue
+                   
                 except Exception as e:
                     sendDictPacket(self, {"type": "statechangeerror", "id": msg_decoded["id"], "err": str(e)})
 
