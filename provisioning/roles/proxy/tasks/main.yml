@@ -1,3 +1,9 @@
+- name: Create landing page
+  copy:
+    content: |
+      This site cannot be found. Please contact support@fosshost.org if you belive this to be in error.
+    dest: /etc/haproxy/landing.html
+
 - name: Copy haproxy.cfg
   template:
     src: haproxy.cfg
