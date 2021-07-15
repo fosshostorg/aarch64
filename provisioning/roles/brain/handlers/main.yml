@@ -1,5 +1,0 @@
-- name: Start aarch64-brainpy
-  systemd:
-    name: aarch64-brainpy
-    state: started
-    enabled: yes
