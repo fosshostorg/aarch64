@@ -1,4 +1,4 @@
-module fosshost.org/statago
+module fosshost.org/aarch64/hydrogen
 
 go 1.16
 
