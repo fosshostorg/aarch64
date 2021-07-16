@@ -16,19 +16,23 @@ Helium is an NSQ Consumer with the role of taking in VM Power State changes from
 * Nobody, Helium is quite scared of others
 
 ## Lithium
-Lithium is a very bossy NSQ Consumer & Producer. Filled with importance it controls the cluster sending out control messages. It sends out messages to the hypervisors to update their libvirt configs, haproxy configs, and more. Libvirt control messages are sent to individual machines at `aarch64-libvirt-[hostname]`, while haproxy configuration changes are sent to the entire cluster via `aarch64-haproxy` 
+Lithium is a very bossy NSQ Consumer & Producer. Filled with importance it controls the cluster sending out control messages. It sends out messages to the hypervisors to update their libvirt configs, haproxy configs, and more. Libvirt control messages are sent to individual machines at `aarch64-libvirt-[hostname]`, while haproxy configuration changes are sent to the entire cluster via `aarch64-proxy` 
 ### Commonly found in
 * `aarch64-api#lithium`
 ### Known to harass
 * `Hydrogen`
+* `Beryllium`
 
 ## Beryllium
-Beryllium is an NSQ Consumer residing on the hypervisors. It listens on `aarch64-haproxy#[hostname]` and updates the local HAProxy configuration in accordance with the received messages.
+Beryllium is an NSQ Consumer residing on the hypervisors. It listens on `aarch64-proxy#[hostname]` and updates the local HAProxy configuration in accordance with the received messages.
 ### Commonly found in
-* `aarch64-haproxy#[hostname]`
+* `aarch64-proxy#[hostname]`
 ### Known to harass
 * Nobody, Beryllium enjoys being alone on friday nights
 
+.
+### Commonly found in
+* `aarch64-boron#[hostname]`
 
 # NSQ Layout TL;DR
 * `aarch64-libvirt-[hostname]#main` 
@@ -39,7 +43,7 @@ Beryllium is an NSQ Consumer residing on the hypervisors. It listens on `aarch64
     * Consumer: Helium
     * Producer: Hydrogen
     * Role: VM Power State Updates
-* `aarch64-haproxy#[hostname]`
+* `aarch64-proxy#[hostname]`
     * Consumer: Beryllium
     * Producer: Lithium
     * Role: HAProxy Configuration

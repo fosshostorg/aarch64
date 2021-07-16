@@ -24,7 +24,7 @@ func handleMessage(m *nsq.Message) error {
 		return nil
 	}
 
-	var msg message.ControlMessage
+	var msg message.Message
 	if err := json.Unmarshal(m.Body, &msg); err != nil {
 		log.Printf("Invalid NSQ Message: %s\n", m.Body)
 		return nil
@@ -51,20 +51,20 @@ func handleMessage(m *nsq.Message) error {
 	}
 
 	switch msg.Action {
-	case "changeState":
+	case message.ChangeState:
 		if msg.Data.Name == "" {
 			// We should have a producer output to a logs place for this kind of stuff
 			return nil
 		}
 		// Change the state of the VM
 		switch msg.Data.Event {
-		case message.ControlEventChangeStateShutdown:
+		case message.StateShutdown:
 			lbvt.DomainShutdown(vm)
-		case message.ControlEventChangeStateReboot:
+		case message.StateReboot:
 			lbvt.DomainReboot(vm, libvirt.DomainRebootDefault)
-		case message.ControlEventChangeStateReset:
+		case message.StateReset:
 			lbvt.DomainReset(vm, 0)
-		case message.ControlEventChangeStateStartup:
+		case message.StateStartup:
 			lbvt.DomainCreate(vm)
 		default:
 			// We should have a producer output to a logs place for this kind of stuff
@@ -80,25 +80,25 @@ func monitorVMStatus(ctx context.Context, snow *snowflake.Node) {
 	for event := range events {
 		switch libvirt.DomainEventType(event.Event) {
 		case libvirt.DomainEventStarted:
-			msg := message.ControlMessage{
+			msg := message.Message{
 				ID:     int64(snow.Generate()),
-				Action: "NewVMState",
-				Data: message.ControlMessageData{
-					Name:  event.Dom.Name,
-					State: 1,
+				Action: message.NewVMState,
+				Data: message.MessageData{
+					Name: event.Dom.Name,
+					Num:  1,
 				},
 			}
-			commons.ProducerSendStruct(msg, "aarch64-api", apiProducer)
+			commons.ProducerSendStruct(msg, "aarch64-power", apiProducer)
 		case libvirt.DomainEventStopped:
-			msg := message.ControlMessage{
+			msg := message.Message{
 				ID:     int64(snow.Generate()),
-				Action: "NewVMState",
-				Data: message.ControlMessageData{
-					Name:  event.Dom.Name,
-					State: 5,
+				Action: message.NewVMState,
+				Data: message.MessageData{
+					Name: event.Dom.Name,
+					Num:  5,
 				},
 			}
-			commons.ProducerSendStruct(msg, "aarch64-api", apiProducer)
+			commons.ProducerSendStruct(msg, "aarch64-power", apiProducer)
 		}
 	}
 }
