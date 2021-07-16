@@ -1,6 +1,7 @@
-module fosshost.org/aarch64/hydrogen
+module github.com/fosshostorg/aarch64/daemons
 
 go 1.16
+
 
 require (
 	github.com/bwmarrin/snowflake v0.3.0 // direct

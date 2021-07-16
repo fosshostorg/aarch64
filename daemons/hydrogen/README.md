@@ -4,4 +4,4 @@ It is highly specialized for the setup of fosshost so would require extensive cu
 
 ## NSQ Layout
 Each hypervisor creates a topic for itself called `aarch64-hostname` and creates a channel with it's hostname on the topic `aarch64-cluster`. Control Messages for a single hypervisor should be sent to `aarch64-hostname`, while messages for the cluster should be sent to `aarch64-cluster`
-Hydrogen is also an NSQ producer outputting to `aarch64-errors` to report runtime errors it enounters and `aarch64-api` to report VM state changes to the API server
+Hydrogen is also an NSQ producer outputting to `aarch64-api` to report VM state changes to the API server
