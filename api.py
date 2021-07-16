@@ -624,6 +624,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     # Calculate host usage for pop
     _host_usage = {}
     for idx, host in enumerate(pop_doc["hosts"]):
+        # Don't include hosts that are in the disabled_hosts list
         if (pop_doc["name"] + str(idx)) not in config_doc["disabled_hosts"]:
             if idx not in _host_usage:
                 _host_usage[idx] = 0
