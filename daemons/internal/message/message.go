@@ -1,10 +1,10 @@
 package message
 
-type ControlMessageData struct {
-	Name   string `json:"name"`
-	Source string `json:"source"`
-	Event  int    `json:"event"`
-	State  int    `json:"state"`
+type MessageData struct {
+	Name   string      `json:"name"`
+	Source string      `json:"source"`
+	Event  ActionEvent `json:"event"`
+	Num    int         `json:"state"`
 }
 
 type ErrorMessage struct {
@@ -15,15 +15,24 @@ type ErrorMessage struct {
 	MachineID int64  `json:"machine_id"`
 }
 
-type ControlMessage struct {
-	ID     int64              `json:"id"`
-	Action string             `json:"action"`
-	Data   ControlMessageData `json:"data"`
+type Message struct {
+	ID     int64       `json:"id"`
+	Action Action      `json:"action"`
+	Data   MessageData `json:"data"`
 }
 
+type Action int64
+
 const (
-	ControlEventChangeStateShutdown = iota
-	ControlEventChangeStateStartup
-	ControlEventChangeStateReset
-	ControlEventChangeStateReboot
+	ChangeState Action = iota
+	NewVMState
+)
+
+type ActionEvent int64
+
+const (
+	StateShutdown ActionEvent = iota
+	StateStartup
+	StateReset
+	StateReboot
 )
