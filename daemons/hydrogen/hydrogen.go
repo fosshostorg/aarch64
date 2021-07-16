@@ -133,23 +133,22 @@ func main() {
 	defer lbvt.Disconnect()
 	hostname := commons.GetHostname()
 	snow := commons.GetSnow()
+	nsqConnectURI := *flag.String("nsq-connect-uri", commons.NSQCoreUrl, "The URI for NSQ producers & consumers to connect to")
 
 	// Set seenID to true so that packets without an ID get dropped
 	seenIDs[0] = true
 
 	// Create the apiProducer
 	var err error
-	apiProducer, err = nsq.NewProducer(commons.NSQCoreUrl, nsq.NewConfig())
+	apiProducer, err = nsq.NewProducer(nsqConnectURI, nsq.NewConfig())
 	if err != nil {
 		log.Printf("Could not connect to NSQ: %s\n", err)
 	}
 	defer apiProducer.Stop()
 
 	// Time for NSQ
-	hostControlConsumer := commons.CreateNSQConsumer(commons.NSQCoreUrl, "aarch64-"+hostname, "main", nsq.HandlerFunc(handleMessage))
+	hostControlConsumer := commons.CreateNSQConsumer(nsqConnectURI, "aarch64-libvirt-"+hostname, "main", nsq.HandlerFunc(handleMessage))
 	defer hostControlConsumer.Stop()
-	clusterControlConsumer := commons.CreateNSQConsumer(commons.NSQCoreUrl, "aarch64-cluster", hostname, nsq.HandlerFunc(handleMessage))
-	defer clusterControlConsumer.Stop()
 
 	// Let's allow our queues to drain properly during shutdown.
 	// We'll create a channel to listen for SIGINT (Ctrl+C) to signal
@@ -167,8 +166,6 @@ func main() {
 	for {
 		select {
 		case <-hostControlConsumer.StopChan:
-			return
-		case <-clusterControlConsumer.StopChan:
 			return
 		case <-shutdown:
 			return
