@@ -28,3 +28,10 @@ nfpms:
       - helium
     formats:
       - deb
+    
+furies:
+  -
+    account: fosshost
+    secret_name: FURY_TOKEN
+    formats:
+      - deb
