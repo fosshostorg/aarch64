@@ -57,7 +57,6 @@ func handleMessage(m *nsq.Message) error {
 			},
 		)
 	}
-
 	return nil
 }
 
