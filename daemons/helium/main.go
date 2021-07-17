@@ -20,8 +20,8 @@ import (
 )
 
 func handleMessage(m *nsq.Message) error {
+	// Returning nil will automatically send a FIN command to NSQ to mark the message as processed.
 	if len(m.Body) == 0 {
-		// Returning nil will automatically send a FIN command to NSQ to mark the message as processed.
 		return nil
 	}
 
