@@ -20,7 +20,7 @@ nfpms:
     vendor: Fosshost 
     homepage: https://github.com/fosshostorg/aarch64/tree/main/daemons
     maintainer: Hampton Moore <hampton@fosshost.org>
-    description: AArch64 Libvirt Controller Consumer 
+    description: AArch64 Libvirt Controller Consumer running on the hypervisors
     license: MIT
     section: utils
     priority: extra
