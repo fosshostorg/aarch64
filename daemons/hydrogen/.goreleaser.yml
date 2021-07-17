@@ -1,0 +1,37 @@
+project_name: hydrogen
+
+monorepo:
+  tag_prefix: hydrogen/
+
+builds:
+  - id: hydrogen
+    dir: ./hydrogen/
+    binary: hydrogen
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+nfpms:
+  - id: hydrogen
+    package_name: hydrogen
+    file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    vendor: Fosshost 
+    homepage: https://github.com/fosshostorg/aarch64/tree/main/daemons
+    maintainer: Hampton Moore <hampton@fosshost.org>
+    description: AArch64 Libvirt Controller Consumer 
+    license: MIT
+    section: utils
+    priority: extra
+    builds:
+      - hydrogen
+    formats:
+      - deb
+    
+furies:
+  -
+    account: fosshost
+    secret_name: FURY_TOKEN
+    formats:
+      - deb
