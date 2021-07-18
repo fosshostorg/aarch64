@@ -1,0 +1,11 @@
+[Unit]
+Description=Hydrogen
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/hydrogen
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

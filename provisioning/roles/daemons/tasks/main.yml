@@ -1,0 +1,15 @@
+- name: Add hydrogen service
+  template:
+    src: fosshost-hydrogen.service
+    dest: /lib/systemd/system/fosshost-hydrogen.service
+    owner: root
+    group: root
+  register: hydrogen_service
+
+- name: Start and enable hydrogen
+  systemd:
+    name: fosshost-hydrogen 
+    daemon-reload: true
+    enabled: true
+    state: started
+  when: hydrogen_service.changed
