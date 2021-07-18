@@ -30,7 +30,11 @@ console = Console()
 argon = PasswordHasher()
 
 app = Flask(__name__)
-db = MongoClient("mongodb://localhost:27017")["aarch64"]
+db_uri = "mongodb://localhost:27017"
+if environ.get("DB_URI") is not None:
+    db_uri = environ.get("DB_URI")
+
+db = MongoClient(db_uri)["aarch64"]
 db["users"].create_index([("email", ASCENDING)], background=True, unique=True)
 db["pops"].create_index([("name", ASCENDING)], background=True, unique=True)
 db["proxies"].create_index([("label", ASCENDING)], background=True, unique=True)

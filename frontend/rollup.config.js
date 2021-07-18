@@ -46,8 +46,7 @@ export default {
 	},
 	plugins: [
 		replace({
-			// __apiRoute__: production ? "https://console.aarch64.com/api" : "https://localhost/api",
-			__apiRoute__: "https://console.aarch64.com/api",
+			__apiRoute__: process.env.DEV ? "/api" : "https://console.aarch64.com/api",
 			__production__: true,
 		}),
 
