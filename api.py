@@ -986,6 +986,7 @@ def get_ansible_hosts():
             for idx, host in enumerate(pop.get("hosts")):
                 _config["all"]["children"]["hypervisors"]["hosts"][pop["name"] + str(idx)] = {
                     "ansible_host": host["ip"],
+                    "mid": host["id"],
                     "wgip": prefix_to_wireguard(host["prefix"]),
                     "bcg": {
                         "asn": config_doc["asn"],
