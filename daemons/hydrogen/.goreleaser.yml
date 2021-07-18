@@ -15,7 +15,7 @@ builds:
 
 nfpms:
   - id: hydrogen
-    package_name: hydrogen
+    package_name: fosshost-hydrogen
     file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     vendor: Fosshost 
     homepage: https://github.com/fosshostorg/aarch64/tree/main/daemons

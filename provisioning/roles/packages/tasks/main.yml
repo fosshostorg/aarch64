@@ -3,6 +3,12 @@
     repo: deb [trusted=yes] https://repo.natesales.net/apt /
     state: present
 
+- name: Add fosshost fury apt repo
+  apt_repository:
+    repo: deb [trusted=yes] https://fury.fossho.st/apt /
+    state: present
+    filename: fosshost
+
 - name: Add apt repo for bird
   apt_repository:
     repo: deb http://deb.debian.org/debian/ sid main
