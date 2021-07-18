@@ -46,7 +46,7 @@
         </span>
         <div class="hostname">{VM.hostname}</div>
         <div class="location">
-            {VM.pop.toUpperCase()}
+            {VM.pop.toUpperCase()}{VM.host}
         </div>
         <span class="ip">
             {VM.address}
