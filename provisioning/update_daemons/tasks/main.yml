@@ -1,0 +1,11 @@
+- name: Update all packages to their latest version
+  apt:
+    name: "fosshost-hydrogen"
+    state: latest
+    update_cache: yes
+ 
+- name: Restart fosshost-hydrogen 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: fosshost-hydrogen
