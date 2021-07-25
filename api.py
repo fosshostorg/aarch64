@@ -9,7 +9,6 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 from functools import wraps
 from os import environ
-from time import time
 from secrets import token_hex
 from smtplib import SMTP_SSL as SMTP
 
@@ -89,7 +88,7 @@ packetMS = 0
 def send_NSQ(dict, topic):
     global packetID
     global packetMS
-    cMS = int(time() * 1000)
+    cMS = int(time.time() * 1000)
     if cMS != packetMS:
         packetID = 0
         packetMS = cMS
