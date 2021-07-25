@@ -66,6 +66,8 @@ func handleMessage(m *nsq.Message) error {
 			lbvt.DomainReset(vm, 0)
 		case message.StateStartup:
 			lbvt.DomainCreate(vm)
+		case message.StateStop:
+			lbvt.DomainDestroy(vm)
 		default:
 			// We should have a producer output to a logs place for this kind of stuff
 			log.Printf("Unknown state %d provided to changeState\n", msg.Data.Event)

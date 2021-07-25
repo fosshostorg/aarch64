@@ -35,4 +35,5 @@ const (
 	StateStartup
 	StateReset
 	StateReboot
+	StateStop
 )
