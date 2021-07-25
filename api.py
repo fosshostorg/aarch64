@@ -3,7 +3,6 @@ import ipaddress
 import json
 import re
 import time
-import libvirt
 import requests
 from email.mime.text import MIMEText
 from email.utils import formatdate
