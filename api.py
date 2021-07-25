@@ -9,6 +9,7 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 from functools import wraps
 from os import environ
+from time import time
 from secrets import token_hex
 from smtplib import SMTP_SSL as SMTP
 
@@ -33,6 +34,11 @@ app = Flask(__name__)
 db_uri = "mongodb://localhost:27017"
 if environ.get("DB_URI") is not None:
     db_uri = environ.get("DB_URI")
+
+
+nsq_uri = "http://[fd0d:944c:1337:aa64:1::]:4151"
+if environ.get("NSQ_URI") is not None:
+    nsq_uri = environ.get("NSQ_URI")
 
 db = MongoClient(db_uri)["aarch64"]
 db["users"].create_index([("email", ASCENDING)], background=True, unique=True)
@@ -76,6 +82,20 @@ db["vms"].update_many(
         "$set": {"state": 0}
     }
 )
+
+packetID = 0
+packetMS = 0
+
+def send_NSQ(dict, topic):
+    global packetID
+    global packetMS
+    cMS = int(time() * 1000)
+    if cMS != packetMS:
+        packetID = 0
+        packetMS = cMS
+    packetID+=1
+    dict["ID"] = (cMS << 22) + (255 >> 12) + packetID
+    requests.post(f"{nsq_uri}/pub?topic={topic}", json=dict)
 
 def prefix_to_wireguard(prefix):
     return f"fd0d:944c:1337:aa64:{prefix.split(':')[2]}::"
@@ -434,22 +454,10 @@ def start_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Project doesn't exist or unauthorized")
 
 
-    pop = db["pops"].find_one({"name": vm_doc["pop"]})
-    hypervisor = pop["hosts"][vm_doc["host"]]
-    try:
-        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to connect to hypervisor")
-    
-    try:
-        vm = conn.lookupByName(json_body["vm"])
-    except libvirt.libvirtError as e:
-        return _resp(False, "Hypervisor does not have VM")
-
-    try:
-        vm.create()
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to start VM")
+    send_NSQ({"action": 0, "data":{
+        "Name": json_body["vm"],
+        "Event": 1,
+    }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
     return _resp(True, "VM has been started")
 
 @app.route("/vms/shutdown", methods=["POST"])
@@ -465,22 +473,10 @@ def shutdown_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Project doesn't exist or unauthorized")
 
 
-    pop = db["pops"].find_one({"name": vm_doc["pop"]})
-    hypervisor = pop["hosts"][vm_doc["host"]]
-    try:
-        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to connect to hypervisor")
-    
-    try:
-        vm = conn.lookupByName(json_body["vm"])
-    except libvirt.libvirtError as e:
-        return _resp(False, "Hypervisor does not have VM")
-
-    try:
-        vm.shutdown()
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to shutdown VM")
+    send_NSQ({"action": 0, "data":{
+        "Name": json_body["vm"],
+        "Event": 0,
+    }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
     return _resp(True, "VM has been shutdown")
 
 @app.route("/vms/reboot", methods=["POST"])
@@ -496,22 +492,10 @@ def reboot_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Project doesn't exist or unauthorized")
 
 
-    pop = db["pops"].find_one({"name": vm_doc["pop"]})
-    hypervisor = pop["hosts"][vm_doc["host"]]
-    try:
-        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to connect to hypervisor")
-    
-    try:
-        vm = conn.lookupByName(json_body["vm"])
-    except libvirt.libvirtError as e:
-        return _resp(False, "Hypervisor does not have VM")
-
-    try:
-        vm.reboot()
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to reboot VM")
+    send_NSQ({"action": 0, "data":{
+        "Name": json_body["vm"],
+        "Event": 3,
+    }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
     return _resp(True, "VM has been rebooted")
 
 @app.route("/vms/stop", methods=["POST"])
@@ -527,22 +511,10 @@ def stop_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Project doesn't exist or unauthorized")
 
 
-    pop = db["pops"].find_one({"name": vm_doc["pop"]})
-    hypervisor = pop["hosts"][vm_doc["host"]]
-    try:
-        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to connect to hypervisor")
-    
-    try:
-        vm = conn.lookupByName(json_body["vm"])
-    except libvirt.libvirtError as e:
-        return _resp(False, "Hypervisor does not have VM")
-
-    try:
-        vm.destroy()
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to stop VM")
+    send_NSQ({"action": 0, "data":{
+        "Name": json_body["vm"],
+        "Event": 4,
+    }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
     return _resp(True, "VM has been stopped")
 
 @app.route("/vms/reset", methods=["POST"])
@@ -557,22 +529,10 @@ def reset_vm(json_body: dict, user_doc: dict) -> Response:
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
-
-    pop = db["pops"].find_one({"name": vm_doc["pop"]})
-    hypervisor = pop["hosts"][vm_doc["host"]]
-    try:
-        conn = libvirt.open(f'qemu+tcp://root@[{prefix_to_wireguard(hypervisor["prefix"])}]:16509/system')
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to connect to hypervisor")
-    
-    try:
-        vm = conn.lookupByName(json_body["vm"])
-    except libvirt.libvirtError as e:
-        return _resp(False, "Hypervisor does not have VM")
-    try:
-        vm.reset()
-    except libvirt.libvirtError as e:
-        return _resp(False, "Failed to reset VM")
+    send_NSQ({"action": 0, "data":{
+        "Name": json_body["vm"],
+        "Event": 2,
+    }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
     return _resp(True, "VM has been reset")
 
 @app.route("/vms/create", methods=["POST"])
@@ -1100,6 +1060,8 @@ if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
         })
     else:
         print("Cancelled")
+
+
 
 if DEBUG:
     print("Running API server in debug mode...")
