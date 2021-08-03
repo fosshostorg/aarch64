@@ -101,7 +101,7 @@
         padding: 0rem 1.5rem;
     }
 
-    button.outlined {
+    button.outline {
         background-color: white;
         color: var(--buttonColor);
     }

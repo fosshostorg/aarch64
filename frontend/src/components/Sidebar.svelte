@@ -16,6 +16,7 @@
         {
             header: 'Account',
             items: [
+                { name: 'Settings', route: '/dashboard/account'},
                 { name: 'Docs', route: '/docs' },
                 {
                     name: 'Feedback',

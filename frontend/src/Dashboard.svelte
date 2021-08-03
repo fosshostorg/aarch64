@@ -8,6 +8,7 @@
     import { onMount } from 'svelte';
     import Resource from './pages/Resource.svelte';
     import AuditLog from './pages/AuditLog.svelte';
+    import Account from './pages/Account.svelte';
     import { wrap } from 'svelte-spa-router/wrap';
 
     const prefix = '/dashboard';
@@ -19,6 +20,7 @@
                 admin: true
             }
         }),
+        '/account': Account,
         '/projects/create': NewProject,
         '/projects/:project_id/:page?': Project,
         '/projects/:project_id/resources/:resource_id': Resource
