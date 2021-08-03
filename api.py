@@ -356,7 +356,7 @@ If this was not you, please ignore this email.
 Best,
 Fosshost Team
     """)
-    add_audit_entry("user.password_reset", "", user["_id"], "", "")
+    add_audit_entry("user.start_password_reset", "", user["_id"], "", "")
     return _resp(True, "If the account exists a password reset was email sent")
 
 @app.route("/auth/password_reset", methods=["POST"])
