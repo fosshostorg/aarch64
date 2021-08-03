@@ -1,25 +1,23 @@
 <script lang="ts">
-    import { link, push, querystring } from 'svelte-spa-router';
+    import { link, push, querystring, location } from 'svelte-spa-router';
     import { parse } from 'qs';
     import Button from '../components/Button.svelte';
     import Input from '../components/Input.svelte';
     import PageTitle from '../components/PageTitle.svelte';
     import { checkMeta } from '../utils';
-import { onMount } from 'svelte';
+    import { onMount } from 'svelte';
 
     export let isLogin: boolean;
-    export let isPassReset: boolean = false;
+    export let isPassReset = false;
+    let isPassResetStart = true;
 
     let email: string;
     let password: string;
 
     $: query = parse($querystring);
-
-    onMount(() => {
-        if (!query.token) {
-            push("/login");
+    $: if (query.token || $location.includes("login") || $location.includes("signup")) {
+            isPassResetStart = false;
         }
-    })
 
     const handleSubmit = async () => {
         if (!isPassReset) {
@@ -40,18 +38,29 @@ import { onMount } from 'svelte';
             })
             .catch(err => console.log(err));
         } else {
-            await fetch("__apiRoute__/auth/password_reset", {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: query.token, password })
-            })
-            .then(resp => resp.json())
-            .then(async data => {
-                if (checkMeta(data)) {
-                    void push('/login');
+            if (isPassResetStart) {
+                await fetch("__apiRoute__/auth/start_password_reset", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                }).then(res => res.json())
+                .then(body => {
+                    checkMeta(body);
+                })
+            } else {
+                await fetch("__apiRoute__/auth/password_reset", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: query.token, password })
+                })
+                .then(resp => resp.json())
+                .then(async data => {
+                    if (checkMeta(data)) {
+                        void push('/login');
+                    }
+                })
+                .catch(err => console.log(err));
                 }
-            })
-            .catch(err => console.log(err));
         }
     };
 </script>
@@ -62,7 +71,7 @@ import { onMount } from 'svelte';
     <div>
         <img alt="AARCH64 Logo" src="./img/Fosshost_Light.png" />
         <form on:submit|preventDefault={handleSubmit}>
-            {#if !isPassReset}
+            {#if !isPassReset || isPassResetStart}
             <Input
                 autocomplete="email"
                 bind:value={email}
@@ -71,6 +80,7 @@ import { onMount } from 'svelte';
                 style="margin-bottom: 20px;"
             />
             {/if}
+            {#if !isPassResetStart}
             <Input
                 autocomplete="password"
                 bind:value={password}
@@ -78,10 +88,14 @@ import { onMount } from 'svelte';
                 type="password"
                 style="margin-bottom: 20px;"
             />
+            {/if}
             <Button width="100%" type="submit">{isLogin ? 'LOGIN' : (isPassReset ? 'RESET' : 'SIGNUP')}</Button>
         </form>
         {#if isLogin || isPassReset}
-            <a href="/signup" use:link>Don't have an account? <b>Sign Up</b></a>
+            <a href="/signup" use:link class:small={isLogin}>Don't have an account? <b>Sign Up</b></a>
+            {#if isLogin}
+            <a href="/password_reset" use:link style="margin-top: 0px;">Forgot password? <b>Reset</b></a>
+            {/if}
         {:else}
             <a href="/login" use:link>Already have an account? <b>Log In</b></a>
         {/if}
@@ -128,5 +142,9 @@ import { onMount } from 'svelte';
     img {
         width: calc(100% - 50px);
         margin-top: 25px;
+    }
+
+    .small {
+        margin-bottom: 10px;
     }
 </style>

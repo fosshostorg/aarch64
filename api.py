@@ -343,7 +343,7 @@ def start_password_reset(json_body: dict) -> Response:
 
     user = db["users"].find_one({"email": json_body["email"]})
     if not user:
-        return _resp(True, "If the account exists a password reset was email sent")
+        return _resp(True, "If the account exists a password reset email was sent")
     
     alphabet = string.ascii_letters + string.digits
     reset_token = ''.join(secrets.choice(alphabet) for i in range(32))
@@ -361,7 +361,7 @@ Fosshost Team
         db["users"].update_one({"email": json_body["email"]}, {"$unset": {"password_reset_token": ""}})
         return _resp(False, "Password reset failed, please try again later")
     add_audit_entry("user.start_password_reset", "", user["_id"], "", "")
-    return _resp(True, "If the account exists a password reset was email sent")
+    return _resp(True, "If the account exists a password reset email was sent")
 
 @app.route("/auth/password_reset", methods=["POST"])
 @with_json("token", "password")
