@@ -358,6 +358,7 @@ Best,
 Fosshost Team
     """)
     except Exception as e:
+        db["users"].update_one({"email": json_body["email"]}, {"$unset": {"password_reset_token": ""}})
         return _resp(False, "Password reset failed, please try again later")
     add_audit_entry("user.start_password_reset", "", user["_id"], "", "")
     return _resp(True, "If the account exists a password reset was email sent")
