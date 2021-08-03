@@ -4,6 +4,8 @@ import json
 import re
 import time
 import requests
+import secrets
+import string
 from email.mime.text import MIMEText
 from email.utils import formatdate
 from functools import wraps
@@ -22,7 +24,7 @@ from pymongo import ASCENDING, MongoClient
 from pymongo.errors import DuplicateKeyError, InvalidId
 from rich.console import Console
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 DEBUG = environ.get("AARCH64_DEBUG")
 
 console = Console()
@@ -330,6 +332,51 @@ def signup(json_body: dict) -> Response:
     add_audit_entry("user.signup", "", user_doc["_id"], "", "")
     requests.post(config_doc["webhook"], json={"content": f"User {json_body['email']} has signed up"})
     return _resp(True, "User created")
+
+@app.route("/auth/start_password_reset", methods=["POST"])
+@with_json("email")
+def start_password_reset(json_body: dict) -> Response:
+    """
+    Start a password reset
+    :param json_body: supplied by decorator
+    """
+
+    user = db["users"].find_one({"email": json_body["email"]})
+    if not user:
+        return _resp(False, "Invalid username or password")
+    
+    alphabet = string.ascii_letters + string.digits
+    reset_token = ''.join(secrets.choice(alphabet) for i in range(32))
+    db["users"].update_one({"email": json_body["email"]}, {"$set": {"password_reset_token": reset_token}})
+    send_email(json_body["email"], "Password reset", f"""Hello,
+A password reset has been requested for your account.
+Please visit https://console.aarch64.com/#/password_reset?token={reset_token} to reset your password.
+If this was not you, please ignore this email.
+
+Best,
+Fosshost Team
+    """)
+    add_audit_entry("user.password_reset", "", user["_id"], "", "")
+    return _resp(True, "Password reset email sent")
+
+@app.route("/auth/password_reset", methods=["POST"])
+@with_json("token", "password")
+def password_reset(json_body: dict) -> Response:
+    """
+    Reset a password
+    :param json_body: supplied by decorator
+    """
+
+    user = db["users"].find_one({"password_reset_token": json_body["token"]})
+    if not user:
+        return _resp(False, "Invalid token")
+    
+    if not json_body.get("password"):
+        return _resp(False, "Password must exist")
+
+    db["users"].update_one({"email": user["email"]}, {"$set": {"password": argon.hash(json_body["password"])}, "$unset": {"password_reset_token": ""}})
+    add_audit_entry("user.password_reset", "", user["_id"], "", "")
+    return _resp(True, "Password reset")
 
 
 @app.route("/auth/login", methods=["POST"])
