@@ -4,7 +4,7 @@
     import {User, Projects} from "../stores";
     import Button from "../components/Button.svelte";
     import { checkMeta } from "../utils";
-import PageTitle from "../components/PageTitle.svelte";
+    import PageTitle from "../components/PageTitle.svelte";
 
     const handlePasswordReset = async () => {
         await fetch("__apiRoute__/auth/start_password_reset", {

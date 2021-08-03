@@ -5,6 +5,7 @@
     import Input from '../components/Input.svelte';
     import PageTitle from '../components/PageTitle.svelte';
     import { checkMeta } from '../utils';
+import { onMount } from 'svelte';
 
     export let isLogin: boolean;
     export let isPassReset: boolean = false;
@@ -13,6 +14,12 @@
     let password: string;
 
     $: query = parse($querystring);
+
+    onMount(() => {
+        if (!query.token) {
+            push("/login");
+        }
+    })
 
     const handleSubmit = async () => {
         if (!isPassReset) {
