@@ -4,9 +4,7 @@
     import {User, Projects} from "../stores";
     import Button from "../components/Button.svelte";
     import { checkMeta } from "../utils";
-
-    $: console.log($User);
-    $: console.log($Projects);
+import PageTitle from "../components/PageTitle.svelte";
 
     const handlePasswordReset = async () => {
         await fetch("__apiRoute__/auth/start_password_reset", {
@@ -20,13 +18,14 @@
     }
 </script>
 
+<PageTitle title="AARCH64 | Account" />
 <Navbar
     breadcrumbs={[
         { label: 'Dashboard', path: '/dashboard' },
-        { label: 'Account', path: `/dashboard/account` }
+        { label: 'Account Settings', path: `/dashboard/account` }
     ]}
 />
-<PageHeader>Account Information</PageHeader>
+<PageHeader>Account Settings</PageHeader>
 <main>
     <div class="field">
         <b>Email:</b> {$User.email}

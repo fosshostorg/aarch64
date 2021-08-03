@@ -1,21 +1,26 @@
 <script lang="ts">
-    import { link, push } from 'svelte-spa-router';
+    import { link, push, querystring } from 'svelte-spa-router';
+    import { parse } from 'qs';
     import Button from '../components/Button.svelte';
     import Input from '../components/Input.svelte';
     import PageTitle from '../components/PageTitle.svelte';
     import { checkMeta } from '../utils';
 
     export let isLogin: boolean;
+    export let isPassReset: boolean = false;
 
     let email: string;
     let password: string;
 
+    $: query = parse($querystring);
+
     const handleSubmit = async () => {
-        await fetch(`__apiRoute__/auth/${isLogin ? 'login' : 'signup'}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        })
+        if (!isPassReset) {
+            await fetch(`__apiRoute__/auth/${isLogin ? 'login' : 'signup'}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
             .then(resp => resp.json())
             .then(async data => {
                 if (checkMeta(data)) {
@@ -27,6 +32,20 @@
                 }
             })
             .catch(err => console.log(err));
+        } else {
+            await fetch("__apiRoute__/auth/password_reset", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: query.token, password })
+            })
+            .then(resp => resp.json())
+            .then(async data => {
+                if (checkMeta(data)) {
+                    void push('/login');
+                }
+            })
+            .catch(err => console.log(err));
+        }
     };
 </script>
 
@@ -36,6 +55,7 @@
     <div>
         <img alt="AARCH64 Logo" src="./img/Fosshost_Light.png" />
         <form on:submit|preventDefault={handleSubmit}>
+            {#if !isPassReset}
             <Input
                 autocomplete="email"
                 bind:value={email}
@@ -43,16 +63,17 @@
                 type="email"
                 style="margin-bottom: 20px;"
             />
+            {/if}
             <Input
                 autocomplete="password"
                 bind:value={password}
-                placeholder="Password"
+                placeholder={(isPassReset ? "New " : "") + "Password"}
                 type="password"
                 style="margin-bottom: 20px;"
             />
-            <Button width="100%" type="submit">{isLogin ? 'LOGIN' : 'SIGNUP'}</Button>
+            <Button width="100%" type="submit">{isLogin ? 'LOGIN' : (isPassReset ? 'RESET' : 'SIGNUP')}</Button>
         </form>
-        {#if isLogin}
+        {#if isLogin || isPassReset}
             <a href="/signup" use:link>Don't have an account? <b>Sign Up</b></a>
         {:else}
             <a href="/login" use:link>Already have an account? <b>Log In</b></a>
@@ -73,12 +94,13 @@
     a {
         color: #0e0d0d;
         font-size: 12px;
-        margin-top: 10px;
+        margin-top: 15px;
+        margin-bottom: 25px;
     }
 
     div {
         width: 324px;
-        height: 368px;
+        /* height: 368px; */
         background-color: white;
         display: flex;
         flex-direction: column;

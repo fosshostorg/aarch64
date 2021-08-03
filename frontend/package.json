@@ -37,6 +37,7 @@
 		"typescript": "^3.9.10"
 	},
 	"dependencies": {
+		"qs": "^6.10.1",
 		"sirv-cli": "^1.0.0",
 		"svelte-select": "^3.15.0",
 		"svelte-spa-router": "^3.1.0",

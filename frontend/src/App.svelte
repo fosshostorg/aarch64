@@ -38,6 +38,13 @@
                 isLogin: false
             }
         }),
+        '/password_reset': wrap({
+            component: LoginOrSignup,
+            props: {
+                isLogin: false,
+                isPassReset: true,
+            }
+        }),
         '/dashboard': dashboardWrap,
         '/dashboard/*': dashboardWrap,
         '*': NotFound
