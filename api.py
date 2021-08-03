@@ -348,7 +348,8 @@ def start_password_reset(json_body: dict) -> Response:
     alphabet = string.ascii_letters + string.digits
     reset_token = ''.join(secrets.choice(alphabet) for i in range(32))
     db["users"].update_one({"email": json_body["email"]}, {"$set": {"password_reset_token": reset_token}})
-    send_email(json_body["email"], "Password reset", f"""Hello,
+    try: 
+        send_email(json_body["email"], "Password reset", f"""Hello,
 A password reset has been requested for your account.
 Please visit https://console.aarch64.com/#/password_reset?token={reset_token} to reset your password.
 If this was not you, please ignore this email.
@@ -356,6 +357,8 @@ If this was not you, please ignore this email.
 Best,
 Fosshost Team
     """)
+    except Exception as e:
+        return _resp(False, "Password reset failed, please try again later")
     add_audit_entry("user.start_password_reset", "", user["_id"], "", "")
     return _resp(True, "If the account exists a password reset was email sent")
 
