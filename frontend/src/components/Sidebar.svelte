@@ -172,6 +172,8 @@
         margin: 0px;
         padding: 0px;
         padding-left: 25px;
+        max-height: 50vh;
+        overflow-y: scroll;
     }
 
     .sidebar-category-item {
