@@ -173,7 +173,7 @@
         padding: 0px;
         padding-left: 25px;
         max-height: 50vh;
-        overflow-y: scroll;
+        overflow-y: auto; 
     }
 
     .sidebar-category-item {
