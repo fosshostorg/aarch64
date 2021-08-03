@@ -343,7 +343,7 @@ def start_password_reset(json_body: dict) -> Response:
 
     user = db["users"].find_one({"email": json_body["email"]})
     if not user:
-        return _resp(False, "Invalid username or password")
+        return _resp(True, "If the account exists a password reset was email sent")
     
     alphabet = string.ascii_letters + string.digits
     reset_token = ''.join(secrets.choice(alphabet) for i in range(32))
@@ -357,7 +357,7 @@ Best,
 Fosshost Team
     """)
     add_audit_entry("user.password_reset", "", user["_id"], "", "")
-    return _resp(True, "Password reset email sent")
+    return _resp(True, "If the account exists a password reset was email sent")
 
 @app.route("/auth/password_reset", methods=["POST"])
 @with_json("token", "password")
