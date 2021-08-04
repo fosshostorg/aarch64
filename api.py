@@ -6,6 +6,8 @@ import time
 import requests
 import secrets
 import string
+# import pyotp
+import pyotp
 from email.mime.text import MIMEText
 from email.utils import formatdate
 from functools import wraps
@@ -382,7 +384,6 @@ def password_reset(json_body: dict) -> Response:
     add_audit_entry("user.password_reset", "", user["_id"], "", "")
     return _resp(True, "Password reset")
 
-
 @app.route("/auth/login", methods=["POST"])
 @with_json("email", "password")
 def user_login(json_body: dict) -> Response:
@@ -400,12 +401,65 @@ def user_login(json_body: dict) -> Response:
         if not valid:
             raise VerifyMismatchError
         else:
+            if user.get("totp_enabled"):
+                if json_body.get("totp_code"):
+                    totp_code = json_body["totp_code"]
+                    topt = pyotp.TOTP(user["totp_key"])
+                    if not topt.verify(totp_code):
+                        return _resp(False, "Invalid TOTP code")
+                return _resp(True, "Please supply TOTP code")
             rsp = make_response(_resp(True, "Authentication successful"))
             # Set the API key cookie with a 90 day expiration date
             rsp.set_cookie("key", user["key"], httponly=True, secure=True, expires=datetime.datetime.now() + datetime.timedelta(days=90))
             return rsp
     except VerifyMismatchError:
         return _resp(False, "Invalid username or password")
+
+
+# login with 2fa 
+@app.route("/auth/login_2fa", methods=["POST"])
+@with_json("email", "password", "2fa_code")
+def login_2fa(json_body: dict) -> Response:
+    """
+    Login with 2fa
+    :param json_body: supplied by decorator
+    """
+    return user_login(json_body)
+
+@app.route("/auth/setup_2fa", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+def setup_2fa(user_doc: dict) -> Response:
+    """
+    Setup 2fa for a user
+    :param json_body: supplied by decorator
+    """
+
+    totp = pyotp.random_base32()
+    db["users"].update_one({"_id": user_doc["_id"]}, {"$set": {"totp": totp, "totp_enabled": False}})
+    add_audit_entry("user.setup_2fa", "", user_doc["_id"], "", "")
+    return _resp(True, "2fa TOTP has been created", data={"totp":totp})
+
+@app.route("/auth/verify_2fa", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("totp")
+def verify_2fa(json_body: dict, user_doc: dict) -> Response:
+    """
+    Verify 2fa for a user
+    :param json_body: supplied by decorator
+    """
+
+    if not user_doc.get("totp_enabled"):
+        return _resp(False, "2fa TOTP has not been created yet")
+    if user_doc["totp_enabled"]:
+        return _resp(False, "2fa TOTP has already been enabled")
+
+    totp = pyotp.TOTP(user_doc["totp"])
+    if totp.verify(json_body["totp"]):
+        db["users"].update_one({"_id": user_doc["_id"]}, {"$set": {"totp_enabled": True}})
+        add_audit_entry("user.verify_2fa", "", user_doc["_id"], "", "")
+        return _resp(True, "2fa verification successful")
+    else:
+        return _resp(False, "Invalid code")
 
 
 @app.route("/auth/logout", methods=["POST"])
