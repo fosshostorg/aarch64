@@ -185,6 +185,7 @@
         display: flex;
         align-items: center;
         text-decoration: none;
+        position: relative;
     }
 
     .sidebar-category-item span {
@@ -203,15 +204,16 @@
         font-weight: bold;
     }
 
-    :global(.sidebar-item-active)::before {
-        content: ' ';
-        width: var(--sidebar-width);
+    :global(.sidebar-item-active)::after {
+        content: '';
+        width: 200px;
         height: 40px;
         background-color: white;
-        opacity: 0.25;
+        opacity: 0.15;
+        border-radius: 2px;
         display: block;
         position: absolute;
-        left: 0;
+        left: -25px;
     }
 
     .rotate {
