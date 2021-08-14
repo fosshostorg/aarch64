@@ -2,4 +2,10 @@ hydrogen/hydrogen
 helium/helium
 dist/
 
+# NSQ Stuff
 nsqd.dat
+*.diskqueue.meta.dat
+
+# Beryllium Cache Stuff
+proxies.json
+proxy.cfg

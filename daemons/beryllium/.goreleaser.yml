@@ -20,7 +20,7 @@ nfpms:
     vendor: Fosshost 
     homepage: https://github.com/fosshostorg/aarch64/tree/main/daemons
     maintainer: Colin Clark <col@fosshost.org>
-    description: NSQ Consumer residing on the hypervisors
+    description: NSQ Consumer residing on the hypervisors to update local HAProxy Config File
     license: MIT
     section: utils
     priority: extra
