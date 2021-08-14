@@ -1,0 +1,37 @@
+project_name: beryllium
+
+monorepo:
+  tag_prefix: beryllium/
+
+builds:
+  - id: beryllium
+    dir: ./beryllium/
+    binary: beryllium
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+nfpms:
+  - id: beryllium
+    package_name: fosshost-beryllium
+    file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    vendor: Fosshost 
+    homepage: https://github.com/fosshostorg/aarch64/tree/main/daemons
+    maintainer: Colin Clark <col@fosshost.org>
+    description: NSQ Consumer residing on the hypervisors
+    license: MIT
+    section: utils
+    priority: extra
+    builds:
+      - beryllium
+    formats:
+      - deb
+    
+furies:
+  -
+    account: fosshost
+    secret_name: FURY_TOKEN
+    formats:
+      - deb
