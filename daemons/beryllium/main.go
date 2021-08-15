@@ -17,10 +17,11 @@ import (
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
-func NewNSQHandler(l *zap.Logger, proxyConfigPath string) *NSQHandler {
+func NewNSQHandler(l *zap.Logger, proxyConfigPath string, proxyCachePath string) *NSQHandler {
 	return &NSQHandler{
 		l:               l,
 		proxyConfigPath: proxyConfigPath,
+		proxyCachePath:  proxyCachePath,
 		data:            make(map[string]string),
 	}
 }
@@ -28,6 +29,7 @@ func NewNSQHandler(l *zap.Logger, proxyConfigPath string) *NSQHandler {
 type NSQHandler struct {
 	l               *zap.Logger
 	proxyConfigPath string
+	proxyCachePath  string
 	data            map[string]string
 	mutex           sync.Mutex
 }
@@ -111,30 +113,30 @@ func (h *NSQHandler) GenerateConfig() error {
 }
 
 func (h *NSQHandler) SaveProxies() error {
-	file, err := os.Create("proxies.json")
+	file, err := os.Create(h.proxyCachePath)
 	defer file.Close()
 	if err != nil {
-		h.l.Error("Failed to Create proxies.json", zap.Error(err))
+		h.l.Error("Failed to Create beryllium.json", zap.Error(err))
 		return nil
 	}
 	encoder := json.NewEncoder(file)
 	if err = encoder.Encode(h.data); err != nil {
-		h.l.Error("Failed to Save proxies.json", zap.Error(err))
+		h.l.Error("Failed to Save beryllium.json", zap.Error(err))
 		return nil
 	}
 	return nil
 }
 
 func (h *NSQHandler) LoadProxies() error {
-	file, err := os.Open("proxies.json")
+	file, err := os.Open(h.proxyCachePath)
 	if err != nil {
-		h.l.Info("Unable to Open proxies.json")
+		h.l.Info("Unable to Open beryllium.json")
 		return nil
 	}
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	if err = decoder.Decode(&h.data); err != nil {
-		h.l.Error("Failed to Load proxies.json", zap.Error(err))
+		h.l.Error("Failed to Load beryllium.json", zap.Error(err))
 		h.data = make(map[string]string)
 		return nil
 	}
@@ -147,22 +149,21 @@ func main() {
 	var (
 		nsqConnectURI   string
 		proxyConfigPath string
+		proxyCachePath  string
 	)
 
 	// Parse Flags
 	flag.StringVar(&nsqConnectURI, "nsq-connect-uri", commons.NSQCoreUrl, "The URI for NSQ producers & consumers to connect to")
 	flag.StringVar(&proxyConfigPath, "proxy-config-path", commons.ProxyConfigPath, "The path to the proxy configuration file")
+	flag.StringVar(&proxyCachePath, "proxy-cache-path", commons.ProxyCachePath, "The path to the proxy cache file")
 	flag.Parse()
-	if proxyConfigPath == "" {
-		l.Fatal("proxy-config-path is required")
-	}
 
 	// Connect to NSQ
 	hostname := commons.GetHostname()
 	if hostname == "" {
 		l.Fatal("failed to read hostname")
 	}
-	nh := NewNSQHandler(l, proxyConfigPath)
+	nh := NewNSQHandler(l, proxyConfigPath, proxyCachePath)
 	nh.LoadProxies()
 	nh.GenerateConfig()
 	nsqConsumer := commons.CreateNSQConsumer(nsqConnectURI, "aarch64-proxy", hostname, nh)

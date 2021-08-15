@@ -7,5 +7,5 @@ nsqd.dat
 *.diskqueue.meta.dat
 
 # Beryllium Cache Stuff
-proxies.json
+beryllium.json
 proxy.cfg
