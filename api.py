@@ -378,7 +378,7 @@ def password_reset(json_body: dict) -> Response:
     if not json_body.get("password"):
         return _resp(False, "Password must exist")
 
-    db["users"].update_one({"email": user["email"]}, {"$set": {"password": argon.hash(json_body["password"])}, "$unset": {"password_reset_token": ""}})
+    db["users"].update_one({"email": user["email"]}, {"$set": {"password": argon.hash(json_body["password"]), "key": token_hex(24)}, "$unset": {"password_reset_token": ""}})
     add_audit_entry("user.password_reset", "", user["_id"], "", "")
     return _resp(True, "Password reset")
 
