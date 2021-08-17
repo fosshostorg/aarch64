@@ -14,6 +14,8 @@
     import Input from '../components/Input.svelte';
     import Button from '../components/Button.svelte';
 
+    // TODO: Auto-fill correct project when redirected from project page
+
     /* Where fetched system details are stored */
     let data: System = {
         pops: [],
@@ -45,15 +47,29 @@
     /* Adds a new hostname field w/ increase in batch size */
     const addHost = (e: Event) => {
         e.preventDefault();
-        hostnames = [...hostnames, uuidv4()] as string[];
+        if (batch >= 5 || project.budget_used + (batch+1) * (data.plans[plan] ? data.plans[plan]['vcpus'] : 0) > project.budget) {
+            return;
+        }
+        batch++;
+        hostnames = [...hostnames, uuidv4()];
     };
 
-    /* Adds a new hostname field w/ decrease in batch size */
+    /* Removes a hostname field w/ decrease in batch size */
     const removeHost = (e: Event) => {
         e.preventDefault();
+        if (batch <= 1) {
+            return;
+        }
+        batch--;
         hostnames.splice(-1, 1);
         hostnames = hostnames;
     };
+
+    /* Resets hostnames and batch size to 1 */
+    const resetHosts = () => {
+        hostnames = [hostnames[0]];
+        batch = 1;
+    }
 
     /* Creates the VMs by looping through every hostname in the list, will wait until all in the batch have been created */
     const createFormSubmit = async () => {
@@ -113,19 +129,20 @@
                     <form on:submit|preventDefault={createFormSubmit}>
                         <span class="form-header"> Choose an image: </span>
                         <div class="create-form-select">
-                            {#if Object.keys(data.plans).length > 0}
-                                <VMSelect bind:current={image} data={data.oses} />
+                            {#if Object.keys(data.oses).length > 0}
+                                <VMSelect bind:current={image} osOptions={data.oses} />
                             {:else}
                                 <Spinner />
                             {/if}
                         </div>
                         <span class="form-header"> Choose a plan: </span>
                         <div class="create-form-select">
-                            {#if Object.keys(data.oses).length > 0}
+                            {#if Object.keys(data.plans).length > 0}
                                 <VMSelect
                                     bind:current={plan}
-                                    data={data.plans}
-                                    isOS={false}
+                                    planOptions={data.plans}
+                                    coreLimit={project.budget - project.budget_used}
+                                    on:change={resetHosts}
                                 />
                             {:else}
                                 <Spinner />
@@ -143,12 +160,7 @@
                                 <div class="batch-create-button">
                                     <button
                                         class="batch-create-remove"
-                                        on:click={e => {
-                                            e.preventDefault();
-                                            if (batch > 1) {
-                                                batch--, removeHost(e);
-                                            }
-                                        }}
+                                        on:click={removeHost}
                                     >
                                         <span class="material-icons"> remove </span>
                                     </button>
@@ -157,13 +169,7 @@
                                     </div>
                                     <button
                                         class="batch-create-add"
-                                        on:click={e => {
-                                            e.preventDefault();
-                                            if (batch < 5) {
-                                                batch++;
-                                                addHost(e);
-                                            }
-                                        }}
+                                        on:click={addHost}
                                     >
                                         <span class="material-icons"> add </span>
                                     </button>
@@ -182,6 +188,7 @@
                                             if (option) return option.name;
                                         }}
                                         bind:selectedValue={project}
+                                        on:select={resetHosts}
                                     />
                                     <!-- Just FYI, you might need to set some other function overrides from svelte-select. -->
                                 </div>
@@ -311,7 +318,7 @@
         margin-top: 10px;
     }
 
-    div :global(.submit-button:active) {
+    div :global(.submit-button:active:not(.disabled)) {
         background-color: #46b05d !important;
         border-color: #46b05d !important;
     }
@@ -393,6 +400,10 @@
         height: 55px;
         display: flex;
         align-items: center;
+    }
+
+    .form-header:not(:first-child) {
+        margin-top: 15px;
     }
 
     .create-form {

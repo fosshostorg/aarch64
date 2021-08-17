@@ -2,36 +2,39 @@
     /*globals OS, Plan */
     import RadioButton from './RadioButton.svelte';
 
-    export let isOS = true;
-    export let data: { [key: string]: OS | Plan } = {};
+    export let planOptions: { [key: string]: Plan } = {};
+    export let osOptions: { [key: string]: OS } = {};
     export let current = '';
+    export let coreLimit = 0;
+    
+    $: isOS = Object.keys(osOptions).length !== 0;
 </script>
 
 <main>
-    {#each Object.keys(data) as option, i}
-        <RadioButton id={option} bind:group={current}>
-            <div class="selection-card" class:selected={current == option}>
+    {#each Object.keys(isOS ? osOptions : planOptions) as option, i}
+        <RadioButton id={option} bind:group={current} on:change disabled={!isOS && planOptions[option].vcpus > coreLimit}>
+            <div class="selection-card" class:selected={current == option} class:disabled={!isOS && planOptions[option].vcpus > coreLimit}>
                 {#if isOS}
-                    <img src={`./img/${data[option].image}`} alt={`${option} Logo`} />
+                    <img src={`./img/${osOptions[option].image}`} alt={`${option} Logo`} />
                 {/if}
                 <span class="selection-card-header"> {option} </span>
                 <divider />
                 {#if isOS}
                     <span class="selection-card-text">
-                        {data[option].version}
+                        {osOptions[option].version}
                     </span>
                 {:else}
                     <span class="selection-card-details">
                         <span class="vCPU">
-                            <b>{data[option].vcpus}</b>
+                            <b>{planOptions[option].vcpus}</b>
                             vCPU
                         </span>
                         <span class="RAM">
-                            <b>{data[option].memory}GB</b>
+                            <b>{planOptions[option].memory}GB</b>
                             RAM
                         </span>
                         <span class="SSD">
-                            <b>{data[option].ssd}GB</b>
+                            <b>{planOptions[option].ssd}GB</b>
                             SSD
                         </span>
                     </span>
@@ -121,5 +124,20 @@
 
     .selected divider {
         background-color: #0e0d0d;
+    }
+
+    .disabled {
+        color: #0e0d0d !important;
+        background-color: #cecece !important;
+        border-color: #b1b1b1 !important;
+        cursor: default;
+    }
+
+    .disabled .selection-card-details, .disabled .selection-card-header {
+        color: #838383 !important;
+    }
+
+    .disabled divider {
+        background-color: #838383 !important;
     }
 </style>

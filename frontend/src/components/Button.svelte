@@ -95,7 +95,7 @@
         transition: ease background-color 0.2s;
     }
 
-    button:active {
+    button:active:not(.disabled) {
         background-color: #252424;
         border-color: #252424;
         padding: 0rem 1.5rem;
@@ -108,6 +108,7 @@
 
     button.disabled:not(.outline) {
         background-color: #777;
+        border-color: #777;   
     }
 
     button.disabled.outline {
