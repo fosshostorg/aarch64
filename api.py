@@ -400,7 +400,7 @@ def user_login(json_body: dict) -> Response:
         if not valid:
             raise VerifyMismatchError
         else:
-            rsp = make_response(_resp(True, "Authentication successful"))
+            rsp = make_response(_resp(True, "Authentication successful", data = { "key": user["key"] }))
             # Set the API key cookie with a 90 day expiration date
             rsp.set_cookie("key", user["key"], httponly=True, secure=True, expires=datetime.datetime.now() + datetime.timedelta(days=90))
             return rsp
