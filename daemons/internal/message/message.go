@@ -5,6 +5,7 @@ type MessageData struct {
 	Source string      `json:"source"`
 	Event  ActionEvent `json:"event"`
 	Num    int         `json:"state"`
+	IP     string      `json:"ip"`
 }
 
 type ErrorMessage struct {
@@ -26,6 +27,9 @@ type Action int64
 const (
 	ChangeState Action = iota
 	NewVMState
+	// Beryllium HAProxy Update Actions
+	AddProxy
+	DeleteProxy
 )
 
 type ActionEvent int64
