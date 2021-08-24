@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"flag"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"sync"
@@ -65,11 +66,13 @@ func (h *NSQHandler) HandleMessage(m *nsq.Message) error {
 		h.addProxy(&msg.Data)
 		h.GenerateConfig()
 		h.SaveProxies()
+		h.ReloadProxy()
 		break
 	case message.DeleteProxy:
 		h.deleteProxy(&msg.Data)
 		h.GenerateConfig()
 		h.SaveProxies()
+		h.ReloadProxy()
 		break
 	default:
 		h.l.Error("unknown action")
@@ -113,6 +116,11 @@ func (h *NSQHandler) GenerateConfig() error {
 		h.l.Error("Failed to Write to Config File", zap.Error(err))
 		return nil
 	}
+	return nil
+}
+
+func (h *NSQHandler) ReloadProxy() error {
+	exec.Command("/usr/bin/bash", "-c", "\"/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid -x /run/haproxy/admin.sock -sf $(cat /run/haproxy.pid)\"").Output()
 	return nil
 }
 
@@ -170,6 +178,7 @@ func main() {
 	nh := NewNSQHandler(l, proxyConfigPath, proxyCachePath)
 	nh.LoadProxies()
 	nh.GenerateConfig()
+	nh.ReloadProxy()
 	nsqConsumer := commons.CreateNSQConsumer(nsqConnectURI, "aarch64-proxy", hostname, nh)
 	defer nsqConsumer.Stop()
 	l.Info("Beryllium has Started!!!")
