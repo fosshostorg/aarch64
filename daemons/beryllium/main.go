@@ -168,7 +168,7 @@ func main() {
 	nh.GenerateConfig()
 	nsqConsumer := commons.CreateNSQConsumer(nsqConnectURI, "aarch64-proxy", hostname, nh)
 	defer nsqConsumer.Stop()
-	l.Info("Beryllium has Started!!")
+	l.Info("Beryllium has Started!!!")
 
 	// Handle Shutting Down
 	c := make(chan os.Signal, 1)
