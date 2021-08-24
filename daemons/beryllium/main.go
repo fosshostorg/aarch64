@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"flag"
 	"os"
 	"os/signal"
@@ -14,6 +15,9 @@ import (
 	"github.com/nsqio/go-nsq"
 	"go.uber.org/zap"
 )
+
+//go:embed haproxy.template.cfg
+var cfg_file string
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
@@ -94,7 +98,7 @@ func (h *NSQHandler) GenerateConfig() error {
 			return strings.ReplaceAll(input, ".", "_")
 		},
 	}
-	tmpl, err := template.New("haproxy.template.cfg").Funcs(funcMap).ParseFiles("haproxy.template.cfg")
+	tmpl, err := template.New("haproxy.template.cfg").Funcs(funcMap).Parse(cfg_file)
 	if err != nil {
 		h.l.Error("Failed to Parse Template", zap.Error(err))
 		return nil
