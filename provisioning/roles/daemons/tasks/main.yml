@@ -13,3 +13,19 @@
     enabled: true
     state: started
   when: hydrogen_service.changed
+
+- name: Add beryllium service
+  template:
+    src: fosshost-beryllium.service
+    dest: /lib/systemd/system/fosshost-beryllium.service
+    owner: root
+    group: root
+  register: beryllium_service
+
+- name: Start and enable beryllium
+  systemd:
+    name: fosshost-beryllium 
+    daemon-reload: true
+    enabled: true
+    state: started
+  when: beryllium_service.changed

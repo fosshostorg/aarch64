@@ -810,6 +810,10 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
 
     if new_proxy.inserted_id:
         add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], vm_doc["_id"], new_proxy.inserted_id)
+        send_NSQ({"action": 2, "data":{
+            "Name": json_body["label"],
+            "IP": vm_doc["address"][:-3],
+        }}, "aarch64-proxy")
         return _resp(True, "Added proxy")
     else:
         return _resp(False, "Unable to add proxy")
@@ -840,6 +844,10 @@ def delete_proxy(json_body: dict, user_doc: dict) -> Response:
     deleted_proxy = db["proxies"].delete_one({"_id": to_object_id(json_body["proxy"])})
     if deleted_proxy.deleted_count == 1:
         add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], proxy_doc["vm"], proxy_doc["_id"])
+        send_NSQ({"action": 3, "data":{
+            "Name": proxy_doc["label"],
+            "IP": "Not needed",
+        }}, "aarch64-proxy")
         return _resp(True, "Proxy deleted")
     return _resp(False, "Unable to delete proxy")
 
@@ -955,6 +963,17 @@ def add_bgp_session(json_body: dict) -> Response:
 
     return _resp(False, "Unable to find host with provided IP")
 
+# sync domains to nsq
+@app.route("/admin/proxy-sync", methods=["GET"])
+@with_authentication(admin=True, pass_user=False)
+def sync_domains_to_nsq():
+    for proxy in db["proxies"].find():
+        vm_doc = db["vms"].find_one({"_id": to_object_id(proxy["vm"])})
+        send_NSQ({"action": 1, "data":{
+            "Name": proxy["label"],
+            "IP": vm_doc["address"][:-3],
+        }}, "aarch64-proxy")
+    return _resp(True, "Proxy domains synced to NSQ")
 
 @app.route("/admin/ansible", methods=["GET"])
 @with_authentication(admin=True, pass_user=False)

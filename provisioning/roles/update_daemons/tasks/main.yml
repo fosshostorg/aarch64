@@ -1,0 +1,23 @@
+- name: Update fosshost-hydrogen 
+  apt:
+    name: "fosshost-hydrogen"
+    state: latest
+    update_cache: yes
+ 
+- name: Restart fosshost-hydrogen 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: fosshost-hydrogen
+
+- name: Update fosshost-beryllium 
+  apt:
+    name: "fosshost-beryllium"
+    state: latest
+    update_cache: yes
+ 
+- name: Restart fosshost-beryllium
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: fosshost-beryllium

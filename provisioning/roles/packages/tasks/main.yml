@@ -46,3 +46,4 @@
       - haproxy
       - iptables-persistent
       - fosshost-hydrogen
+      - fosshost-beryllium
