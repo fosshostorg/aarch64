@@ -16,7 +16,7 @@
 
 - name: Set default release
   copy:
-    content: APT::Default-Release "stable";
+    content: APT::Default-Release "buster";
     dest: /etc/apt/apt.conf.d/default-release
 
 - name: Install BIRD2 from sid
@@ -27,6 +27,7 @@
 
 - name: Install packages
   apt:
+    update_cache: yes
     install_recommends: false
     pkg:
       - qemu-system
