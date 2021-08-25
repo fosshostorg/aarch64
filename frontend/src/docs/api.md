@@ -51,6 +51,20 @@ Request body:
 }
 ```
 
+Response body:
+
+```json
+{
+    "meta": {
+        "success": true,
+        "message": "Authentication successful"
+    },
+    "data": {
+        "key": "cfea63484ccfea63484bfe78ed72d2cbfe78eea63484bfe78e"
+    }
+}
+```
+
 POST `/auth/logout`
 
 Request body: `None`
