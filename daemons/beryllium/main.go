@@ -120,7 +120,7 @@ func (h *NSQHandler) GenerateConfig() error {
 }
 
 func (h *NSQHandler) ReloadProxy() error {
-	_, err := exec.Command("/bin/bash", "-c", "\"/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid -x /run/haproxy/admin.sock -sf $(cat /run/haproxy.pid)\"").Output()
+	_, err := exec.Command("/bin/bash", "-c", "/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid -x /run/haproxy/admin.sock -sf $(cat /run/haproxy.pid)").Output()
 	if err != nil {
 		h.l.Info("Failed to Reload Proxy", zap.Error(err))
 		return nil
