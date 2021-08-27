@@ -32,12 +32,14 @@ argon = PasswordHasher()
 
 app = Flask(__name__)
 db_uri = "mongodb://localhost:27017"
-if environ.get("DB_URI") is not None:
+if environ.get("DB_URI") 
+
+None:
     db_uri = environ.get("DB_URI")
 
 
 nsq_uri = "http://[fd0d:944c:1337:aa64:1::]:4151"
-if environ.get("NSQ_URI") is not None:
+if environ.get("NSQ_URI") != None:
     nsq_uri = environ.get("NSQ_URI")
 
 db = MongoClient(db_uri)["aarch64"]
@@ -241,10 +243,10 @@ def with_json(*outer_args):
                 if not request.json:
                     return _resp(False, "JSON body must not be empty")
                 val = request.json.get(arg)
-                if val is not None and val is not "":
+                if val != None and val != "":
                     _json_body[arg] = val
                 else:
-                    return _resp(False, "Required argument " + arg + " is not defined.")
+                    return _resp(False, "Required argument " + arg + " != defined.")
             return func(*args, **kwargs, json_body=_json_body)
 
         return wrapper
