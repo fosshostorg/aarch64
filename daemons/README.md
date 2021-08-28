@@ -15,14 +15,6 @@ Helium is an NSQ Consumer with the role of taking in VM Power State changes from
 ### Known to harass
 * Nobody, Helium is quite scared of others
 
-## Lithium
-Lithium is a very bossy NSQ Consumer & Producer. Filled with importance it controls the cluster sending out control messages. It sends out messages to the hypervisors to update their libvirt configs, haproxy configs, and more. Libvirt control messages are sent to individual machines at `aarch64-libvirt-[hostname]`, while haproxy configuration changes are sent to the entire cluster via `aarch64-proxy` 
-### Commonly found in
-* `aarch64-api#lithium`
-### Known to harass
-* `Hydrogen`
-* `Beryllium`
-
 ## Beryllium
 Beryllium is an NSQ Consumer residing on the hypervisors. It listens on `aarch64-proxy#[hostname]` and updates the local HAProxy configuration in accordance with the received messages.
 ### Commonly found in
@@ -37,7 +29,6 @@ Beryllium is an NSQ Consumer residing on the hypervisors. It listens on `aarch64
 # NSQ Layout TL;DR
 * `aarch64-libvirt-[hostname]#main` 
     * Consumer: Hydrogen
-    * Producer: Lithium
     * Role: Libvirt Control Commands
 * `aarch64-power#helium`
     * Consumer: Helium
@@ -45,5 +36,4 @@ Beryllium is an NSQ Consumer residing on the hypervisors. It listens on `aarch64
     * Role: VM Power State Updates
 * `aarch64-proxy#[hostname]`
     * Consumer: Beryllium
-    * Producer: Lithium
     * Role: HAProxy Configuration
