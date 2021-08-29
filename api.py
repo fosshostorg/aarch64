@@ -503,7 +503,7 @@ def start_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Project doesn't exist or unauthorized")
 
 
-    send_NSQ({"action": 0, "data":{
+    send_NSQ({"action": 0, "messagedata":{
         "Name": json_body["vm"],
         "Event": 1,
     }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
@@ -522,7 +522,7 @@ def shutdown_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Project doesn't exist or unauthorized")
 
 
-    send_NSQ({"action": 0, "data":{
+    send_NSQ({"action": 0, "messagedata":{
         "Name": json_body["vm"],
         "Event": 0,
     }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
@@ -541,7 +541,7 @@ def reboot_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Project doesn't exist or unauthorized")
 
 
-    send_NSQ({"action": 0, "data":{
+    send_NSQ({"action": 0, "messagedata":{
         "Name": json_body["vm"],
         "Event": 3,
     }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
@@ -560,7 +560,7 @@ def stop_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(False, "Project doesn't exist or unauthorized")
 
 
-    send_NSQ({"action": 0, "data":{
+    send_NSQ({"action": 0, "messagedata":{
         "Name": json_body["vm"],
         "Event": 4,
     }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
@@ -578,7 +578,7 @@ def reset_vm(json_body: dict, user_doc: dict) -> Response:
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
 
-    send_NSQ({"action": 0, "data":{
+    send_NSQ({"action": 0, "messagedata":{
         "Name": json_body["vm"],
         "Event": 2,
     }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
@@ -810,7 +810,7 @@ def add_proxy(json_body: dict, user_doc: dict) -> Response:
 
     if new_proxy.inserted_id:
         add_audit_entry("proxy.add", project_doc["_id"], user_doc["_id"], vm_doc["_id"], new_proxy.inserted_id)
-        send_NSQ({"action": 2, "data":{
+        send_NSQ({"action": 2, "messagedata":{
             "Name": json_body["label"],
             "IP": vm_doc["address"][:-3],
         }}, "aarch64-proxy")
@@ -844,7 +844,7 @@ def delete_proxy(json_body: dict, user_doc: dict) -> Response:
     deleted_proxy = db["proxies"].delete_one({"_id": to_object_id(json_body["proxy"])})
     if deleted_proxy.deleted_count == 1:
         add_audit_entry("proxy.delete", project_doc["_id"], user_doc["_id"], proxy_doc["vm"], proxy_doc["_id"])
-        send_NSQ({"action": 3, "data":{
+        send_NSQ({"action": 3, "messagedata":{
             "Name": proxy_doc["label"],
             "IP": "Not needed",
         }}, "aarch64-proxy")
@@ -969,7 +969,7 @@ def add_bgp_session(json_body: dict) -> Response:
 def sync_domains_to_nsq():
     for proxy in db["proxies"].find():
         vm_doc = db["vms"].find_one({"_id": to_object_id(proxy["vm"])})
-        send_NSQ({"action": 2, "data":{
+        send_NSQ({"action": 2, "messagedata":{
             "Name": proxy["label"],
             "IP": vm_doc["address"][:-3],
         }}, "aarch64-proxy")
