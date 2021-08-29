@@ -54,6 +54,7 @@ const (
 	// Beryllium HAProxy Update Actions
 	AddProxy
 	DeleteProxy
+	WipeProxy
 )
 
 type ActionEvent int64

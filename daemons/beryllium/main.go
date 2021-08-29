@@ -74,6 +74,9 @@ func (h *NSQHandler) HandleMessage(m *nsq.Message) error {
 		h.SaveProxies()
 		h.ReloadProxy()
 		break
+	case message.WipeProxy:
+		h.WipeProxy()
+		break
 	default:
 		h.l.Error("unknown action")
 		return nil
@@ -81,6 +84,11 @@ func (h *NSQHandler) HandleMessage(m *nsq.Message) error {
 	h.mutex.Unlock()
 
 	return nil
+}
+
+func (h *NSQHandler) WipeProxy() {
+	h.l.Info("Wiped all Proxy entries")
+	h.data = make(map[string]string)
 }
 
 func (h *NSQHandler) addProxy(data *message.MessageData) error {

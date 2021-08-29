@@ -969,7 +969,7 @@ def add_bgp_session(json_body: dict) -> Response:
 def sync_domains_to_nsq():
     for proxy in db["proxies"].find():
         vm_doc = db["vms"].find_one({"_id": to_object_id(proxy["vm"])})
-        send_NSQ({"action": 2, "message_data":{
+        send_NSQ({"action": 4, "message_data":{
             "Name": proxy["label"],
             "IP": vm_doc["address"][:-3],
         }}, "aarch64-proxy")
