@@ -44,7 +44,7 @@
       - libvirt-sshd
       - python3-pip
       - git
-      - haproxy
+      - nginx
       - iptables-persistent
       - fosshost-hydrogen
       - fosshost-beryllium

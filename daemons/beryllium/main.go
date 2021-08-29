@@ -17,7 +17,7 @@ import (
 	"go.uber.org/zap"
 )
 
-//go:embed haproxy.template.cfg
+//go:embed nginx.template.cfg
 var cfg_file string
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -101,7 +101,7 @@ func (h *NSQHandler) GenerateConfig() error {
 			return strings.ReplaceAll(input, ".", "_")
 		},
 	}
-	tmpl, err := template.New("haproxy.template.cfg").Funcs(funcMap).Parse(cfg_file)
+	tmpl, err := template.New("nginx.template.cfg").Funcs(funcMap).Parse(cfg_file)
 	if err != nil {
 		h.l.Error("Failed to Parse Template", zap.Error(err))
 		return nil
@@ -120,7 +120,7 @@ func (h *NSQHandler) GenerateConfig() error {
 }
 
 func (h *NSQHandler) ReloadProxy() error {
-	_, err := exec.Command("/bin/bash", "-c", "/usr/sbin/haproxy -f /etc/haproxy/haproxy.cfg -p /run/haproxy.pid -x /run/haproxy/admin.sock -sf $(cat /run/haproxy.pid)").Output()
+	_, err := exec.Command("/bin/bash", "-c", "/usr/sbin/nginx -s reload").Output()
 	if err != nil {
 		h.l.Info("Failed to Reload Proxy", zap.Error(err))
 		return nil
