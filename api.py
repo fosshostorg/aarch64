@@ -967,9 +967,14 @@ def add_bgp_session(json_body: dict) -> Response:
 @app.route("/admin/proxy-sync", methods=["GET"])
 @with_authentication(admin=True, pass_user=False)
 def sync_domains_to_nsq():
+    send_NSQ({"action": 4, "message_data":{
+        "Name": "null",
+        "IP": "null",
+    }}, "aarch64-proxy")
     for proxy in db["proxies"].find():
         vm_doc = db["vms"].find_one({"_id": to_object_id(proxy["vm"])})
-        send_NSQ({"action": 4, "message_data":{
+
+        send_NSQ({"action": 2, "message_data":{
             "Name": proxy["label"],
             "IP": vm_doc["address"][:-3],
         }}, "aarch64-proxy")
