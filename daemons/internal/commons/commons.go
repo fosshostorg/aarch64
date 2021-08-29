@@ -13,7 +13,7 @@ import (
 )
 
 var NSQCoreUrl = "[fd0d:944c:1337:aa64:1::]:4150"
-var ProxyConfigPath = "/etc/haproxy/haproxy.cfg"
+var ProxyConfigPath = "/etc/nginx/nginx.conf"
 var ProxyCachePath = "/etc/berrylium.json"
 
 func GetMachineID() int64 {
