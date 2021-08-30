@@ -128,7 +128,7 @@ func (h *NSQHandler) GenerateConfig() error {
 }
 
 func (h *NSQHandler) ReloadProxy() error {
-	_, err := exec.Command("/bin/bash", "-c", "/usr/sbin/nginx -s reload").Output()
+	_, err := exec.Command("/bin/bash", "-c", "/usr/bin/openresty -s reload").Output()
 	if err != nil {
 		h.l.Info("Failed to Reload Proxy", zap.Error(err))
 		return nil
