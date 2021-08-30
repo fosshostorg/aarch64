@@ -3,6 +3,17 @@
     repo: deb [trusted=yes] https://repo.natesales.net/apt /
     state: present
 
+- name: Openresty Key 
+  ansible.builtin.apt_key:
+    url: https://openresty.org/package/pubkey.gpg
+    state: present
+
+- name: Add openresty apt repo
+  apt_repository:
+    repo: deb http://openresty.org/package/arm64/debian buster openresty /
+    state: present
+    filename: fosshost
+
 - name: Add fosshost fury apt repo
   apt_repository:
     repo: deb [trusted=yes] https://fury.fossho.st/apt /
@@ -37,6 +48,7 @@
       - libvirt-daemon-system
       - cloud-image-utils
       - virtinst
+      - openresty
       - bridge-utils
       - ebtables
       - bcg
@@ -44,7 +56,6 @@
       - libvirt-sshd
       - python3-pip
       - git
-      - nginx
       - iptables-persistent
       - fosshost-hydrogen
       - fosshost-beryllium
