@@ -1,8 +1,3 @@
-- name: Get defined VMs
-  shell: virsh list --all
-  register: virsh_list
-  changed_when: false
-
 - name: Get defined VMs Interfaces
   shell: ip addr show
   register: interface_list
@@ -11,7 +6,17 @@
 - name: Create VM bridge
   shell: ip link del vbr{{ item["index"] }} ; ip link add vbr{{ item["index"] }} type bridge ; ip addr add dev vbr{{ item["index"] }} {{ item["gateway"] }}/64 ; ip link set dev vbr{{ item["index"] }} up
   loop: "{{ vms }}"
-  when: ("vbr"+item["index"]|string not in interface_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
+  when: (("vbr"+item["index"]|string) not in interface_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
+
+- name: Start service libvirtd
+  service:
+    name: libvirtd
+    state: started
+
+- name: Get defined VMs
+  shell: virsh list --all
+  register: virsh_list
+  changed_when: false
 
 - name: Create cloud config
   template:
@@ -20,16 +25,7 @@
   loop: "{{ vms }}"
   when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
 
-- name: Create network- name: Get defined VMs Interfaces
-  shell: ip addr show
-  register: interface_list
-  changed_when: false
-
-- name: Create VM bridge
-  shell: ip link del vbr{{ item["index"] }} ; ip link add vbr{{ item["index"] }} type bridge ; ip addr add dev vbr{{ item["index"] }} {{ item["gateway"] }}/64 ; ip link set dev vbr{{ item["index"] }} up
-  loop: "{{ vms }}"
-  when: ("vbr"+item["index"]|string not in interface_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
- config
+- name: Create network config
   template:
     src: netplan.yml
     dest: /tmp/{{ item["_id"] }}-network-config.yml
