@@ -41,7 +41,7 @@
 
 - name: Create VM disk
   shell:
-    cmd: qemu-img create -f qcow2 -o backing_file=/opt/aarch64/images/{{ item["os"] }}.qcow2 /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2
+    cmd: qemu-img create -f qcow2 -F qcow2 -o backing_file=/opt/aarch64/images/{{ item["os"] }}.qcow2 /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2
     creates: /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2
   loop: "{{ vms }}"
   when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
