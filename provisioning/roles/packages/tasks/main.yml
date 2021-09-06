@@ -4,7 +4,7 @@
     state: present
 
 - name: Openresty Key 
-  ansible.builtin.apt_key:
+  apt_key:
     url: https://openresty.org/package/pubkey.gpg
     state: present
 
