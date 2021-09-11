@@ -10,7 +10,7 @@
 
 - name: Add openresty apt repo
   apt_repository:
-    repo: deb http://openresty.org/package/arm64/debian buster openresty /
+    repo: deb http://openresty.org/package/arm64/debian bullseye openresty /
     state: present
     filename: fosshost
 
@@ -27,7 +27,7 @@
 
 - name: Set default release
   copy:
-    content: APT::Default-Release "buster";
+    content: APT::Default-Release "bullseye";
     dest: /etc/apt/apt.conf.d/default-release
 
 - name: Install BIRD2 from sid
