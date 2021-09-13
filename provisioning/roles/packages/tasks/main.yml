@@ -3,17 +3,6 @@
     repo: deb [trusted=yes] https://repo.natesales.net/apt /
     state: present
 
-- name: Openresty Key 
-  apt_key:
-    url: https://openresty.org/package/pubkey.gpg
-    state: present
-
-- name: Add openresty apt repo
-  apt_repository:
-    repo: deb http://openresty.org/package/arm64/debian bullseye openresty /
-    state: present
-    filename: fosshost
-
 - name: Add fosshost fury apt repo
   apt_repository:
     repo: deb [trusted=yes] https://fury.fossho.st/apt /
@@ -48,7 +37,6 @@
       - libvirt-daemon-system
       - cloud-image-utils
       - virtinst
-      - openresty
       - bridge-utils
       - ebtables
       - bcg
@@ -59,3 +47,23 @@
       - iptables-persistent
       - fosshost-hydrogen
       - fosshost-beryllium
+      - gpg
+      - gpg-agent
+
+- name: Openresty Key 
+  apt_key:
+    url: https://openresty.org/package/pubkey.gpg
+    state: present
+
+- name: Add openresty apt repo
+  apt_repository:
+    repo: deb http://openresty.org/package/arm64/debian bullseye openresty /
+    state: present
+    filename: fosshost
+
+- name: Install packages
+  apt:
+    update_cache: yes
+    install_recommends: false
+    pkg:
+      - openresty
