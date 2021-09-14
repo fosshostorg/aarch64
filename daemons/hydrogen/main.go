@@ -185,6 +185,24 @@ func main() {
 	go nh.MonitorDomainStatus(ctx)
 	defer ctx.Done()
 
+	domains, err := lv.Domains()
+	if err != nil {
+		l.Fatal("failed to retrieve domains: %v", zap.Error(err))
+	}
+
+	for _, d := range domains {
+		state, _, _ := lv.DomainGetState(libvirt.Domain{UUID: d.UUID}, 0)
+		msg := message.Message{
+			ID:     int64(sfNode.Generate()),
+			Action: message.NewVMState,
+			MessageData: message.MessageData{
+				Name: d.Name,
+				Num:  int(state),
+			},
+		}
+		commons.ProducerSendStruct(msg, "aarch64-power", nsqProducer)
+	}
+
 	l.Info("Hydrogen has Started!!!")
 
 	// Handle Shutting Down
