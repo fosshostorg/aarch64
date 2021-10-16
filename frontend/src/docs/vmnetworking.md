@@ -19,3 +19,17 @@ Each hypervisor runs a web proxy to allow IPv4 only users to load websites hoste
 ### SSH Jump Server
 
 IPv4-only users wishing to SSH into a virtual machine are about to use our SSH jump server. The user and host should be jump@[POP]0.infra.aarch64.com. For example, to SSH into the root user on the host `root@2001:0db8::aa64`, the SSH jump command is `ssh -J jump@dfw0.infra.aarch64.com root@2001:0db8::aa64`
+
+## Fixing issues when hosting a Github Actions runner
+
+AaronDewes#4702 on our Discord server has figured out a way to make a Github Actions runner work on AArch64.
+
+1. Add this in /etc/hosts:
+```
+64:ff9b::8c52:7906 api.github.com
+64:ff9b::8c52:7904 github.com
+64:ff9b::8c52:7909 codeload.github.com
+64:ff9b::8c52:7922 ghcr.io
+```
+
+2. Done.
