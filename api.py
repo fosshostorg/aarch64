@@ -430,6 +430,25 @@ def user_info(user_doc: dict) -> Response:
     del user_doc["password"]
     return _resp(True, "Retrieved user info", data=user_doc)
 
+# We probably want our user to be authenticated first before actually using this.
+# FIXME: probably want an application API Token/LDAP Prompt if we want to use this for something like a bot
+@app.route("/admin/grant", methods=["POST"])
+@with_json("email")
+@with_authentication(admin=True, pass_user=False)
+def grant_admin(json_body: dict) -> Response:
+    """
+    Grants a user administrator access (VERY DANGEROUS!)
+    """
+    user = db["users"].find_one({"email": json_body["email"]})
+
+    if not user:
+        return _resp(False, "Invalid User.")
+    
+    try:
+        db["users"].find_one_and_update({"email": json_body["email"]}, {'$set': {'admin': True}})
+    except:
+        return _resp(False, "Failed to grant admin on user.")
+        
 
 @app.route("/project", methods=["POST"])
 @with_authentication(admin=False, pass_user=True)
