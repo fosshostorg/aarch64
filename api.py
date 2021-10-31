@@ -446,7 +446,7 @@ def grant_admin(json_body: dict) -> Response:
     
     try:
         db["users"].find_one_and_update({"email": json_body["email"]}, {'$set': {'admin': True}})
-        return _resp(True, "Granted user admin"
+        return _resp(True, "Granted user admin")
     except:
         return _resp(False, "Failed to grant admin on user.")
         
