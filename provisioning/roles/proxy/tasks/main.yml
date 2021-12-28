@@ -1,21 +1,3 @@
-- name: Create landing page
-  copy:
-    content: |
-      This site cannot be found. Please contact support@fosshost.org if you belive this to be in error.
-    dest: /etc/haproxy/landing.html
-
-- name: Copy haproxy.cfg
-  template:
-    src: haproxy.cfg
-    dest: /etc/haproxy/haproxy.cfg
-  register: haproxy_config
-
-- name: Restart haproxy
-  systemd:
-    name: haproxy
-    state: restarted
-  when: haproxy_config.changed
-
 - name: Copy iptables config
   template:
     src: proxy_iptables_save
@@ -54,3 +36,42 @@
     uid: 1001
     shell: /usr/sbin/nologin
     password: "U6aMy0wojraho"  # Empty password hash
+
+- name: Generate an OpenSSH keypair
+  community.crypto.openssh_keypair:
+    path: /root/.ssh/jump_server
+    type: ed25519
+
+- name: Add apt repo for kangaroo
+  apt_repository:
+    repo: deb [trusted=yes] https://repo.hamptonmoore.com/apt /
+    state: present
+
+- name: Install kangaroo
+  apt:
+    update_cache: yes
+    install_recommends: false
+    pkg:
+      - kangaroo
+
+- name: Copy kangaroo config
+  template:
+    src: kangaroo.conf
+    dest: /etc/kangaroo.conf
+  register: sshd_config
+
+- name: Add kangaroo service
+  template:
+    src: kangaroo.service
+    dest: /lib/systemd/system/kangaroo.service
+    owner: root
+    group: root
+  register: kangaroo_service 
+
+- name: Start and enable kangaroo 
+  systemd:
+    name: kangaroo
+    daemon-reload: true
+    enabled: true
+    state: started
+  when: kangaroo_service.changed

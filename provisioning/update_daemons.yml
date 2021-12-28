@@ -1,4 +1,4 @@
 - name: Update the daemons on all hypervisors
   hosts: hypervisors
   roles:
-    - update_daemons
+    - proxy
