@@ -64,6 +64,7 @@ type Pop = {
     provider: string;
     location: string;
     peeringdb_id: number;
+    ui_disable: boolean;
 };
 
 type Plan = {

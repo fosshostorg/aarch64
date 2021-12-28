@@ -96,7 +96,7 @@
                 }
 
                 data = body.data;
-
+                data.pops = data.pops.filter((pop)=>pop.ui_disable!=true)
                 image = Object.keys(data.oses)[0];
                 plan = Object.keys(data.plans)[0];
                 location = data.pops[0];
@@ -194,7 +194,7 @@
                                 </div>
                                 <div class="create-form-subheader">Location:</div>
                                 <div class="select-wrapper">
-                                    {#if location !== null}
+                                    {#if location !== null }
                                         <Select
                                             isClearable={false}
                                             isSearchable={false}
