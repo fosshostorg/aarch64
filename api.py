@@ -45,6 +45,63 @@ db["users"].create_index([("email", ASCENDING)], background=True, unique=True)
 db["pops"].create_index([("name", ASCENDING)], background=True, unique=True)
 db["proxies"].create_index([("label", ASCENDING)], background=True, unique=True)
 
+if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
+    if input("Are you sure you want to clear the database? (y/N)") == "y":
+        # Drop the config collection
+        db["config"].drop()
+
+        # Add an example config doc
+        db["config"].insert_one({
+            "prefix": "2001:db8::/42",
+            "plans": {
+                "v1-xsmall": {
+                    "vcpus": 1,
+                    "memory": 1,
+                    "ssd": 4
+                },
+                "v1-small": {
+                    "vcpus": 2,
+                    "memory": 4,
+                    "ssd": 8
+                },
+                "v1-medium": {
+                    "vcpus": 4,
+                    "memory": 8,
+                    "ssd": 16
+                },
+                "v1-large": {
+                    "vcpus": 8,
+                    "memory": 16,
+                    "ssd": 32
+                },
+                "v1-xlarge": {
+                    "vcpus": 16,
+                    "memory": 32,
+                    "ssd": 64
+                }
+            },
+            "oses": {
+                "debian": {
+                    "version": "10.8",
+                    "url": "https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2"
+                },
+                "ubuntu": {
+                    "version": "20.10",
+                    "url": "https://cloud-images.ubuntu.com/groovy/current/groovy-server-cloudimg-arm64.img"
+                }
+            },
+            "key": "ssh-key",
+            "port": 22,
+            "asn": 65530,
+            "email": {
+                "address": "user@example.com",
+                "password": "1234567890",
+                "server": "mail.example.com"
+            }
+        })
+    else:
+        print("Cancelled")
+
 # Check for config doc
 config_doc = db["config"].find_one()
 if not config_doc:
@@ -608,7 +665,9 @@ def reset_vm(json_body: dict, user_doc: dict) -> Response:
 @with_authentication(admin=False, pass_user=True)
 @with_json("hostname", "plan", "pop", "project", "os")
 def create_vm(json_body: dict, user_doc: dict) -> Response:
+    hv = request.json.get("hv")
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})
+
     if not pop_doc:
         return _resp(False, "PoP doesn't exist")
 
@@ -653,24 +712,32 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     # Refresh config doc
     config_doc = db["config"].find_one()
+    if not hv:
+        # Calculate host usage for pop
+        _host_usage = {}
+        for idx, host in enumerate(pop_doc["hosts"]):
+            # Don't include hosts that are in the disabled_hosts list
+            if (pop_doc["name"] + str(idx)) not in config_doc["disabled_hosts"]:
+                if idx not in _host_usage:
+                    _host_usage[idx] = 0
 
-    # Calculate host usage for pop
-    _host_usage = {}
-    for idx, host in enumerate(pop_doc["hosts"]):
-        # Don't include hosts that are in the disabled_hosts list
-        if (pop_doc["name"] + str(idx)) not in config_doc["disabled_hosts"]:
-            if idx not in _host_usage:
-                _host_usage[idx] = 0
+                for host_vm in db["vms"].find({"pop": json_body["pop"], "host": idx}):
+                    _host_usage[idx] += host_vm["vcpus"]
 
-            for host_vm in db["vms"].find({"pop": json_body["pop"], "host": idx}):
-                _host_usage[idx] += host_vm["vcpus"]
+        # Sort host usage dict by value (ordered from least used to greatest)
+        _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
 
-    # Sort host usage dict by value (ordered from least used to greatest)
-    _host_usage = {k: v for k, v in sorted(_host_usage.items(), key=lambda item: item[1])}
-
-    # Find the least utilized host by taking the first element (call next on iter)
-    json_body["host"] = next(iter(_host_usage))
-
+        # Find the least utilized host by taking the first element (call next on iter)
+        json_body["host"] = next(iter(_host_usage))
+    else:
+        if user_doc.get("admin"):
+            if int(hv) < len(pop_doc["hosts"]):
+                json_body["host"] = int(hv)
+            else:
+                print('hi')
+                return _resp(False, "Host " + json_body["pop"] + str(hv) +" doesn't exist")
+        else: 
+            return _resp(False, "Custom hypervisor setting is for admins only")
     # Set temporary password
     json_body["password"] = token_hex(16)
 
@@ -1098,62 +1165,6 @@ Fosshost Team
     return _resp(True, "Phone home complete")
 
 
-if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
-    if input("Are you sure you want to clear the database? (y/N)") == "y":
-        # Drop the config collection
-        db["config"].drop()
-
-        # Add an example config doc
-        db["config"].insert_one({
-            "prefix": "2001:db8::/42",
-            "plans": {
-                "v1.xsmall": {
-                    "vcpus": 1,
-                    "memory": 1,
-                    "ssd": 4
-                },
-                "v1.small": {
-                    "vcpus": 2,
-                    "memory": 4,
-                    "ssd": 8
-                },
-                "v1.medium": {
-                    "vcpus": 4,
-                    "memory": 8,
-                    "ssd": 16
-                },
-                "v1.large": {
-                    "vcpus": 8,
-                    "memory": 16,
-                    "ssd": 32
-                },
-                "v1.xlarge": {
-                    "vcpus": 16,
-                    "memory": 32,
-                    "ssd": 64
-                }
-            },
-            "oses": {
-                "debian": {
-                    "version": "10.8",
-                    "url": "https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2"
-                },
-                "ubuntu": {
-                    "version": "20.10",
-                    "url": "https://cloud-images.ubuntu.com/groovy/current/groovy-server-cloudimg-arm64.img"
-                }
-            },
-            "key": "ssh-key",
-            "port": 22,
-            "asn": 65530,
-            "email": {
-                "address": "user@example.com",
-                "password": "1234567890",
-                "server": "mail.example.com"
-            }
-        })
-    else:
-        print("Cancelled")
 
 
 
