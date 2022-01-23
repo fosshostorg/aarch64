@@ -54,27 +54,27 @@ if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
         db["config"].insert_one({
             "prefix": "2001:db8::/42",
             "plans": {
-                "v1-xsmall": {
+                "v1.xsmall": {
                     "vcpus": 1,
                     "memory": 1,
                     "ssd": 4
                 },
-                "v1-small": {
+                "v1.small": {
                     "vcpus": 2,
                     "memory": 4,
                     "ssd": 8
                 },
-                "v1-medium": {
+                "v1.medium": {
                     "vcpus": 4,
                     "memory": 8,
                     "ssd": 16
                 },
-                "v1-large": {
+                "v1.large": {
                     "vcpus": 8,
                     "memory": 16,
                     "ssd": 32
                 },
-                "v1-xlarge": {
+                "v1.xlarge": {
                     "vcpus": 16,
                     "memory": 32,
                     "ssd": 64
