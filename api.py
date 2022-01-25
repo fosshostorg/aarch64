@@ -731,11 +731,11 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
         json_body["host"] = next(iter(_host_usage))
     else:
         if user_doc.get("admin"):
-            if int(hv) < len(pop_doc["hosts"]):
+            if type(hv) is not int:
+                return _resp(False, "Invalid type for hv parameter")
+            if hv < len(pop_doc["hosts"]):
                 json_body["host"] = int(hv)
             else:
-                if type(hv) is not int:
-                    return _resp(False, "Invalid type for hv parameter")
                 return _resp(False, "Host " + json_body["pop"] + str(hv) +" doesn't exist")
         else: 
             return _resp(False, "Custom hypervisor setting is for admins only")
