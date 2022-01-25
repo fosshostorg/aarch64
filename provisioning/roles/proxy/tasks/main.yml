@@ -29,14 +29,7 @@
     service: sshd
     state: restarted
   when: sshd_config.changed
-
-- name: Add jump user
-  user:
-    name: jump
-    uid: 1001
-    shell: /usr/sbin/nologin
-    password: "U6aMy0wojraho"  # Empty password hash
-
+  
 - name: Generate an OpenSSH keypair
   community.crypto.openssh_keypair:
     path: /root/.ssh/jump_server
