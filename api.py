@@ -712,7 +712,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     # Refresh config doc
     config_doc = db["config"].find_one()
-    if type(hv) is not int:
+    if hv is None:
         # Calculate host usage for pop
         _host_usage = {}
         for idx, host in enumerate(pop_doc["hosts"]):
@@ -734,6 +734,8 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
             if int(hv) < len(pop_doc["hosts"]):
                 json_body["host"] = int(hv)
             else:
+                if type(hv) is not int:
+                    return _resp(False, "Invalid type for hv parameter")
                 return _resp(False, "Host " + json_body["pop"] + str(hv) +" doesn't exist")
         else: 
             return _resp(False, "Custom hypervisor setting is for admins only")
