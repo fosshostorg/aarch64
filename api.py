@@ -298,7 +298,7 @@ def with_json(*outer_args):
                 if not request.json:
                     return _resp(False, "JSON body must not be empty")
                 val = request.json.get(arg)
-                if val is not None and val is not "":
+                if val != None and val != "":
                     _json_body[arg] = val
                 else:
                     return _resp(False, "Required argument " + arg + " is not defined.")
@@ -660,6 +660,52 @@ def reset_vm(json_body: dict, user_doc: dict) -> Response:
         "Event": 2,
     }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
     return _resp(True, "VM has been reset")
+
+@app.route("/vms/nat", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("vm")
+def nat_vm(json_body: dict, user_doc: dict) -> Response:
+    
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+    
+    project_doc = get_project(user_doc, vm_doc["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+    
+    if "nat" in vm_doc:
+        return _resp(False, "This VM already has NAT setup")
+    
+    pop_doc = db["pops"].find_one({"name": vm_doc["pop"]})
+    if not pop_doc:
+        return _resp(False, "PoP doesn't exist")
+    host_doc = pop_doc["hosts"][vm_doc["host"]]
+    if not host_doc:
+        return _resp(False, "Host doesn't exist")
+    
+    # Find taken prefixes
+    taken_prefixes = []
+    for vm in db["vms"].find({"pop": vm_doc["pop"], "host": vm_doc["host"]}):
+        if "nat" in vm:
+            taken_prefixes.append(str(ipaddress.ip_network(vm["nat"]["host"], strict=False)))
+    
+    print(taken_prefixes)
+    nat = {}
+    # Iterate over the selected host's prefix
+    for prefix in list(ipaddress.ip_network("100.65.0.0/16").subnets(new_prefix=31)):
+        if str(prefix) not in taken_prefixes:
+            nat["host"] = str(list(prefix.hosts())[0]) + "/31"
+            nat["vm"] = str(list(prefix.hosts())[-1]) + "/31"
+            break
+    if not "host" in nat:
+        raise _resp(False, "Unable to assign VM prefix")
+        
+    vm_update = db["vms"].update_one({"_id": vm_doc["_id"]}, {"$set": {"nat": nat}})
+    if vm_update.modified_count == 1:
+        add_audit_entry("project.changebudget", project_doc["_id"], "", "", "")
+        return _resp(True, "NAT has been added")
+    return _resp(False, "Unable to add NAT")
 
 @app.route("/vms/create", methods=["POST"])
 @with_authentication(admin=False, pass_user=True)
