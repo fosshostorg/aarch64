@@ -8,6 +8,11 @@
   loop: "{{ vms }}"
   when: (("vbr"+item["index"]|string) not in interface_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
 
+- name: Create VM Nat interface
+  shell: ip addr add {{item["nat"]["host"]}} dev vbr{{ item["index"] }};
+  loop: "{{ vms }}"
+  when: ((item["pop"] + item["host"]|string) == inventory_hostname) and (item["nat"] is defined)
+
 - name: Start service libvirtd
   service:
     name: libvirtd
