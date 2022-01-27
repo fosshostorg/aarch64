@@ -690,7 +690,6 @@ def nat_vm(json_body: dict, user_doc: dict) -> Response:
         if "nat" in vm:
             taken_prefixes.append(str(ipaddress.ip_network(vm["nat"]["host"], strict=False)))
     
-    print(taken_prefixes)
     nat = {}
     # Iterate over the selected host's prefix
     for prefix in list(ipaddress.ip_network("100.65.0.0/16").subnets(new_prefix=31)):

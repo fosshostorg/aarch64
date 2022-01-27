@@ -13,6 +13,7 @@ async function vmControl(vm: VM, command: string) {
         .then(res => res.json())
         .then(body => {
             checkMeta(body);
+            updateProjects();
         });
 }
 
@@ -58,6 +59,13 @@ export function dropdownItems(vm: VM): DropdownItem[] {
             icon: 'sync_problem',
             action: () => {
                 void vmControl(vm, 'reset');
+            }
+        },
+        {
+            label: 'SETUP NAT',
+            icon: 'cloud',
+            action: () => {
+                void vmControl(vm, 'nat');
             }
         },
         {

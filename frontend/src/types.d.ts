@@ -43,6 +43,10 @@ type VM = {
     address: string;
     gateway: string;
     creator: string;
+    nat?: {
+        host: string;
+        vm: string
+    },
     state: number; // https://libvirt.org/html/libvirt-libvirt-domain.html#virDomainState
     created: { by: string; at: number };
 };

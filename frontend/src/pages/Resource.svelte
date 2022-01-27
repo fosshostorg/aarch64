@@ -58,6 +58,11 @@
                         <CreationInfo {vm} />
                         <CopyField label="Address" text={vm.address.slice(0, -3)} />
                         <CopyField text={vm.password} />
+
+                        {#if vm.nat != undefined}
+                            <CopyField label="NAT Address" text={vm.nat.vm} />
+                            <CopyField label="NAT Gateway" text={vm.nat.host.slice(0, -3)} />
+                        {/if}
                     </div>
                     <div class="actions">
                         <VMOptions {vm} />
