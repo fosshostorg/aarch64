@@ -992,6 +992,11 @@ def get_system(user_doc: dict):
     # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
+    # Let's remove hidden oses
+    for os in list(config_doc["oses"]):
+        if "hidden" in config_doc["oses"][os] and config_doc["oses"][os]["hidden"] == True:
+            del config_doc["oses"][os]
+
     # Get PoPs
     pops = []
     for idx, pop in enumerate(db["pops"].find()):
