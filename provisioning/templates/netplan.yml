@@ -1,10 +1,19 @@
 version: 2
 ethernets:
   eth0:
-     addresses:
-       - {{ item.address }}
-     gateway6: {{ item.gateway }}
-     nameservers:
-       addresses:
-         - 2606:4700:4700::64
-         - 2606:4700:4700::6400
+    addresses:
+      - {{ item.address }}
+    gateway6: {{ item.gateway }}
+    nameservers:
+      addresses:
+        - 2606:4700:4700::64
+        - 2606:4700:4700::6400
+  enp1s0:
+    addresses:
+      - {{ item.address }}
+    gateway6: {{ item.gateway }}
+    nameservers:
+      addresses:
+        - 2606:4700:4700::64
+        - 2606:4700:4700::6400
+

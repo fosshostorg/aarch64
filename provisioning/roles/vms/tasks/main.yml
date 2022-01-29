@@ -12,6 +12,7 @@
   shell: ip addr add {{item["nat"]["host"]}} dev vbr{{ item["index"] }};
   loop: "{{ vms }}"
   when: ((item["pop"] + item["host"]|string) == inventory_hostname) and (item["nat"] is defined)
+  ignore_errors: true
 
 - name: Start service libvirtd
   service:
@@ -44,9 +45,17 @@
   loop: "{{ vms }}"
   when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
 
+- name: Get images
+  get_url:
+    url: "{{ item['os_url'] }}"
+    dest: "/opt/aarch64/images/{{ item['os_url'].split('/')[-1] }}"
+    force: no
+  loop: "{{ vms }}"
+  when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)
+
 - name: Create VM disk
   shell:
-    cmd: qemu-img create -f qcow2 -F qcow2 -o backing_file=/opt/aarch64/images/{{ item["os"] }}.qcow2 /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2
+    cmd: qemu-img create -f qcow2 -F qcow2 -o backing_file=/opt/aarch64/images/{{ item["os_url"].split('/')[-1] }} /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2
     creates: /opt/aarch64/vms/{{ item["_id"] }}-disk.qcow2
   loop: "{{ vms }}"
   when: (item["_id"] not in virsh_list.stdout) and ((item["pop"] + item["host"]|string) == inventory_hostname)

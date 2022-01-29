@@ -1,4 +1,5 @@
 import datetime
+from distutils.command.config import config
 import ipaddress
 import json
 import re
@@ -733,6 +734,8 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     if json_body["os"] not in config_doc["oses"].keys():
         return _resp(False, "OS doesn't exist")
+
+    json_body["os_url"] = config_doc["oses"][json_body["os"]]["url"]
 
     if not user_doc.get("admin"):
         project_doc = db["projects"].find_one({

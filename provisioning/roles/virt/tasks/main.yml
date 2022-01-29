@@ -37,8 +37,10 @@
 - name: Get images
   get_url:
     url: "{{ oses[item].url }}"
-    dest: "/opt/aarch64/images/{{ item }}.qcow2"
+    dest: "/opt/aarch64/images/{{ oses[item].url.split('/')[-1] }}"
+    force: no
   with_items: "{{ oses }}"
+  when: (not 'hidden' in oses[item]) 
 
 - name: Copy libvirtd conf file
   template:
