@@ -60,6 +60,7 @@ type System = {
 type OS = {
     version: string;
     image: string;
+    class: string;
 };
 
 type Pop = {

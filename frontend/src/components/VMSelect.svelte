@@ -17,7 +17,11 @@
                 {#if isOS}
                     <img src={`./img/${osOptions[option].image}`} alt={`${option} Logo`} />
                 {/if}
+                {#if isOS}
+                <span class="selection-card-header"> {osOptions[option].class} </span>
+                {:else}
                 <span class="selection-card-header"> {option} </span>
+                {/if}
                 <divider />
                 {#if isOS}
                     <span class="selection-card-text">
