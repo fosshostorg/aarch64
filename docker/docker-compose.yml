@@ -1,0 +1,40 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  proxy:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+  db:
+    image: mongo
+    volumes:
+      - mongo_db:/data/db
+  frontend:
+    build: ../frontend
+    environment:
+      DEV: "true"
+  backend:
+    build: ../
+    environment:
+      AARCH64_DEV_CONFIG_DATABASE: "true"
+      DB_URI: "mongodb://db:27017"
+      AARCH64_DEBUG: "true"
+    depends_on:
+      - db
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_OPTIONS_EDITORTHEME: "ambiance"
+      ME_CONFIG_MONGODB_SERVER: "db"
+      ME_CONFIG_BASICAUTH_USERNAME: "root"
+      ME_CONFIG_BASICAUTH_PASSWORD: "root"
+    depends_on:
+      - db
+
+volumes:
+  mongo_db:

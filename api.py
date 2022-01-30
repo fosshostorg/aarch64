@@ -47,7 +47,7 @@ db["pops"].create_index([("name", ASCENDING)], background=True, unique=True)
 db["proxies"].create_index([("label", ASCENDING)], background=True, unique=True)
 
 if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
-    if input("Are you sure you want to clear the database? (y/N)") == "y":
+    if not db["config"].find_one():
         # Drop the config collection
         db["config"].drop()
 
@@ -55,27 +55,27 @@ if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
         db["config"].insert_one({
             "prefix": "2001:db8::/42",
             "plans": {
-                "v1.xsmall": {
+                "v1-xsmall": {
                     "vcpus": 1,
                     "memory": 1,
                     "ssd": 4
                 },
-                "v1.small": {
+                "v1-small": {
                     "vcpus": 2,
                     "memory": 4,
                     "ssd": 8
                 },
-                "v1.medium": {
+                "v1-medium": {
                     "vcpus": 4,
                     "memory": 8,
                     "ssd": 16
                 },
-                "v1.large": {
+                "v1-large": {
                     "vcpus": 8,
                     "memory": 16,
                     "ssd": 32
                 },
-                "v1.xlarge": {
+                "v1-xlarge": {
                     "vcpus": 16,
                     "memory": 32,
                     "ssd": 64
@@ -84,11 +84,15 @@ if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
             "oses": {
                 "debian": {
                     "version": "10.8",
-                    "url": "https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2"
+                    "class": "debian",
+                    "url": "http://mirrors.fossho.st/fosshost/images/aarch64/current/debian-11.2.qcow2",
+                    "image":	"debian.svg"
                 },
                 "ubuntu": {
                     "version": "20.10",
-                    "url": "https://cloud-images.ubuntu.com/groovy/current/groovy-server-cloudimg-arm64.img"
+                    "class": "ubuntu",
+                    "url": "http://mirrors.fossho.st/fosshost/images/aarch64/current/ubuntu.qcow2",
+                    "image": "ubuntu.svg"
                 }
             },
             "key": "ssh-key",
@@ -98,8 +102,11 @@ if environ.get("AARCH64_DEV_CONFIG_DATABASE"):
                 "address": "user@example.com",
                 "password": "1234567890",
                 "server": "mail.example.com"
-            }
+            },
+            "webhook": "https://example.com",
+            "disabled_hosts": []
         })
+        print("New DB setup")
     else:
         print("Cancelled")
 
@@ -1225,4 +1232,4 @@ Fosshost Team
 
 if DEBUG:
     print("Running API server in debug mode...")
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
