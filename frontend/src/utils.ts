@@ -52,7 +52,7 @@ export function dropdownItems(vm: VM): DropdownItem[] {
             label: 'RENAME',
             icon: 'create',
             action: () => {
-                let newHostname = prompt('Enter a new hostname')
+                let newHostname = prompt('Enter a new hostname', vm.hostname)
                 if (newHostname) {
                     void renameVM(vm._id,newHostname );
                 }
@@ -218,7 +218,6 @@ export async function renameVM(id: string, newHostname: string): Promise<void> {
     })
         .then(resp => resp.json())
         .then(data => {
-
             checkMeta(data);
             updateProjects();
         })
