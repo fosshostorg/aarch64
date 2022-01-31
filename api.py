@@ -398,6 +398,9 @@ def signup(json_body: dict) -> Response:
     requests.post(config_doc["webhook"], json={"content": f"User {json_body['email']} has signed up"})
     return _resp(True, "User created")
 
+def checkHostname(hostname: str):
+    return bool(re.match('^[a-zA-Z0-9\-_]+$', hostname))
+
 @app.route("/auth/start_password_reset", methods=["POST"])
 @with_json("email")
 def start_password_reset(json_body: dict) -> Response:
@@ -721,6 +724,9 @@ def rename_vm(json_body: dict, user_doc: dict):
     newHostname = json_body["newHostname"]
     if type(newHostname) is not str:
                 return _resp(False, "Invalid type for newHostname parameter")
+    if not checkHostname(newHostname):
+        return _resp(False, "VM names can only include a-Z, 0-9, and -_")
+
     vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
     if not vm_doc:
         return _resp(False, "VM doesn't exist")
@@ -747,7 +753,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
-    if not bool(re.match('^[a-zA-Z0-9\-_]+$', json_body["hostname"])):
+    if not checkHostname(json_body["hostname"]):
         return _resp(False, "VM names can only include a-Z, 0-9, and -_")
 
     if json_body["plan"] not in config_doc["plans"].keys():
