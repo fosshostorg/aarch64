@@ -18,6 +18,8 @@ services:
       DEV: "true"
   backend:
     build: ../
+    volumes:
+      - ../api.py:/usr/src/app/api.py
     environment:
       AARCH64_DEV_CONFIG_DATABASE: "true"
       DB_URI: "mongodb://db:27017"
