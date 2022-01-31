@@ -1,6 +1,7 @@
 import { replace } from 'svelte-spa-router';
 import { Snackbars, Projects } from './stores';
 
+
 async function vmControl(vm: VM, command: string) {
     await fetch('api/vms/' + command, {
         method: 'POST',
@@ -45,6 +46,16 @@ export function dropdownItems(vm: VM): DropdownItem[] {
             icon: 'refresh',
             action: () => {
                 void vmControl(vm, 'reboot');
+            }
+        },
+        {
+            label: 'RENAME',
+            icon: 'create',
+            action: () => {
+                let newHostname = prompt('Enter a new hostname', vm.hostname)
+                if (newHostname) {
+                    void renameVM(vm._id,newHostname );
+                }
             }
         },
         {
@@ -198,6 +209,22 @@ export async function deleteVM(id: string): Promise<void> {
             .catch(err => alert(err));
     }
 }
+
+export async function renameVM(id: string, newHostname: string): Promise<void> {
+    await fetch('__apiRoute__/vms/rename', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vm: id, newHostname })
+    })
+        .then(resp => resp.json())
+        .then(data => {
+            checkMeta(data);
+            updateProjects();
+        })
+        .catch(err => alert(err));
+    
+}
+
 
 export const consoleWelcomeMessage = (): void => {
     console.log('Welcome to AArch64!');

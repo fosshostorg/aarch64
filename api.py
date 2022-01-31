@@ -398,6 +398,9 @@ def signup(json_body: dict) -> Response:
     requests.post(config_doc["webhook"], json={"content": f"User {json_body['email']} has signed up"})
     return _resp(True, "User created")
 
+def checkHostname(hostname: str):
+    return bool(re.match('^[a-zA-Z0-9\-_]+$', hostname))
+
 @app.route("/auth/start_password_reset", methods=["POST"])
 @with_json("email")
 def start_password_reset(json_body: dict) -> Response:
@@ -714,6 +717,28 @@ def nat_vm(json_body: dict, user_doc: dict) -> Response:
         return _resp(True, "NAT has been added")
     return _resp(False, "Unable to add NAT")
 
+@app.route("/vms/rename", methods=["POST"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("vm", "newHostname")
+def rename_vm(json_body: dict, user_doc: dict):
+    newHostname = json_body["newHostname"]
+    if type(newHostname) is not str:
+                return _resp(False, "Invalid type for newHostname parameter")
+    if not checkHostname(newHostname):
+        return _resp(False, "VM names can only include a-Z, 0-9, and -_")
+
+    vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
+    if not vm_doc:
+        return _resp(False, "VM doesn't exist")
+
+    project_doc = get_project(user_doc, vm_doc["project"])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+    db["vms"].update_one({"_id": to_object_id(json_body["vm"])}, { "$set": { 'hostname': newHostname } })
+
+    add_audit_entry("vm.rename", project_doc["_id"], user_doc["_id"], "", "")
+    return _resp(True, "VM has been renamed")
+
 @app.route("/vms/create", methods=["POST"])
 @with_authentication(admin=False, pass_user=True)
 @with_json("hostname", "plan", "pop", "project", "os")
@@ -728,7 +753,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     # noinspection PyShadowingNames
     config_doc = db["config"].find_one()
 
-    if not bool(re.match('^[a-zA-Z0-9\-_]+$', json_body["hostname"])):
+    if not checkHostname(json_body["hostname"]):
         return _resp(False, "VM names can only include a-Z, 0-9, and -_")
 
     if json_body["plan"] not in config_doc["plans"].keys():
