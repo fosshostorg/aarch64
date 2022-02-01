@@ -743,7 +743,6 @@ def rename_vm(json_body: dict, user_doc: dict):
 @with_authentication(admin=False, pass_user=True)
 @with_json("hostname", "plan", "pop", "project", "os")
 def create_vm(json_body: dict, user_doc: dict) -> Response:
-    hv = request.json.get("hv")
     pop_doc = db["pops"].find_one({"name": json_body["pop"]})
 
     if not pop_doc:
@@ -770,6 +769,12 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
     json_body["os_url"] = config_doc["oses"][json_body["os"]]["url"]
     json_body["os"] = config_doc["oses"][json_body["os"]]["class"]
 
+    # Let admin specify custom os_url
+    if user_doc.get("admin"):
+        if request.json.get("custom_os_url"):
+            json_body["os_url"] = request.json.get("custom_os_url")
+
+
     if not user_doc.get("admin"):
         project_doc = db["projects"].find_one({
             "_id": to_object_id(json_body["project"]),
@@ -793,6 +798,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
 
     # Refresh config doc
     config_doc = db["config"].find_one()
+    hv = request.json.get("hv")
     if hv is None:
         # Calculate host usage for pop
         _host_usage = {}
