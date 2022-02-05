@@ -72,7 +72,7 @@
 
 - name: Download libvirt_exporter
   get_url:
-    url: https://releases.aarch64.com/libvirt_exporter
+    url: http://us.mirrors.fossho.st/fosshost/images/aarch64/other/deploy/bins/libvirt_exporter
     dest: /usr/bin/libvirt_exporter
     mode: +x
 
