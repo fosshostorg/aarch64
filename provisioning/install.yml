@@ -9,3 +9,4 @@
     - wg
     - prometheus
     - daemons
+    - proxy
