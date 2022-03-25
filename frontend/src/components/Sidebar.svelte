@@ -16,7 +16,7 @@
         {
             header: 'Account',
             items: [
-                { name: 'Settings', route: '/dashboard/account'},
+                { name: 'Settings', route: '/dashboard/account' },
                 { name: 'Docs', route: '/docs' },
                 {
                     name: 'Feedback',
@@ -111,7 +111,6 @@
         background-color: #0e0d0d;
         width: var(--sidebar-width);
         min-height: 100vh;
-        position: fixed;
         top: 0;
         left: 0;
         display: flex;
@@ -174,7 +173,7 @@
         padding: 0px;
         padding-left: 25px;
         max-height: 50vh;
-        overflow-y: auto; 
+        overflow-y: auto;
     }
 
     .sidebar-category-item {
