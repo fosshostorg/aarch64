@@ -42,7 +42,7 @@
             component: LoginOrSignup,
             props: {
                 isLogin: false,
-                isPassReset: true,
+                isPassReset: true
             }
         }),
         '/dashboard': dashboardWrap,
@@ -102,7 +102,6 @@
     main.width-styles {
         width: 100%;
         display: flex;
-        min-width: 1300px;
         padding: 0px;
     }
 

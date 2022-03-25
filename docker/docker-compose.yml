@@ -14,8 +14,11 @@ services:
       - mongo_db:/data/db
   frontend:
     build: ../frontend
+    volumes:
+      - ../frontend:/usr/src/app
     environment:
       DEV: "true"
+      GITPOD_WORKSPACE_URL: "${GITPOD_WORKSPACE_URL}"
   backend:
     build: ../
     volumes:

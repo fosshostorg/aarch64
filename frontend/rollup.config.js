@@ -87,7 +87,11 @@ export default {
 
 		// Watch the `public` directory and refresh the
 		// browser on changes when not in production
-		!production && livereload("public"),
+		!production && livereload({
+			watch: "public", 
+			clientUrl: process.env.GITPOD_WORKSPACE_URL ? 
+			process.env.GITPOD_WORKSPACE_URL.replace('https://','https://8080-') + '/livereload.js': undefined,
+		}),
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify

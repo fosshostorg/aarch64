@@ -109,4 +109,27 @@
     .navbar-user-name {
         padding: 0px 4px 4px;
     }
+
+    @media only screen and (max-width: 600px) {
+        nav {
+            height: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            color: #0e0d0d;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+        }
+
+        .navbar-user-name {
+            font-size: 14px;
+        }
+
+        .navbar-right {
+            padding-left: 8px;
+        }
+    }
 </style>

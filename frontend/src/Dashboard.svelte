@@ -48,7 +48,6 @@
 
 <style>
     div {
-        width: calc(100% - var(--sidebar-width));
-        margin-left: var(--sidebar-width);
+        width: 100%;
     }
 </style>

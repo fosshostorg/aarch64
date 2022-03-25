@@ -43,6 +43,7 @@
 <style>
     span.title-text-wrap {
         display: flex;
+        padding-right: 8px;
     }
 
     div.enabled-tag {
@@ -78,6 +79,16 @@
         flex-direction: column;
     }
 
+    @media only screen and (max-width: 600px) {
+        span.wrapper {
+            font-size: 18px;
+        }
+
+        button {
+            font-size: 14px !important;
+        }
+    }
+
     divider {
         height: 1px;
         background-color: #0e0d0d;
@@ -105,7 +116,7 @@
     div.header {
         display: flex;
         width: calc(100% - 25px);
-        align-items: flex-end;
+        align-items: center;
         justify-content: space-between;
     }
 </style>
