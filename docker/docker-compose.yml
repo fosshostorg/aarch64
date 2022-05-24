@@ -17,6 +17,7 @@ services:
     environment:
       DEV: "true"
   backend:
+    restart: always
     build: ../
     volumes:
       - ../api.py:/usr/src/app/api.py
