@@ -7,20 +7,34 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 )
 
 func main() {
-	app := fiber.New(fiber.Config{
-		Prefork:       true,
+	// Setup zap logger.
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+
+	// Load .env configuration.
+	if err := godotenv.Load(); err != nil {
+		logger.Error("Error loading .env file", zap.String("Error", err.Error()))
+	}
+
+	// Creating the API instance.
+	api := fiber.New(fiber.Config{
+		Prefork:       false,
 		CaseSensitive: false,
 		StrictRouting: false,
 		ServerHeader:  "fosshost-aarch64",
 		AppName:       "Aarch64 API",
 	})
 
-	app.Get("/", func(c *fiber.Ctx) error {
+	// Register routes.
+	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World 👋!")
 	})
 
-	app.Listen(":3000")
+	// Start the api.
+	api.Listen(":3000")
 }
