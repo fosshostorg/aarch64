@@ -6,3 +6,5 @@ provisioning/hosts.yml
 provisioning/*automation*
 provisioning/*.retry
 __pycache__/
+go.sum
+go.work.sum

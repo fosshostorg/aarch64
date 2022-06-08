@@ -1,10 +1,8 @@
-FROM python:3
+FROM golang:1.18.3-alpine3.15
 
 WORKDIR /usr/src/app
 
-COPY ./requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+COPY ./api ./
+RUN go mod init && go build
 
-COPY ./api.py .
-
-CMD [ "python3", "./api.py" ]
+CMD [ "./api" ]
