@@ -20,7 +20,7 @@ import (
 var db_conn *mongo.Client = nil
 
 // Singleton pattern for accessing the database connection.
-func GetConectionClient(db_uri string, ctx context.Context) (*mongo.Client, error) {
+func GetConnectionClient(db_uri string, ctx context.Context) (*mongo.Client, error) {
 	if db_conn == nil {
 		client, err := mongo.Connect(ctx, options.Client().ApplyURI(db_uri))
 		if err != nil {

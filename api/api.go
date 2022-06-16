@@ -37,7 +37,7 @@ func main() {
 	defer cancel()
 
 	// Establish a connection with the MongoDB instance.
-	client, err := utils.GetConectionClient(mongodb_uri, ctx)
+	client, err := utils.GetConnectionClient(mongodb_uri, ctx)
 	if err != nil {
 		logger.Error("Failed to establish MongoDB connection.", zap.String("Connect Error", err.Error()))
 	}
