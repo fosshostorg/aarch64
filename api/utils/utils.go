@@ -39,7 +39,9 @@ func SetupDevConfig(ctx context.Context, db *mongo.Database) {
 
 		var result bson.D
 		config_col := db.Collection("config")
-		config_col.FindOne(ctx, bson.D{}).Decode(&result)
+		if err := config_col.FindOne(ctx, bson.D{}).Decode(&result); err!=nil {
+			logger.Error("Failed to execute FindOne on config collection", zap.String("Find Error", err.Error()))
+		}
 
 		if len(result) == 0 {
 			config_col.Drop(ctx)

@@ -10,3 +10,4 @@ go.sum
 go.work.sum
 /api/api
 .env
+/api/api
