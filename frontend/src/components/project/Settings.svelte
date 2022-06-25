@@ -13,6 +13,7 @@
     /* Variables bound to form inputs for adding emails and chaning budget */
     let newUserEmail = '';
     let newBudget = 0;
+    let newName = '';
 
     /* Adds a new user to the project */
     const submitAddUser = () => {
@@ -45,6 +46,23 @@
             })
             .catch(err => console.error(err));
     };
+
+    /* Renames the project */
+    const rename = () => {
+        fetch('__apiRoute__/project/rename', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ project: params.project_id, name: newName })
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                if (checkMeta(data)) {
+                    void updateProjects();
+                }
+            })
+            .catch(err => console.error(err));
+    };
+
 
     /* Deletes the project and forwards the user to the dashboard */
     const deleteProject = () => {
@@ -105,10 +123,23 @@
                 autocomplete="off"
                 type="number"
                 class="user-input"
-                placeholder="2"
+                placeholder=""
             />
             <Button width="220px" on:click={() => changeBudget()}>CHANGE BUDGET</Button>
+
+            <span style="margin-top: 2rem" class="user-form-subheader"
+                >Rename project:</span
+            >
+            <Input
+                bind:value={newName}
+                autocomplete="off"
+                type="text"
+                class="user-input"
+                placeholder="Fosshost"
+            />
+            <Button width="220px" on:click={() => rename()}>RENAME</Button>
         {/if}
+
         <!-- TODO: SHOULD THIS ONLY SHOW FOR PROJECT CREATOR (OR OWNER?) -->
         <Button
             width="250px"
