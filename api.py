@@ -412,11 +412,11 @@ def start_password_reset(json_body: dict) -> Response:
     user = db["users"].find_one({"email": json_body["email"]})
     if not user:
         return _resp(True, "If the account exists a password reset email was sent")
-    
+
     alphabet = string.ascii_letters + string.digits
     reset_token = ''.join(secrets.choice(alphabet) for i in range(32))
     db["users"].update_one({"email": json_body["email"]}, {"$set": {"password_reset_token": reset_token}})
-    try: 
+    try:
         send_email(json_body["email"], "Password reset", f"""Hello,
 A password reset has been requested for your account.
 Please visit https://console.aarch64.com/#/password_reset?token={reset_token} to reset your password.
@@ -442,7 +442,7 @@ def password_reset(json_body: dict) -> Response:
     user = db["users"].find_one({"password_reset_token": json_body["token"]})
     if not user:
         return _resp(False, "Invalid token")
-    
+
     if not json_body.get("password"):
         return _resp(False, "Password must exist")
 
@@ -511,13 +511,13 @@ def grant_admin(json_body: dict) -> Response:
 
     if not user:
         return _resp(False, "Invalid User.")
-    
+
     try:
         db["users"].find_one_and_update({"email": json_body["email"]}, {'$set': {'admin': True}})
         return _resp(True, "Granted user admin")
     except:
         return _resp(False, "Failed to grant admin on user.")
-        
+
 
 @app.route("/project", methods=["POST"])
 @with_authentication(admin=False, pass_user=True)
@@ -654,6 +654,7 @@ def stop_vm(json_body: dict, user_doc: dict) -> Response:
     }}, "aarch64-libvirt-"+vm_doc["pop"]+str(vm_doc["host"]))
     return _resp(True, "VM has been stopped")
 
+
 @app.route("/vms/reset", methods=["POST"])
 @with_authentication(admin=False, pass_user=True)
 @with_json("vm")
@@ -676,31 +677,31 @@ def reset_vm(json_body: dict, user_doc: dict) -> Response:
 @with_authentication(admin=False, pass_user=True)
 @with_json("vm")
 def nat_vm(json_body: dict, user_doc: dict) -> Response:
-    
+
     vm_doc = db["vms"].find_one({"_id": to_object_id(json_body["vm"])})
     if not vm_doc:
         return _resp(False, "VM doesn't exist")
-    
+
     project_doc = get_project(user_doc, vm_doc["project"])
     if not project_doc:
         return _resp(False, "Project doesn't exist or unauthorized")
-    
+
     if "nat" in vm_doc:
         return _resp(False, "This VM already has NAT setup")
-    
+
     pop_doc = db["pops"].find_one({"name": vm_doc["pop"]})
     if not pop_doc:
         return _resp(False, "PoP doesn't exist")
     host_doc = pop_doc["hosts"][vm_doc["host"]]
     if not host_doc:
         return _resp(False, "Host doesn't exist")
-    
+
     # Find taken prefixes
     taken_prefixes = []
     for vm in db["vms"].find({"pop": vm_doc["pop"], "host": vm_doc["host"]}):
         if "nat" in vm:
             taken_prefixes.append(str(ipaddress.ip_network(vm["nat"]["host"], strict=False)))
-    
+
     nat = {}
     # Iterate over the selected host's prefix
     for prefix in list(ipaddress.ip_network("100.65.0.0/16").subnets(new_prefix=31)):
@@ -710,7 +711,7 @@ def nat_vm(json_body: dict, user_doc: dict) -> Response:
             break
     if not "host" in nat:
         raise _resp(False, "Unable to assign VM prefix")
-        
+
     vm_update = db["vms"].update_one({"_id": vm_doc["_id"]}, {"$set": {"nat": nat}})
     if vm_update.modified_count == 1:
         add_audit_entry("project.changebudget", project_doc["_id"], "", "", "")
@@ -824,7 +825,7 @@ def create_vm(json_body: dict, user_doc: dict) -> Response:
                 json_body["host"] = int(hv)
             else:
                 return _resp(False, "Host " + json_body["pop"] + str(hv) +" doesn't exist")
-        else: 
+        else:
             return _resp(False, "Custom hypervisor setting is for admins only")
     # Set temporary password
     json_body["password"] = token_hex(16)
@@ -889,6 +890,34 @@ def project_add_user(json_body: dict, user_doc: dict) -> Response:
         add_audit_entry("project.adduser", project_doc["_id"], user_doc["_id"], "", "")
         return _resp(True, "User added to project")
     return _resp(False, "Unable to add user to project")
+
+
+@app.route("/project/removeuserself", alias="/project/removeself", methods=["DELETE"])
+@with_authentication(admin=False, pass_user=True)
+@with_json("project", "email")
+def project_remove_user_self(json_body: dict, user_doc: dict) -> Response:
+    project_doc = get_project(user_doc, json_body['project'])
+    if not project_doc:
+        return _resp(False, "Project doesn't exist or unauthorized")
+
+    user_doc = db["users"].find_one({"email": json_body["email"]})
+    if not user_doc:
+        return _resp(False, "User doesn't exist")
+
+    if user_doc["_id"] not in project_doc["users"]:
+        return _resp(True, "User is not an member of that project")
+
+    project_update = db["projects"].update_one({"_id": to_object_id(json_body["project"])}, {"$pull": {"users": user_doc["_id"]}})
+    if project_update.modified_count == 1:
+        add_audit_entry("project.deluser", project_doc["_id"], user_doc["_id"], "", "")
+        check_members = db['projects'].find({"_id": to_object_id(json_body['project'])}, {"users": {"$gt": 0}})
+        if check_members:
+            delete_project()
+            return _resp(True, "User deleted from project and project deleted with no more users")
+        else:
+            return _resp(True, "User deleted from project")
+    return _resp(False, "Unable to delete user from project")
+
 
 @app.route("/project/rename", methods=["POST"])
 @with_authentication(admin=True, pass_user=True)
