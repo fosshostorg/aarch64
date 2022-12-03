@@ -186,6 +186,19 @@ Request body:
 }
 ```
 
+DELETE `/project/removeuserself`
+
+Authentication required
+
+Request body:
+
+```json
+{
+      "project": "605fdf474177ba62253eed4a",
+      "email": "user2@example.com"
+}
+```
+
 POST `/project/changeuser`
 
 Authentication required
