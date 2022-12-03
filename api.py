@@ -384,19 +384,22 @@ def signup(json_body: dict) -> Response:
     if not ("@" in json_body["email"] and "." in json_body["email"]):
         return _resp(False, "Invalid email address")
 
-    try:
-        db["users"].insert_one({
-            "email": json_body["email"],
-            "password": argon.hash(json_body["password"]),
-            "key": token_hex(24)
-        })
-    except DuplicateKeyError:
-        return _resp(False, "User with this email already exists")
+    if config_doc['disable_signup']:
+        return _resp(False, "Signup is currently disabled.")
+    else:
+        try:
+            db["users"].insert_one({
+                "email": json_body["email"],
+                "password": argon.hash(json_body["password"]),
+                "key": token_hex(24)
+            })
+        except DuplicateKeyError:
+            return _resp(False, "User with this email already exists")
 
-    user_doc = db["users"].find_one({"email": json_body["email"]})
-    add_audit_entry("user.signup", "", user_doc["_id"], "", "")
-    requests.post(config_doc["webhook"], json={"content": f"User {json_body['email']} has signed up"})
-    return _resp(True, "User created")
+        user_doc = db["users"].find_one({"email": json_body["email"]})
+        add_audit_entry("user.signup", "", user_doc["_id"], "", "")
+        requests.post(config_doc["webhook"], json={"content": f"User {json_body['email']} has signed up"})
+        return _resp(True, "User created")
 
 def checkHostname(hostname: str):
     return bool(re.match('^[a-zA-Z0-9\-_]+$', hostname))
