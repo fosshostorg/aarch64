@@ -12,7 +12,8 @@ import (
 	"github.com/nsqio/go-nsq"
 )
 
-var NSQCoreUrl = "[fd0d:944c:1337:aa64:1::]:4150"
+//var NSQCoreUrl = "[fd0d:944c:1337:aa64:1::]:4150"
+var NSQCoreUrl = "[fd2f:376d:8703:aa64:1::]:4150"
 var ProxyConfigPath = "/usr/local/openresty/nginx/conf/nginx.conf"
 var ProxyCachePath = "/etc/berrylium.json"
 
